@@ -95,6 +95,7 @@ main {
     height: 150px;
     object-fit: cover;
     cursor: pointer; /* 클릭 가능 표시 */
+    display: flex;
 }
 
 .album-card a {
