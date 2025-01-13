@@ -16,6 +16,7 @@ html_template = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{album_title} 앨범 - 유목의 물빛사진</title>
+    <link href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.0/Godo.woff2" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -47,6 +48,7 @@ index_html_template = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>유목의 물빛사진</title>
+    <link href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.0/Godo.woff2" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
