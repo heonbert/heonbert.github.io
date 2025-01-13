@@ -1,6 +1,15 @@
+/* 고도마음체 */
+@font-face {
+    font-family: 'godoMaum';
+
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/godoMaum.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* 공통 스타일 */
 body {
-    font-family: 'Godo', sans-serif;
+    font-family: 'godoMaum', sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
