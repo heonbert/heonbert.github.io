@@ -170,6 +170,7 @@ a.home-link:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-bottom: 50px;
 }
 
 .popup img {
@@ -200,7 +201,7 @@ a.home-link:hover {
 
 .popup .download-btn {
     position: absolute;
-    bottom: 20px;
+    bottom: -20px;
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.7);
