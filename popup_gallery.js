@@ -44,14 +44,3 @@ document.addEventListener('keydown', (e) => {
         popup.style.display = 'none';
     }
 });
-
-// 앨범 카드 이미지와 버튼 동작 통합
-const albumCards = document.querySelectorAll('.album-card');
-albumCards.forEach(card => {
-    const link = card.querySelector('a');
-    const img = card.querySelector('img');
-
-    img.addEventListener('click', () => {
-        link.click(); // 이미지를 클릭하면 버튼처럼 동작
-    });
-});
