@@ -131,29 +131,42 @@ main {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-.popup .close-btn, .popup .download-btn {
+.popup .close-btn {
     position: absolute;
+    top: 20px;
+    right: 20px;
     background-color: white;
     color: #333;
     border: none;
     padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.popup .close-btn:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.popup .download-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }
 
-.popup .close-btn {
-    top: 10px;
-    right: 10px;
-}
-
-.popup .download-btn {
-    top: 10px;
-    left: 10px;
-}
-
-.popup .close-btn:hover, .popup .download-btn:hover {
+.popup .download-btn:hover {
     background-color: #2980b9;
     color: white;
 }
