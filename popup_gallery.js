@@ -1,13 +1,17 @@
-// 팝업 요소 가져오기
+// 팝업 요소 생성
 const popup = document.createElement('div');
 popup.classList.add('popup');
 popup.innerHTML = `
-    <button class="close-btn">닫기</button>
-    <button class="download-btn">다운로드</button>
-    <img src="" alt="Popup Image">
+    <div class="popup-content">
+        <img src="" alt="Popup Image">
+        <button class="close-btn">닫기</button>
+        <a class="download-btn" href="" download>다운로드</a>
+    </div>
 `;
 document.body.appendChild(popup);
 
+// 팝업 내부 요소 참조
+const popupContent = popup.querySelector('.popup-content');
 const popupImage = popup.querySelector('img');
 const closeBtn = popup.querySelector('.close-btn');
 const downloadBtn = popup.querySelector('.download-btn');
@@ -23,14 +27,20 @@ galleryImages.forEach(image => {
     });
 });
 
-// 닫기 버튼 이벤트
+// 팝업 닫기 이벤트
 closeBtn.addEventListener('click', () => {
     popup.style.display = 'none';
 });
 
-// 팝업 외부 클릭 시 닫기
 popup.addEventListener('click', (e) => {
     if (e.target === popup) {
+        popup.style.display = 'none';
+    }
+});
+
+// ESC 키로 닫기
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
         popup.style.display = 'none';
     }
 });

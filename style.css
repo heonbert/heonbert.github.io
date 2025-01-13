@@ -53,6 +53,13 @@ main {
     color: #2c3e50;
 }
 
+.introduction img {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 200px;
+    border-radius: 10px;
+}
+
 .introduction p {
     font-size: 1.1em;
     line-height: 1.8;
@@ -60,39 +67,67 @@ main {
     color: #444;
 }
 
-/* 앨범 섹션 스타일 */
-.albums ul {
-    list-style: none;
-    padding: 0;
+/* 앨범 섹션 */
+.albums {
     display: flex;
+    gap: 20px;
     flex-wrap: wrap;
-    gap: 15px;
     justify-content: center;
 }
 
-.albums ul li {
-    margin: 0;
-    flex: 1 1 calc(25% - 15px); /* 네 개씩 배치 */
+.album-card {
+    width: 200px;
     text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.albums ul li a {
-    text-decoration: none;
-    color: #2980b9;
-    font-weight: bold;
+.album-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.album-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.album-card a {
     display: block;
     padding: 10px;
-    border: 1px solid #2980b9;
-    border-radius: 8px;
-    transition: all 0.3s ease-in-out;
-}
-
-.albums ul li a:hover {
     background-color: #2980b9;
     color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 0 0 10px 10px;
+    transition: background-color 0.3s;
 }
 
-/* 갤러리 스타일 */
+.album-card a:hover {
+    background-color: #1c6691;
+}
+
+/* 홈으로 돌아가기 버튼 */
+a.home-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+a.home-link:hover {
+    background-color: #1c6691;
+}
+
+/* 갤러리 */
 .gallery .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -113,7 +148,7 @@ main {
     transform: scale(1.05);
 }
 
-/* 팝업 스타일 */
+/* 팝업 기본 스타일 */
 .popup {
     display: none;
     position: fixed;
@@ -127,49 +162,47 @@ main {
     align-items: center;
 }
 
+.popup-content {
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
 .popup img {
     max-width: 90%;
     max-height: 80%;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
 }
 
-.popup .close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: white;
-    color: #333;
-    border: none;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-}
-
-.popup .close-btn:hover {
-    background-color: #e74c3c;
-    color: white;
-}
-
+.popup .close-btn,
 .popup .download-btn {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
     background-color: white;
     color: #333;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
-    cursor: pointer;
     font-weight: bold;
+    cursor: pointer;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease;
 }
 
+.popup .close-btn {
+    top: 10px;
+    right: 10px;
+}
+
+.popup .download-btn {
+    bottom: 10px;
+    right: 10px;
+}
+
+.popup .close-btn:hover,
 .popup .download-btn:hover {
     background-color: #2980b9;
     color: white;
