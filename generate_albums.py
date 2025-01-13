@@ -34,6 +34,7 @@ html_template = """
     <footer>
         <p>© 2025 유목의 물빛사진</p>
     </footer>
+    <script src="../popup_gallery.js"></script>
 </body>
 </html>
 """
