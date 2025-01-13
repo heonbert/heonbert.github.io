@@ -154,7 +154,8 @@ main {
 .popup .download-btn {
     position: absolute;
     bottom: 20px;
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: white;
     color: #333;
     border: none;
