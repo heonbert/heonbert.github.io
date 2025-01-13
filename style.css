@@ -18,21 +18,21 @@ main {
     padding: 20px;
 }
 
-.categories ul {
+.albums ul {
     list-style: none;
     padding: 0;
 }
 
-.categories ul li {
+.albums ul li {
     margin: 10px 0;
 }
 
-.categories ul li a {
+.albums ul li a {
     text-decoration: none;
     color: #007BFF;
 }
 
-.categories ul li a:hover {
+.albums ul li a:hover {
     text-decoration: underline;
 }
 
