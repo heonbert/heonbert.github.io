@@ -117,10 +117,8 @@
     </footer>
     <script>
         document.body.classList.add('intro-animate');
-        window.addEventListener('pageshow', function(e) {
-            if (e.persisted) {
-                document.body.classList.remove('intro-animate');
-            }
+        window.addEventListener('pagehide', function() {
+            document.body.classList.remove('intro-animate');
         });
     </script>
 </body>
