@@ -146,6 +146,7 @@ header h1::after {
     content: '';
     display: block;
     width: 160px;
+    max-width: 60vw;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     margin: 20px auto 0;
@@ -153,8 +154,8 @@ header h1::after {
 }
 
 @keyframes lineShimmer {
-    0% { width: 120px; opacity: 0.6; }
-    100% { width: 200px; opacity: 1; }
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
 }
 
 header p {
@@ -290,14 +291,15 @@ main {
     left: 50%;
     transform: translateX(-50%);
     width: 400px;
+    max-width: 80vw;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(91, 164, 217, 0.25), transparent);
     animation: dividerPulse 4s ease-in-out infinite alternate;
 }
 
 @keyframes dividerPulse {
-    0% { width: 300px; opacity: 0.5; }
-    100% { width: 500px; opacity: 1; }
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
 
 /* ===== 앨범 섹션 ===== */
@@ -475,6 +477,7 @@ a.home-link:hover::before {
     content: '';
     display: block;
     width: 120px;
+    max-width: 40vw;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     margin: 15px auto 0;
@@ -702,6 +705,7 @@ footer::before {
     content: '';
     display: block;
     width: 300px;
+    max-width: 70vw;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--border), transparent);
     margin: 0 auto 30px;
@@ -828,7 +832,7 @@ section.albums {
     }
 
     header h1::after {
-        width: 40px;
+        width: 100px;
         margin-top: 15px;
     }
 
