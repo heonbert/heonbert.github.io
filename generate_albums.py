@@ -8,6 +8,7 @@ albums = [
         "title": "추상",
         "cover": "assets/abstract/cover.jpg",
         "description": "물과 빛이 만들어내는 추상적인 아름다움을 담은 사진 작품",
+        "subtitle": "물과 빛이 만들어내는 추상적 아름다움",
         "keywords": "유목, 이동주, 추상사진, 물빛사진, 예술사진, 추상예술, 물사진, 빛사진",
     },
     {
@@ -15,6 +16,7 @@ albums = [
         "title": "반영",
         "cover": "assets/reflection/cover.jpg",
         "description": "수면 위에 비친 자연의 아름다움을 담은 사진 작품",
+        "subtitle": "수면 위에 비친 자연의 아름다움",
         "keywords": "유목, 이동주, 반영사진, 물빛사진, 수면반영, 물반영, 예술사진, 자연사진",
     },
     {
@@ -22,6 +24,7 @@ albums = [
         "title": "문양",
         "cover": "assets/pattern/cover.jpg",
         "description": "자연이 만들어낸 아름다운 문양과 패턴을 담은 사진 작품",
+        "subtitle": "자연이 만들어낸 아름다운 문양과 패턴",
         "keywords": "유목, 이동주, 문양사진, 물빛사진, 자연문양, 패턴사진, 예술사진, 자연패턴",
     },
     {
@@ -29,6 +32,7 @@ albums = [
         "title": "풍경",
         "cover": "assets/landscape/cover.jpg",
         "description": "자연의 아름다운 풍경을 담은 사진 작품",
+        "subtitle": "자연의 아름다운 풍경을 담은 작품",
         "keywords": "유목, 이동주, 풍경사진, 물빛사진, 자연풍경, 예술사진, 한국풍경, 자연사진",
     },
 ]
@@ -58,6 +62,7 @@ def generate_album_html(album):
     title = album['title']
     name = album['name']
     desc = album['description']
+    subtitle = album['subtitle']
     keywords = album['keywords']
 
     # 이미지 태그 생성 (lazy loading + 의미있는 alt 텍스트)
@@ -120,11 +125,12 @@ def generate_album_html(album):
 <body>
     <header>
         <h1>{title} 앨범</h1>
+        <p>{subtitle}</p>
         <a href="../index.html" class="home-link">홈으로 돌아가기</a>
     </header>
     <main>
         <section class="gallery">
-            <h2>{title} 작품</h2>
+            <h2>{title} 작품 · {count}</h2>
             <div class="grid">
 {image_tags}
             </div>
