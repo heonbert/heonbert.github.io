@@ -75,9 +75,11 @@ main {
     justify-content: center;
 }
 
-.album-card {
+a.album-card {
+    display: block;
     width: 200px;
     text-align: center;
+    text-decoration: none;
     border: 1px solid #ccc;
     border-radius: 10px;
     overflow: hidden;
@@ -85,7 +87,7 @@ main {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.album-card:hover {
+a.album-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -94,23 +96,20 @@ main {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    cursor: pointer; /* 클릭 가능 표시 */
-    display: flex;
+    cursor: pointer;
+    display: block;
 }
 
-.album-card a {
+.album-card span {
     display: block;
     padding: 10px;
     background-color: #2980b9;
     color: white;
-    text-decoration: none;
     font-weight: bold;
-    border-radius: 0 0 10px 10px;
     transition: background-color 0.3s;
-    margin-top: 0; /* 간격 제거 */
 }
 
-.album-card a:hover {
+a.album-card:hover span {
     background-color: #1c6691;
 }
 
