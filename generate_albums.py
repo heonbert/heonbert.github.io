@@ -105,6 +105,7 @@ def generate_album_html(album):
     <meta name="description" content="유목(流木) 이동주 작가의 {title} 사진 작품 갤러리. {desc} {count}점.">
     <meta name="keywords" content="{keywords}">
     <link rel="canonical" href="{SITE_URL}/albums/{name}.html">
+    <link rel="icon" href="../favicon.ico">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
