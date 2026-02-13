@@ -149,6 +149,12 @@ def generate_album_html(album):
 
     <button class="scroll-top" aria-label="위로 가기">&#9650;</button>
 
+    <script>
+        document.body.classList.add('intro-animate');
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) document.body.classList.remove('intro-animate');
+        });
+    </script>
     <script src="../popup_gallery.js"></script>
     <script>
         // 위로 가기 버튼

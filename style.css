@@ -754,27 +754,28 @@ footer p {
     }
 }
 
-.introduction {
+/* 진입 애니메이션: 첫 로드 시에만 적용, bfcache 복원 시 건너뜀 */
+.intro-animate .introduction {
     animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-section.albums {
+.intro-animate section.albums {
     animation: fadeInUp 0.8s ease-out 0.4s both;
 }
 
 /* 갤러리 이미지 순차 로딩 효과 */
-.gallery img {
+.intro-animate .gallery img {
     animation: fadeInUp 0.6s ease-out both;
 }
 
-.gallery img:nth-child(1) { animation-delay: 0.1s; }
-.gallery img:nth-child(2) { animation-delay: 0.15s; }
-.gallery img:nth-child(3) { animation-delay: 0.2s; }
-.gallery img:nth-child(4) { animation-delay: 0.25s; }
-.gallery img:nth-child(5) { animation-delay: 0.3s; }
-.gallery img:nth-child(6) { animation-delay: 0.35s; }
-.gallery img:nth-child(7) { animation-delay: 0.4s; }
-.gallery img:nth-child(8) { animation-delay: 0.45s; }
+.intro-animate .gallery img:nth-child(1) { animation-delay: 0.1s; }
+.intro-animate .gallery img:nth-child(2) { animation-delay: 0.15s; }
+.intro-animate .gallery img:nth-child(3) { animation-delay: 0.2s; }
+.intro-animate .gallery img:nth-child(4) { animation-delay: 0.25s; }
+.intro-animate .gallery img:nth-child(5) { animation-delay: 0.3s; }
+.intro-animate .gallery img:nth-child(6) { animation-delay: 0.35s; }
+.intro-animate .gallery img:nth-child(7) { animation-delay: 0.4s; }
+.intro-animate .gallery img:nth-child(8) { animation-delay: 0.45s; }
 
 /* ===== 앨범 페이지 헤더 ===== */
 .album-header {
