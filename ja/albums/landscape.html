@@ -147,10 +147,12 @@
     <button class="scroll-top" aria-label="トップへ">&#9650;</button>
 
     <script>
-        document.body.classList.add('intro-animate');
-        window.addEventListener('pagehide', function() {
-            document.body.classList.remove('intro-animate');
-        });
+        if (window.innerWidth > 580) {
+            document.body.classList.add('intro-animate');
+            window.addEventListener('pagehide', function() {
+                document.body.classList.remove('intro-animate');
+            });
+        }
     </script>
     <script src="../../popup_gallery.js"></script>
     <script>
