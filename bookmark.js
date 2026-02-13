@@ -102,32 +102,35 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        // 모바일: 홈 화면에 추가 (PWA)
-        if (isMobile) {
-            // iOS: Safari 공유 버튼 안내
-            if (isIOS) {
-                showToast(msg.iosGuide);
-                return;
-            }
-            // Android: beforeinstallprompt 사용 가능하면 네이티브 프롬프트
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(function(choiceResult) {
-                    if (choiceResult.outcome === 'accepted') {
-                        showToast(msg.installed);
-                        btn.classList.add('bookmarked');
-                    } else {
+        // 1순위: PWA 설치 프롬프트 (데스크톱·모바일 공통)
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function(choiceResult) {
+                if (choiceResult.outcome === 'accepted') {
+                    showToast(msg.installed);
+                    btn.classList.add('bookmarked');
+                } else {
+                    // 거절 시: 모바일이면 메뉴 안내, 데스크톱이면 즐겨찾기 안내
+                    if (isMobile) {
                         showToast(msg.dismissed);
                     }
-                    deferredPrompt = null;
-                });
-                return;
-            }
-            // 삼성 브라우저 등 beforeinstallprompt 미지원 시 안내
-            showToast(msg.androidGuide);
+                }
+                deferredPrompt = null;
+            });
             return;
         }
 
+        // 2순위: PWA 미지원 환경 폴백
+        // iOS: Safari 공유 버튼 안내
+        if (isIOS) {
+            showToast(msg.iosGuide);
+            return;
+        }
+        // Android 삼성 브라우저 등: 메뉴 안내
+        if (isAndroid) {
+            showToast(msg.androidGuide);
+            return;
+        }
         // 데스크톱: 즐겨찾기 안내
         if (isMac) {
             showToast(msg.mac);
