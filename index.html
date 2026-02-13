@@ -140,5 +140,14 @@
     <footer>
         <p>&copy; 유목의 물빛사진</p>
     </footer>
+    <script>
+        // 첫 로드 시에만 진입 애니메이션, 뒤로가기(bfcache) 복원 시 건너뜀
+        document.body.classList.add('intro-animate');
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                document.body.classList.remove('intro-animate');
+            }
+        });
+    </script>
 </body>
 </html>
