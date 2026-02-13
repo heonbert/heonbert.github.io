@@ -131,10 +131,27 @@ def generate_album_html(album):
         </section>
     </main>
     <footer>
+        <a href="../index.html" class="home-link">홈으로 돌아가기</a>
         <p>&copy; 유목의 물빛사진</p>
     </footer>
 
+    <button class="scroll-top" aria-label="위로 가기">&#9650;</button>
+
     <script src="../popup_gallery.js"></script>
+    <script>
+        // 위로 가기 버튼
+        const scrollTopBtn = document.querySelector('.scroll-top');
+        window.addEventListener('scroll', () => {{
+            if (window.scrollY > 400) {{
+                scrollTopBtn.classList.add('visible');
+            }} else {{
+                scrollTopBtn.classList.remove('visible');
+            }}
+        }});
+        scrollTopBtn.addEventListener('click', () => {{
+            window.scrollTo({{ top: 0, behavior: 'smooth' }});
+        }});
+    </script>
 </body>
 </html>
 """
