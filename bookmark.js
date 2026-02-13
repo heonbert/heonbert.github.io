@@ -16,13 +16,24 @@ if ('serviceWorker' in navigator) {
 
     // PWA 설치 프롬프트 저장
     var deferredPrompt = null;
-    var isInstalledPwa = false; // getInstalledRelatedApps 결과
+    var isInstalledPwa = false;
 
     // 환경 감지
-    var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    // iPadOS 13+는 UA에 iPad가 없고 MacIntel로 나옴 → maxTouchPoints로 구분
+    var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     var isAndroid = /Android/i.test(navigator.userAgent);
     var isMobile = isIOS || isAndroid;
-    var isMac = /Mac/.test(navigator.platform || '');
+    // Mac 감지: userAgentData (최신) → platform (레거시) → userAgent 폴백
+    var isMac = false;
+    if (navigator.userAgentData && navigator.userAgentData.platform) {
+        isMac = navigator.userAgentData.platform === 'macOS';
+    } else {
+        isMac = /Mac/.test(navigator.platform || navigator.userAgent);
+    }
+    // iPad는 Mac이 아니라 iOS로 처리
+    if (isIOS) isMac = false;
+
     var isStandalone = window.matchMedia('(display-mode: standalone)').matches
         || window.navigator.standalone === true;
 
@@ -87,17 +98,16 @@ if ('serviceWorker' in navigator) {
         deferredPrompt = e;
     });
 
-    // 설치 완료 감지
+    // 설치 완료 감지 (appinstalled에서만 토스트 표시)
     window.addEventListener('appinstalled', function() {
         deferredPrompt = null;
-        showToast(msg.installed);
+        isInstalledPwa = true;
         btn.classList.add('bookmarked');
     });
 
     function showToast(text) {
         if (!toast) return;
         toast.textContent = text;
-        toast.style.whiteSpace = 'pre-line';
         toast.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function() {
@@ -128,9 +138,8 @@ if ('serviceWorker' in navigator) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then(function(choiceResult) {
                 if (choiceResult.outcome === 'accepted') {
+                    // appinstalled 이벤트에서 처리되므로 토스트는 여기서 표시
                     showToast(msg.installed);
-                    btn.classList.add('bookmarked');
-                    isInstalledPwa = true;
                 } else {
                     if (isMobile) {
                         showToast(msg.dismissed);

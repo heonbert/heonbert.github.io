@@ -2,6 +2,8 @@
     "name": "유목의 물빛사진",
     "short_name": "물빛사진",
     "description": "유목(流木) 이동주 작가(1952-2024)의 물빛사진 갤러리",
+    "lang": "ko",
+    "dir": "ltr",
     "start_url": "/",
     "scope": "/",
     "id": "/",
@@ -9,6 +11,8 @@
     "orientation": "any",
     "theme_color": "#0a0e14",
     "background_color": "#0a0e14",
+    "categories": ["photography", "art"],
+    "prefer_related_applications": false,
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

@@ -35,14 +35,17 @@ self.addEventListener('activate', function(event) {
 
 // 네트워크 우선, 실패 시 캐시 (사진 갤러리이므로 항상 최신 우선)
 self.addEventListener('fetch', function(event) {
+    // GET 요청만 캐시 (POST, analytics beacon 등 제외)
+    if (event.request.method !== 'GET') return;
+
     event.respondWith(
         fetch(event.request).then(function(response) {
-            // 성공하면 캐시에도 저장
-            if (response.status === 200) {
+            // 성공하면 캐시에도 저장 (same-origin만)
+            if (response.status === 200 && response.type === 'basic') {
                 var responseClone = response.clone();
                 caches.open(CACHE_NAME).then(function(cache) {
                     cache.put(event.request, responseClone);
-                });
+                }).catch(function() {});
             }
             return response;
         }).catch(function() {
