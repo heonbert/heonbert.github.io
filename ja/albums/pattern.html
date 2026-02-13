@@ -57,6 +57,7 @@
 </head>
 <body>
     <header>
+        <button class="bookmark-btn" aria-label="ブックマークに追加">&#9733;</button>
         <nav class="lang-switcher"><a href="../../albums/pattern.html">KO</a> <a href="../../en/albums/pattern.html">EN</a> <a href="#" class="active">JA</a> <a href="../../de/albums/pattern.html">DE</a></nav>
         <h1>文様 アルバム</h1>
         <p>自然が作り出す美しい文様とパターン</p>
@@ -121,5 +122,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
+    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <script src="../../bookmark.js"></script>
 </body>
 </html>
