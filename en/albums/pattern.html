@@ -102,7 +102,7 @@
     <button class="scroll-top" aria-label="Scroll to top">&#9650;</button>
 
     <script>
-        if (window.innerWidth > 580) {
+        if (!('ontouchstart' in window) && window.innerWidth > 900) {
             document.body.classList.add('intro-animate');
             window.addEventListener('pagehide', function() {
                 document.body.classList.remove('intro-animate');
