@@ -57,6 +57,7 @@
 </head>
 <body>
     <header>
+        <button class="bookmark-btn" aria-label="Add to bookmarks">&#9733;</button>
         <nav class="lang-switcher"><a href="../../albums/landscape.html">KO</a> <a href="#" class="active">EN</a> <a href="../../ja/albums/landscape.html">JA</a> <a href="../../de/albums/landscape.html">DE</a></nav>
         <h1>Landscape Album</h1>
         <p>Works capturing the beautiful landscapes of nature</p>
@@ -166,5 +167,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
+    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <script src="../../bookmark.js"></script>
 </body>
 </html>

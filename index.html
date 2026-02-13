@@ -102,6 +102,7 @@
 </head>
 <body>
     <header>
+        <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
         <nav class="lang-switcher">
             <a href="index.html" class="active">KO</a>
             <a href="en/index.html">EN</a>
@@ -163,6 +164,7 @@
             <img src="assets/photographer/leedongjoo.jpg" alt="사진작가 유목 이동주 (1952-2024)">
         </div>
     </div>
+    <div class="bookmark-toast" id="bookmark-toast"></div>
     <script>
         // 진입 애니메이션
         document.body.classList.add('intro-animate');
@@ -187,5 +189,6 @@
             });
         })();
     </script>
+    <script src="bookmark.js"></script>
 </body>
 </html>

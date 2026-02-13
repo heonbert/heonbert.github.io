@@ -133,6 +133,62 @@ header::after {
     100% { transform: translateX(-50%); }
 }
 
+/* 즐겨찾기 버튼 */
+.bookmark-btn {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    z-index: 10;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 1.1em;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+    font-family: system-ui, sans-serif;
+}
+
+.bookmark-btn:hover {
+    color: #f5c542;
+    border-color: rgba(245, 197, 66, 0.3);
+    text-shadow: 0 0 8px rgba(245, 197, 66, 0.3);
+}
+
+.bookmark-btn.bookmarked {
+    color: #f5c542;
+    text-shadow: 0 0 6px rgba(245, 197, 66, 0.2);
+}
+
+/* 즐겨찾기 토스트 */
+.bookmark-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 24px;
+    font-size: 0.9em;
+    letter-spacing: 0.05em;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px var(--shadow);
+}
+
+.bookmark-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 /* 언어 전환 */
 .lang-switcher {
     position: absolute;

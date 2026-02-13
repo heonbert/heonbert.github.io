@@ -60,6 +60,7 @@
 </head>
 <body>
     <header>
+        <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
         <nav class="lang-switcher">
             <a href="landscape.html" class="active">KO</a>
             <a href="../en/albums/landscape.html">EN</a>
@@ -175,5 +176,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
+    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <script src="../bookmark.js"></script>
 </body>
 </html>

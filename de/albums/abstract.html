@@ -57,6 +57,7 @@
 </head>
 <body>
     <header>
+        <button class="bookmark-btn" aria-label="Lesezeichen hinzufügen">&#9733;</button>
         <nav class="lang-switcher"><a href="../../albums/abstract.html">KO</a> <a href="../../en/albums/abstract.html">EN</a> <a href="../../ja/albums/abstract.html">JA</a> <a href="#" class="active">DE</a></nav>
         <h1>Abstrakt Album</h1>
         <p>Abstrakte Schönheit aus Wasser und Licht</p>
@@ -240,5 +241,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
+    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <script src="../../bookmark.js"></script>
 </body>
 </html>
