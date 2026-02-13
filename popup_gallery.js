@@ -16,8 +16,8 @@ popup.innerHTML = `
         <button class="close-btn" aria-label="닫기">&times;</button>
         <div class="popup-bottom">
             <span class="popup-counter"></span>
-            <a class="download-btn" href="" download aria-label="다운로드">⬇</a>
-            <button class="share-btn" aria-label="공유">↗</button>
+            <a class="download-btn" href="" download aria-label="다운로드">⬇️</a>
+            <button class="share-btn" aria-label="공유">🔗</button>
         </div>
     </div>
 `;
