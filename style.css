@@ -675,7 +675,9 @@ a.home-link:hover::before {
 }
 
 .popup .share-btn {
+    display: inline-block;
     color: var(--text-muted);
+    text-decoration: none;
     font-family: inherit;
     font-size: 0.8em;
     padding: 8px 18px;
@@ -685,6 +687,10 @@ a.home-link:hover::before {
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 0.1em;
+    line-height: 1;
+    white-space: nowrap;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 /* ===== 위로 가기 버튼 ===== */
@@ -981,6 +987,7 @@ footer p {
 
     .popup-bottom {
         bottom: 16px;
+        gap: 12px;
     }
 
     .popup-counter {
@@ -991,6 +998,7 @@ footer p {
     .popup .share-btn {
         font-size: 0.75em;
         padding: 6px 14px;
+        white-space: nowrap;
     }
 
     .scroll-top {
