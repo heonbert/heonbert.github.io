@@ -34,6 +34,7 @@ albums = [
 ]
 
 SITE_URL = "https://seungheon.com"
+GA_MEASUREMENT_ID = "G-9ZBRVGQ4CH"
 
 
 def generate_album_html(album):
@@ -84,6 +85,16 @@ def generate_album_html(album):
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){{dataLayer.push(arguments);}}
+        gtag('js', new Date());
+        gtag('config', '{GA_MEASUREMENT_ID}');
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title} 앨범 - 유목의 물빛사진</title>
     <meta name="description" content="유목(流木) 이동주 작가의 {title} 사진 작품 갤러리. {desc} {count}점.">
