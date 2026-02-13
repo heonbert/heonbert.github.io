@@ -172,6 +172,8 @@ header::after {
     padding: 12px 24px;
     font-size: 0.9em;
     letter-spacing: 0.05em;
+    white-space: pre-line;
+    text-align: center;
     z-index: 2000;
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
