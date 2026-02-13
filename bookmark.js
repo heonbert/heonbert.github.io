@@ -16,7 +16,7 @@ if ('serviceWorker' in navigator) {
 
     // PWA 설치 프롬프트 저장
     var deferredPrompt = null;
-    var pwaSupported = false; // beforeinstallprompt를 한 번이라도 받았는지
+    var isInstalledPwa = false; // getInstalledRelatedApps 결과
 
     // 환경 감지
     var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -25,6 +25,16 @@ if ('serviceWorker' in navigator) {
     var isMac = /Mac/.test(navigator.platform || '');
     var isStandalone = window.matchMedia('(display-mode: standalone)').matches
         || window.navigator.standalone === true;
+
+    // PWA 설치 여부 확인 (getInstalledRelatedApps API)
+    if ('getInstalledRelatedApps' in navigator) {
+        navigator.getInstalledRelatedApps().then(function(apps) {
+            if (apps.length > 0) {
+                isInstalledPwa = true;
+                btn.classList.add('bookmarked');
+            }
+        }).catch(function() {});
+    }
 
     var messages = {
         ko: {
@@ -75,7 +85,6 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('beforeinstallprompt', function(e) {
         e.preventDefault();
         deferredPrompt = e;
-        pwaSupported = true;
     });
 
     // 설치 완료 감지
@@ -108,15 +117,21 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        // 1순위: PWA 설치 프롬프트 (데스크톱·모바일 공통)
+        // 이미 설치됨 (getInstalledRelatedApps로 확인)
+        if (isInstalledPwa) {
+            showToast(msg.alreadyInstalled);
+            return;
+        }
+
+        // PWA 설치 프롬프트 (데스크톱·모바일 공통)
         if (deferredPrompt) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then(function(choiceResult) {
                 if (choiceResult.outcome === 'accepted') {
                     showToast(msg.installed);
                     btn.classList.add('bookmarked');
+                    isInstalledPwa = true;
                 } else {
-                    // 거절 시: 모바일이면 메뉴 안내, 데스크톱이면 즐겨찾기 안내
                     if (isMobile) {
                         showToast(msg.dismissed);
                     }
@@ -126,26 +141,12 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        // 2순위: deferredPrompt 없음
-        // iOS: beforeinstallprompt 미지원이므로 항상 공유 안내
+        // PWA 프롬프트 없는 환경 폴백
         if (isIOS) {
             showToast(msg.iosGuide);
-            return;
-        }
-        // Android/데스크톱: beforeinstallprompt를 지원하는 브라우저인데
-        // 이벤트가 안 왔다면 = 이미 설치됨
-        if ('BeforeInstallPromptEvent' in window || pwaSupported) {
-            showToast(msg.alreadyInstalled);
-            btn.classList.add('bookmarked');
-            return;
-        }
-        // beforeinstallprompt 자체를 지원하지 않는 브라우저 (삼성 등)
-        if (isAndroid) {
+        } else if (isAndroid) {
             showToast(msg.androidGuide);
-            return;
-        }
-        // 데스크톱 (Firefox 등 PWA 미지원): 즐겨찾기 안내
-        if (isMac) {
+        } else if (isMac) {
             showToast(msg.mac);
         } else {
             showToast(msg.desktop);

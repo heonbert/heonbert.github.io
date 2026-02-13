@@ -4,6 +4,7 @@
     "description": "유목(流木) 이동주 작가(1952-2024)의 물빛사진 갤러리",
     "start_url": "/",
     "scope": "/",
+    "id": "/",
     "display": "standalone",
     "orientation": "any",
     "theme_color": "#0a0e14",
@@ -24,6 +25,12 @@
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "maskable"
+        }
+    ],
+    "related_applications": [
+        {
+            "platform": "webapp",
+            "url": "https://seungheon.com/site.webmanifest"
         }
     ]
 }
