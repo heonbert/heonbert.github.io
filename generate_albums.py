@@ -145,6 +145,7 @@ def generate_album_html(album):
     <footer>
         <a href="../index.html" class="home-link">홈으로 돌아가기</a>
         <p>&copy; 유목의 물빛사진</p>
+        <p class="footer-contact"><a href="https://github.com/heonbert/heonbert.github.io" target="_blank" rel="noopener">GitHub</a></p>
     </footer>
 
     <button class="scroll-top" aria-label="위로 가기">&#9650;</button>
