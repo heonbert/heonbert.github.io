@@ -30,36 +30,36 @@ if ('serviceWorker' in navigator) {
             desktop: 'Ctrl+D를 눌러 즐겨찾기에 추가하세요',
             mac: '\u2318+D를 눌러 즐겨찾기에 추가하세요',
             iosGuide: '하단 공유 버튼(□↑)을 누른 후\n"홈 화면에 추가"를 선택하세요',
-            installing: '홈 화면에 추가 중...',
+            androidGuide: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
             installed: '홈 화면에 추가되었습니다!',
-            dismissed: '하단 공유 버튼(□↑)에서\n"홈 화면에 추가"를 선택하세요',
+            dismissed: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
             alreadyInstalled: '이미 앱으로 실행 중입니다'
         },
         en: {
             desktop: 'Press Ctrl+D to bookmark this page',
             mac: 'Press \u2318+D to bookmark this page',
             iosGuide: 'Tap the Share button (□↑) below,\nthen select "Add to Home Screen"',
-            installing: 'Adding to Home Screen...',
+            androidGuide: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
             installed: 'Added to Home Screen!',
-            dismissed: 'Tap Share (□↑) and select\n"Add to Home Screen"',
+            dismissed: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
             alreadyInstalled: 'Already running as an app'
         },
         ja: {
             desktop: 'Ctrl+Dでブックマークに追加できます',
             mac: '\u2318+Dでブックマークに追加できます',
             iosGuide: '下の共有ボタン(□↑)をタップし、\n「ホーム画面に追加」を選択してください',
-            installing: 'ホーム画面に追加中...',
+            androidGuide: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
             installed: 'ホーム画面に追加しました！',
-            dismissed: '共有ボタン(□↑)から\n「ホーム画面に追加」を選択してください',
+            dismissed: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
             alreadyInstalled: 'すでにアプリとして実行中です'
         },
         de: {
             desktop: 'Dr\u00fccken Sie Strg+D, um ein Lesezeichen zu setzen',
             mac: 'Dr\u00fccken Sie \u2318+D, um ein Lesezeichen zu setzen',
             iosGuide: 'Tippen Sie auf Teilen (□↑) unten,\ndann "Zum Home-Bildschirm"',
-            installing: 'Zum Home-Bildschirm hinzuf\u00fcgen...',
+            androidGuide: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
             installed: 'Zum Home-Bildschirm hinzugef\u00fcgt!',
-            dismissed: 'Tippen Sie auf Teilen (□↑) und\nw\u00e4hlen Sie "Zum Home-Bildschirm"',
+            dismissed: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
             alreadyInstalled: 'Bereits als App ge\u00f6ffnet'
         }
     };
@@ -102,28 +102,33 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        // Android: beforeinstallprompt 사용
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(function(choiceResult) {
-                if (choiceResult.outcome === 'accepted') {
-                    showToast(msg.installed);
-                    btn.classList.add('bookmarked');
-                } else {
-                    showToast(msg.dismissed);
-                }
-                deferredPrompt = null;
-            });
+        // 모바일: 홈 화면에 추가 (PWA)
+        if (isMobile) {
+            // iOS: Safari 공유 버튼 안내
+            if (isIOS) {
+                showToast(msg.iosGuide);
+                return;
+            }
+            // Android: beforeinstallprompt 사용 가능하면 네이티브 프롬프트
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast(msg.installed);
+                        btn.classList.add('bookmarked');
+                    } else {
+                        showToast(msg.dismissed);
+                    }
+                    deferredPrompt = null;
+                });
+                return;
+            }
+            // 삼성 브라우저 등 beforeinstallprompt 미지원 시 안내
+            showToast(msg.androidGuide);
             return;
         }
 
-        // iOS: 안내 메시지 표시
-        if (isIOS) {
-            showToast(msg.iosGuide);
-            return;
-        }
-
-        // 데스크톱
+        // 데스크톱: 즐겨찾기 안내
         if (isMac) {
             showToast(msg.mac);
         } else {
