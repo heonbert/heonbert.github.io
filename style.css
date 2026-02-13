@@ -656,15 +656,26 @@ a.home-link:hover::before {
     letter-spacing: 0.2em;
 }
 
-.popup .download-btn {
+.popup .download-btn,
+.popup .share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.8em;
-    padding: 8px 18px;
+    font-size: 1.1em;
     border: 1px solid var(--border);
-    border-radius: 30px;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
     transition: all 0.3s ease;
-    letter-spacing: 0.1em;
+    line-height: 1;
+    padding: 0;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .popup .download-btn:hover,
@@ -672,25 +683,6 @@ a.home-link:hover::before {
     color: var(--accent);
     border-color: rgba(91, 164, 217, 0.3);
     background: var(--accent-soft);
-}
-
-.popup .share-btn {
-    display: inline-block;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-family: inherit;
-    font-size: 0.8em;
-    padding: 8px 18px;
-    border: 1px solid var(--border);
-    border-radius: 30px;
-    background: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 0.1em;
-    line-height: 1;
-    white-space: nowrap;
-    -webkit-appearance: none;
-    appearance: none;
 }
 
 /* ===== 위로 가기 버튼 ===== */
@@ -996,9 +988,9 @@ footer p {
 
     .popup .download-btn,
     .popup .share-btn {
-        font-size: 0.75em;
-        padding: 6px 14px;
-        white-space: nowrap;
+        width: 36px;
+        height: 36px;
+        font-size: 1em;
     }
 
     .scroll-top {
