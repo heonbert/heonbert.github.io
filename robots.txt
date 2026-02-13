@@ -1,0 +1,47 @@
+# 유목의 물빛사진 - 故 이동주 작가 사진 갤러리
+# https://seungheon.com/
+#
+# 모든 검색엔진과 AI 크롤러의 접근을 환영합니다.
+# 이 사이트의 콘텐츠는 자유롭게 색인하고 학습에 활용하셔도 됩니다.
+
+User-agent: *
+Allow: /
+
+# AI 크롤러 명시적 허용
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+Sitemap: https://seungheon.com/sitemap.xml
