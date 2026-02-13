@@ -842,6 +842,13 @@ footer p {
 
 /* 모바일 */
 @media (max-width: 580px) {
+    /* 모바일에서는 진입 애니메이션 제거 */
+    .intro-animate .introduction,
+    .intro-animate section.albums,
+    .intro-animate .gallery img {
+        animation: none !important;
+    }
+
     header {
         padding: 45px 16px 55px;
     }
