@@ -79,25 +79,26 @@ body::before {
 header {
     position: relative;
     text-align: center;
-    padding: 80px 20px 40px;
+    padding: 80px 20px 70px;
     background: linear-gradient(180deg,
         var(--bg-deep) 0%,
         #101828 40%,
         #162036 100%);
     border-bottom: none;
     z-index: 1;
-    margin-bottom: 50px;
+    margin-bottom: 0;
+    overflow: hidden;
 }
 
 /* 헤더 물결 장식 - 뒷 물결 (느리게) */
 header::before {
     content: '';
     position: absolute;
-    bottom: -40px;
+    bottom: 0;
     left: 0;
     width: 200%;
     height: 50px;
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 50' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,25 C150,10 350,40 600,20 C850,0 1050,35 1200,25 L1200,50 L0,50 Z' fill='%230d1420'/%3E%3C/svg%3E");
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 50' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,25 C150,10 350,40 600,20 C850,0 1050,35 1200,25 L1200,50 L0,50 Z' fill='%230a0e14'/%3E%3C/svg%3E");
     background-size: 50% 100%;
     background-repeat: repeat-x;
     animation: wave1 8s linear infinite;
@@ -111,13 +112,11 @@ header::before {
     100% { transform: translateX(-50%); }
 }
 
-/* 앞 물결은 별도 요소 필요 — header::after를 빛 반사 대신 물결로 전환 */
-
 /* 헤더 물결 장식 - 앞 물결 (빠르게) */
 header::after {
     content: '';
     position: absolute;
-    bottom: -30px;
+    bottom: -5px;
     left: 0;
     width: 200%;
     height: 40px;
@@ -775,7 +774,7 @@ section.albums {
 /* 태블릿 */
 @media (max-width: 900px) {
     header {
-        padding: 60px 20px 55px;
+        padding: 60px 20px 65px;
     }
 
     header h1 {
@@ -825,7 +824,7 @@ section.albums {
 /* 모바일 */
 @media (max-width: 580px) {
     header {
-        padding: 45px 16px 40px;
+        padding: 45px 16px 55px;
     }
 
     header h1 {
