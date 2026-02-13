@@ -143,12 +143,15 @@ header::after {
     border: 1px solid transparent;
     border-radius: 4px;
     color: var(--text-muted);
-    font-size: 1.1em;
-    padding: 2px 8px;
+    font-size: 0.85em;
+    padding: 3px 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    line-height: 1;
+    line-height: 1.2;
     font-family: system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .bookmark-btn:hover {
