@@ -926,20 +926,25 @@ section.albums {
     /* 팝업 모바일 */
     .popup img {
         max-width: 95%;
-        max-height: 75vh;
+        max-height: 70vh;
     }
 
     .popup-nav {
-        padding: 14px 10px;
-        font-size: 1.1em;
+        top: auto;
+        bottom: 60px;
+        transform: none;
+        padding: 12px 20px;
+        font-size: 1em;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
     }
 
     .popup-prev {
-        left: 8px;
+        left: calc(50% - 90px);
     }
 
     .popup-next {
-        right: 8px;
+        right: calc(50% - 90px);
     }
 
     .popup .close-btn {
