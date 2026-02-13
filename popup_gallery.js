@@ -17,6 +17,7 @@ popup.innerHTML = `
         <div class="popup-bottom">
             <span class="popup-counter"></span>
             <a class="download-btn" href="" download>다운로드</a>
+            <button class="share-btn" aria-label="공유">공유</button>
         </div>
     </div>
 `;
@@ -29,6 +30,12 @@ const downloadBtn = popup.querySelector('.download-btn');
 const prevBtn = popup.querySelector('.popup-prev');
 const nextBtn = popup.querySelector('.popup-next');
 const counter = popup.querySelector('.popup-counter');
+const shareBtn = popup.querySelector('.share-btn');
+
+// Web Share API 미지원 시 공유 버튼 숨김
+if (!navigator.share) {
+    shareBtn.style.display = 'none';
+}
 
 // 이미지 전환 애니메이션 방향
 let slideDirection = 'none'; // 'up', 'down', 'none'
@@ -105,6 +112,19 @@ prevBtn.addEventListener('click', (e) => {
 nextBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     showImage(currentIndex + 1, 'up');
+});
+
+// 공유 버튼
+shareBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    try {
+        await navigator.share({
+            title: document.title,
+            url: window.location.href
+        });
+    } catch (err) {
+        // 사용자가 공유 취소한 경우 무시
+    }
 });
 
 // 배경 클릭으로 닫기

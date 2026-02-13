@@ -667,10 +667,24 @@ a.home-link:hover::before {
     letter-spacing: 0.1em;
 }
 
-.popup .download-btn:hover {
+.popup .download-btn:hover,
+.popup .share-btn:hover {
     color: var(--accent);
     border-color: rgba(91, 164, 217, 0.3);
     background: var(--accent-soft);
+}
+
+.popup .share-btn {
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.8em;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.1em;
 }
 
 /* ===== 위로 가기 버튼 ===== */
@@ -973,7 +987,8 @@ footer p {
         font-size: 0.75em;
     }
 
-    .popup .download-btn {
+    .popup .download-btn,
+    .popup .share-btn {
         font-size: 0.75em;
         padding: 6px 14px;
     }
