@@ -61,18 +61,18 @@ body::before {
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(20, 60, 100, 0.12) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(30, 80, 130, 0.08) 0%, transparent 70%),
-        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(15, 50, 90, 0.1) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(25, 80, 140, 0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(40, 100, 170, 0.16) 0%, transparent 70%),
+        radial-gradient(ellipse 100% 60% at 50% 100%, rgba(20, 70, 130, 0.18) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
-    animation: ambientShift 20s ease-in-out infinite alternate;
+    animation: ambientShift 8s ease-in-out infinite alternate;
 }
 
 @keyframes ambientShift {
-    0% { opacity: 0.7; }
-    50% { opacity: 1; }
-    100% { opacity: 0.8; }
+    0% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.03); }
+    100% { opacity: 0.75; transform: scale(0.98); }
 }
 
 /* ===== 헤더 ===== */
@@ -96,15 +96,16 @@ header::before {
     bottom: -2px;
     left: -10%;
     width: 120%;
-    height: 60px;
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,30 C200,10 400,50 600,30 C800,10 1000,50 1200,30 L1200,60 L0,60 Z' fill='%230f1319' opacity='0.8'/%3E%3Cpath d='M0,35 C300,15 500,55 700,35 C900,15 1100,45 1200,35 L1200,60 L0,60 Z' fill='%230f1319' opacity='0.5'/%3E%3C/svg%3E");
+    height: 80px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,40 C200,15 400,65 600,40 C800,15 1000,65 1200,40 L1200,80 L0,80 Z' fill='%230f1319' opacity='0.9'/%3E%3Cpath d='M0,50 C300,20 500,70 700,45 C900,20 1100,60 1200,45 L1200,80 L0,80 Z' fill='%230f1319' opacity='0.6'/%3E%3Cpath d='M0,55 C150,40 350,65 550,50 C750,35 950,60 1200,50 L1200,80 L0,80 Z' fill='%230f1319' opacity='0.35'/%3E%3C/svg%3E");
     background-size: cover;
-    animation: headerWave 12s ease-in-out infinite alternate;
+    animation: headerWave 6s ease-in-out infinite alternate;
 }
 
 @keyframes headerWave {
-    0% { transform: translateX(-20px); }
-    100% { transform: translateX(20px); }
+    0% { transform: translateX(-15px) scaleY(1); }
+    50% { transform: translateX(5px) scaleY(1.1); }
+    100% { transform: translateX(15px) scaleY(0.95); }
 }
 
 /* 헤더 빛 반사 효과 */
@@ -114,12 +115,19 @@ header::after {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
+    width: 700px;
     height: 100%;
     background: radial-gradient(ellipse at center top,
-        rgba(91, 164, 217, 0.06) 0%,
+        rgba(91, 164, 217, 0.14) 0%,
+        rgba(91, 164, 217, 0.05) 40%,
         transparent 70%);
     pointer-events: none;
+    animation: headerGlow 5s ease-in-out infinite alternate;
+}
+
+@keyframes headerGlow {
+    0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1.08); }
 }
 
 header h1 {
@@ -135,10 +143,16 @@ header h1 {
 header h1::after {
     content: '';
     display: block;
-    width: 60px;
+    width: 80px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
     margin: 20px auto 0;
+    animation: lineShimmer 3s ease-in-out infinite alternate;
+}
+
+@keyframes lineShimmer {
+    0% { width: 60px; opacity: 0.6; }
+    100% { width: 100px; opacity: 1; }
 }
 
 header p {
@@ -275,7 +289,13 @@ main {
     transform: translateX(-50%);
     width: 200px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    background: linear-gradient(90deg, transparent, rgba(91, 164, 217, 0.25), transparent);
+    animation: dividerPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes dividerPulse {
+    0% { width: 150px; opacity: 0.5; }
+    100% { width: 250px; opacity: 1; }
 }
 
 /* ===== 앨범 섹션 ===== */
@@ -332,11 +352,13 @@ a.album-card::before {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg,
+    background: linear-gradient(105deg,
         transparent 0%,
-        rgba(255, 255, 255, 0.03) 50%,
+        rgba(255, 255, 255, 0.06) 40%,
+        rgba(180, 210, 240, 0.08) 50%,
+        rgba(255, 255, 255, 0.06) 60%,
         transparent 100%);
-    transition: left 0.8s ease;
+    transition: left 0.7s ease;
     z-index: 2;
     pointer-events: none;
 }

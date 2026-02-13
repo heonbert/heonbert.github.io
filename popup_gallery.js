@@ -2,6 +2,9 @@
 const galleryImages = Array.from(document.querySelectorAll('.gallery img'));
 let currentIndex = 0;
 
+// 모바일 감지
+const isMobile = () => window.innerWidth <= 580;
+
 // 팝업 요소 생성
 const popup = document.createElement('div');
 popup.classList.add('popup');
@@ -85,12 +88,13 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closePopup();
     if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
     if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+    if (e.key === 'ArrowUp') showImage(currentIndex - 1);
+    if (e.key === 'ArrowDown') showImage(currentIndex + 1);
 });
 
-// 터치 스와이프 지원
+// 터치 스와이프 지원 (모바일: 세로 스와이프, PC: 가로 스와이프)
 let touchStartX = 0;
 let touchStartY = 0;
-let touchEndX = 0;
 
 popup.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
@@ -98,17 +102,38 @@ popup.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 popup.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
+    const touchEndX = e.changedTouches[0].screenX;
     const touchEndY = e.changedTouches[0].screenY;
     const diffX = touchStartX - touchEndX;
-    const diffY = Math.abs(touchStartY - touchEndY);
+    const diffY = touchStartY - touchEndY;
+    const absDiffX = Math.abs(diffX);
+    const absDiffY = Math.abs(diffY);
 
-    // 수평 스와이프만 처리 (수직 이동이 작을 때)
-    if (Math.abs(diffX) > 50 && diffY < 100) {
-        if (diffX > 0) {
-            showImage(currentIndex + 1); // 왼쪽 스와이프 → 다음
-        } else {
-            showImage(currentIndex - 1); // 오른쪽 스와이프 → 이전
+    if (isMobile()) {
+        // 모바일: 세로 스와이프 우선 (위로 밀면 다음, 아래로 밀면 이전)
+        if (absDiffY > 50 && absDiffY > absDiffX) {
+            if (diffY > 0) {
+                showImage(currentIndex + 1); // 위로 스와이프 → 다음
+            } else {
+                showImage(currentIndex - 1); // 아래로 스와이프 → 이전
+            }
+        }
+        // 모바일에서 가로 스와이프도 여전히 지원
+        else if (absDiffX > 50 && absDiffX > absDiffY) {
+            if (diffX > 0) {
+                showImage(currentIndex + 1); // 왼쪽 스와이프 → 다음
+            } else {
+                showImage(currentIndex - 1); // 오른쪽 스와이프 → 이전
+            }
+        }
+    } else {
+        // PC/태블릿: 가로 스와이프만
+        if (absDiffX > 50 && absDiffY < 100) {
+            if (diffX > 0) {
+                showImage(currentIndex + 1); // 왼쪽 스와이프 → 다음
+            } else {
+                showImage(currentIndex - 1); // 오른쪽 스와이프 → 이전
+            }
         }
     }
 }, { passive: true });
