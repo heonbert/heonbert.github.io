@@ -16,6 +16,7 @@ if ('serviceWorker' in navigator) {
 
     // PWA 설치 프롬프트 저장
     var deferredPrompt = null;
+    var pwaSupported = false; // beforeinstallprompt를 한 번이라도 받았는지
 
     // 환경 감지
     var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
@@ -33,7 +34,8 @@ if ('serviceWorker' in navigator) {
             androidGuide: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
             installed: '홈 화면에 추가되었습니다!',
             dismissed: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
-            alreadyInstalled: '이미 앱으로 실행 중입니다'
+            alreadyInstalled: '이미 앱으로 설치되어 있습니다 ✓',
+            alreadyStandalone: '이미 앱으로 실행 중입니다'
         },
         en: {
             desktop: 'Press Ctrl+D to bookmark this page',
@@ -42,7 +44,8 @@ if ('serviceWorker' in navigator) {
             androidGuide: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
             installed: 'Added to Home Screen!',
             dismissed: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
-            alreadyInstalled: 'Already running as an app'
+            alreadyInstalled: 'Already installed as an app ✓',
+            alreadyStandalone: 'Already running as an app'
         },
         ja: {
             desktop: 'Ctrl+Dでブックマークに追加できます',
@@ -51,7 +54,8 @@ if ('serviceWorker' in navigator) {
             androidGuide: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
             installed: 'ホーム画面に追加しました！',
             dismissed: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
-            alreadyInstalled: 'すでにアプリとして実行中です'
+            alreadyInstalled: 'すでにアプリとしてインストール済みです ✓',
+            alreadyStandalone: 'すでにアプリとして実行中です'
         },
         de: {
             desktop: 'Dr\u00fccken Sie Strg+D, um ein Lesezeichen zu setzen',
@@ -60,16 +64,18 @@ if ('serviceWorker' in navigator) {
             androidGuide: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
             installed: 'Zum Home-Bildschirm hinzugef\u00fcgt!',
             dismissed: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
-            alreadyInstalled: 'Bereits als App ge\u00f6ffnet'
+            alreadyInstalled: 'Bereits als App installiert ✓',
+            alreadyStandalone: 'Bereits als App ge\u00f6ffnet'
         }
     };
 
     var msg = messages[lang] || messages.ko;
 
-    // Android: beforeinstallprompt 이벤트 캡처
+    // beforeinstallprompt 이벤트 캡처
     window.addEventListener('beforeinstallprompt', function(e) {
         e.preventDefault();
         deferredPrompt = e;
+        pwaSupported = true;
     });
 
     // 설치 완료 감지
@@ -96,9 +102,9 @@ if ('serviceWorker' in navigator) {
     }
 
     btn.addEventListener('click', function() {
-        // 이미 PWA로 실행 중
+        // 이미 PWA(standalone)로 실행 중
         if (isStandalone) {
-            showToast(msg.alreadyInstalled);
+            showToast(msg.alreadyStandalone);
             return;
         }
 
@@ -120,18 +126,25 @@ if ('serviceWorker' in navigator) {
             return;
         }
 
-        // 2순위: PWA 미지원 환경 폴백
-        // iOS: Safari 공유 버튼 안내
+        // 2순위: deferredPrompt 없음
+        // iOS: beforeinstallprompt 미지원이므로 항상 공유 안내
         if (isIOS) {
             showToast(msg.iosGuide);
             return;
         }
-        // Android 삼성 브라우저 등: 메뉴 안내
+        // Android/데스크톱: beforeinstallprompt를 지원하는 브라우저인데
+        // 이벤트가 안 왔다면 = 이미 설치됨
+        if ('BeforeInstallPromptEvent' in window || pwaSupported) {
+            showToast(msg.alreadyInstalled);
+            btn.classList.add('bookmarked');
+            return;
+        }
+        // beforeinstallprompt 자체를 지원하지 않는 브라우저 (삼성 등)
         if (isAndroid) {
             showToast(msg.androidGuide);
             return;
         }
-        // 데스크톱: 즐겨찾기 안내
+        // 데스크톱 (Firefox 등 PWA 미지원): 즐겨찾기 안내
         if (isMac) {
             showToast(msg.mac);
         } else {
