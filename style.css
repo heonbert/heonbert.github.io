@@ -133,6 +133,40 @@ header::after {
     100% { transform: translateX(-50%); }
 }
 
+/* 언어 전환 */
+.lang-switcher {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    display: flex;
+    gap: 6px;
+    z-index: 10;
+}
+
+.lang-switcher a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.7em;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-family: system-ui, sans-serif;
+}
+
+.lang-switcher a:hover {
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+.lang-switcher a.active {
+    color: var(--accent);
+    border-color: rgba(91, 164, 217, 0.3);
+    background: var(--accent-soft);
+    pointer-events: none;
+}
+
 header h1 {
     font-size: 2.6em;
     margin: 0;
