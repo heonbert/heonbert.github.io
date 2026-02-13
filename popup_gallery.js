@@ -30,16 +30,41 @@ const prevBtn = popup.querySelector('.popup-prev');
 const nextBtn = popup.querySelector('.popup-next');
 const counter = popup.querySelector('.popup-counter');
 
+// 이미지 전환 애니메이션 방향
+let slideDirection = 'none'; // 'up', 'down', 'none'
+
 // 이미지 표시
-function showImage(index) {
+function showImage(index, direction) {
     if (galleryImages.length === 0) return;
     currentIndex = ((index % galleryImages.length) + galleryImages.length) % galleryImages.length;
     const image = galleryImages[currentIndex];
-    popupImage.src = image.src;
-    popupImage.alt = image.alt;
-    downloadBtn.href = image.src;
-    downloadBtn.download = image.src.split('/').pop();
-    counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+
+    direction = direction || 'none';
+
+    // 모바일 숏츠 스타일 전환 애니메이션
+    if (direction !== 'none' && isMobile()) {
+        const slideOut = direction === 'up' ? 'slideOutUp' : 'slideOutDown';
+        const slideIn = direction === 'up' ? 'slideInUp' : 'slideInDown';
+
+        popupImage.style.animation = `${slideOut} 0.25s ease-in forwards`;
+        setTimeout(() => {
+            popupImage.src = image.src;
+            popupImage.alt = image.alt;
+            downloadBtn.href = image.src;
+            downloadBtn.download = image.src.split('/').pop();
+            counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            popupImage.style.animation = `${slideIn} 0.25s ease-out forwards`;
+        }, 200);
+    } else {
+        popupImage.src = image.src;
+        popupImage.alt = image.alt;
+        downloadBtn.href = image.src;
+        downloadBtn.download = image.src.split('/').pop();
+        counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+        if (!isMobile()) {
+            popupImage.style.animation = 'imageReveal 0.3s ease-out';
+        }
+    }
 
     // 네비게이션 버튼 표시/숨김
     prevBtn.style.display = galleryImages.length > 1 ? '' : 'none';
@@ -48,15 +73,20 @@ function showImage(index) {
 
 // 팝업 열기
 function openPopup(index) {
-    showImage(index);
+    showImage(index, 'none');
     popup.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    // 모바일에서 pull-to-refresh 차단
+    if (isMobile()) {
+        document.body.style.overscrollBehavior = 'none';
+    }
 }
 
 // 팝업 닫기
 function closePopup() {
     popup.style.display = 'none';
     document.body.style.overflow = '';
+    document.body.style.overscrollBehavior = '';
 }
 
 // 갤러리 이미지 클릭 이벤트
@@ -70,11 +100,11 @@ closeBtn.addEventListener('click', closePopup);
 // 이전/다음 버튼
 prevBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    showImage(currentIndex - 1);
+    showImage(currentIndex - 1, 'down');
 });
 nextBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    showImage(currentIndex + 1);
+    showImage(currentIndex + 1, 'up');
 });
 
 // 배경 클릭으로 닫기
@@ -86,54 +116,71 @@ popup.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
     if (popup.style.display !== 'flex') return;
     if (e.key === 'Escape') closePopup();
-    if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
-    if (e.key === 'ArrowRight') showImage(currentIndex + 1);
-    if (e.key === 'ArrowUp') showImage(currentIndex - 1);
-    if (e.key === 'ArrowDown') showImage(currentIndex + 1);
+    if (e.key === 'ArrowLeft') showImage(currentIndex - 1, 'down');
+    if (e.key === 'ArrowRight') showImage(currentIndex + 1, 'up');
+    if (e.key === 'ArrowUp') showImage(currentIndex - 1, 'down');
+    if (e.key === 'ArrowDown') showImage(currentIndex + 1, 'up');
 });
 
-// 터치 스와이프 지원 (모바일: 세로 스와이프, PC: 가로 스와이프)
+// 터치 스와이프 (숏츠 스타일)
 let touchStartX = 0;
 let touchStartY = 0;
+let touchStartTime = 0;
+let isSwiping = false;
 
 popup.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+    isSwiping = true;
+}, { passive: false });
+
+popup.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+    // 팝업 열려있을 때 스크롤/pull-to-refresh 완전 차단
+    e.preventDefault();
+}, { passive: false });
 
 popup.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndY = e.changedTouches[0].screenY;
+    if (!isSwiping) return;
+    isSwiping = false;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
     const diffX = touchStartX - touchEndX;
     const diffY = touchStartY - touchEndY;
     const absDiffX = Math.abs(diffX);
     const absDiffY = Math.abs(diffY);
+    const elapsed = Date.now() - touchStartTime;
+
+    // 빠른 플릭도 감지 (짧은 거리여도 빠르면 인정)
+    const minSwipe = elapsed < 300 ? 30 : 50;
 
     if (isMobile()) {
-        // 모바일: 세로 스와이프 우선 (위로 밀면 다음, 아래로 밀면 이전)
-        if (absDiffY > 50 && absDiffY > absDiffX) {
+        // 모바일: 세로 스와이프 우선 (숏츠 스타일)
+        if (absDiffY > minSwipe && absDiffY > absDiffX * 0.7) {
             if (diffY > 0) {
-                showImage(currentIndex + 1); // 위로 스와이프 → 다음
+                showImage(currentIndex + 1, 'up');   // 위로 밀면 → 다음
             } else {
-                showImage(currentIndex - 1); // 아래로 스와이프 → 이전
+                showImage(currentIndex - 1, 'down'); // 아래로 밀면 → 이전
             }
         }
-        // 모바일에서 가로 스와이프도 여전히 지원
-        else if (absDiffX > 50 && absDiffX > absDiffY) {
+        // 가로 스와이프도 지원
+        else if (absDiffX > minSwipe && absDiffX > absDiffY) {
             if (diffX > 0) {
-                showImage(currentIndex + 1); // 왼쪽 스와이프 → 다음
+                showImage(currentIndex + 1, 'up');
             } else {
-                showImage(currentIndex - 1); // 오른쪽 스와이프 → 이전
+                showImage(currentIndex - 1, 'down');
             }
         }
     } else {
         // PC/태블릿: 가로 스와이프만
         if (absDiffX > 50 && absDiffY < 100) {
             if (diffX > 0) {
-                showImage(currentIndex + 1); // 왼쪽 스와이프 → 다음
+                showImage(currentIndex + 1, 'up');
             } else {
-                showImage(currentIndex - 1); // 오른쪽 스와이프 → 이전
+                showImage(currentIndex - 1, 'down');
             }
         }
     }
-}, { passive: true });
+}, { passive: false });
