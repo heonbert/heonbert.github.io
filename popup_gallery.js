@@ -46,6 +46,9 @@ function showImage(index, direction) {
     currentIndex = ((index % galleryImages.length) + galleryImages.length) % galleryImages.length;
     const image = galleryImages[currentIndex];
 
+    // URL 해시 업데이트 (사진 번호는 1부터)
+    history.replaceState(null, '', '#img=' + (currentIndex + 1));
+
     direction = direction || 'none';
 
     // 모바일 숏츠 스타일 전환 애니메이션
@@ -94,6 +97,8 @@ function closePopup() {
     popup.style.display = 'none';
     document.body.style.overflow = '';
     document.body.style.overscrollBehavior = '';
+    // 해시 제거
+    history.replaceState(null, '', window.location.pathname + window.location.search);
 }
 
 // 갤러리 이미지 클릭 이벤트
@@ -114,13 +119,14 @@ nextBtn.addEventListener('click', (e) => {
     showImage(currentIndex + 1, 'up');
 });
 
-// 공유 버튼
+// 공유 버튼 — 현재 보고 있는 사진의 직접 링크를 공유
 shareBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
+    const shareUrl = window.location.origin + window.location.pathname + '#img=' + (currentIndex + 1);
     try {
         await navigator.share({
             title: document.title,
-            url: window.location.href
+            url: shareUrl
         });
     } catch (err) {
         // 사용자가 공유 취소한 경우 무시
@@ -204,3 +210,16 @@ popup.addEventListener('touchend', (e) => {
         }
     }
 }, { passive: false });
+
+// 페이지 로드 시 해시 확인 → 해당 사진 자동 열기
+(function checkHashOnLoad() {
+    const hash = window.location.hash;
+    const match = hash.match(/^#img=(\d+)$/);
+    if (match) {
+        const imgNum = parseInt(match[1], 10);
+        if (imgNum >= 1 && imgNum <= galleryImages.length) {
+            // 이미지 로딩 대기 후 팝업 열기
+            setTimeout(() => openPopup(imgNum - 1), 300);
+        }
+    }
+})();
