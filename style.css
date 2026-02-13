@@ -86,50 +86,52 @@ header {
         #162036 100%);
     border-bottom: none;
     z-index: 1;
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }
 
-/* 헤더 물결 장식 - 헤더 밖 아래로 돌출 */
+/* 헤더 물결 장식 - 뒷 물결 (느리게) */
 header::before {
     content: '';
     position: absolute;
-    bottom: -58px;
-    left: -10%;
-    width: 120%;
-    height: 60px;
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 L1200,0 L1200,60 L0,60 Z' fill='%23162036'/%3E%3Cpath d='M0,5 C200,25 400,-5 600,15 C800,35 1000,5 1200,20 L1200,60 L0,60 Z' fill='%230a0e14'/%3E%3Cpath d='M0,12 C250,30 450,0 650,18 C850,36 1050,8 1200,25 L1200,60 L0,60 Z' fill='%230a0e14' opacity='0.7'/%3E%3Cpath d='M0,20 C200,35 350,5 550,22 C750,38 950,12 1200,28 L1200,60 L0,60 Z' fill='%230a0e14' opacity='0.4'/%3E%3C/svg%3E");
-    background-size: cover;
-    animation: headerWave 5s ease-in-out infinite alternate;
+    bottom: -40px;
+    left: 0;
+    width: 200%;
+    height: 50px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 50' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,25 C150,10 350,40 600,20 C850,0 1050,35 1200,25 L1200,50 L0,50 Z' fill='%230d1420'/%3E%3C/svg%3E");
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+    animation: wave1 8s linear infinite;
     pointer-events: none;
-    z-index: 10;
+    z-index: 8;
+    opacity: 0.6;
 }
 
-@keyframes headerWave {
-    0% { transform: translateX(-20px) scaleY(1); }
-    50% { transform: translateX(8px) scaleY(1.15); }
-    100% { transform: translateX(20px) scaleY(0.9); }
+@keyframes wave1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
-/* 헤더 빛 반사 효과 */
+/* 앞 물결은 별도 요소 필요 — header::after를 빛 반사 대신 물결로 전환 */
+
+/* 헤더 물결 장식 - 앞 물결 (빠르게) */
 header::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 700px;
-    height: 100%;
-    background: radial-gradient(ellipse at center top,
-        rgba(91, 164, 217, 0.14) 0%,
-        rgba(91, 164, 217, 0.05) 40%,
-        transparent 70%);
+    bottom: -30px;
+    left: 0;
+    width: 200%;
+    height: 40px;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 40' preserveAspectRatio='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,20 C100,30 300,5 500,22 C700,38 900,10 1200,20 L1200,40 L0,40 Z' fill='%230a0e14'/%3E%3C/svg%3E");
+    background-size: 50% 100%;
+    background-repeat: repeat-x;
+    animation: wave2 5s linear infinite;
     pointer-events: none;
-    animation: headerGlow 5s ease-in-out infinite alternate;
+    z-index: 9;
 }
 
-@keyframes headerGlow {
-    0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
-    100% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+@keyframes wave2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 header h1 {
