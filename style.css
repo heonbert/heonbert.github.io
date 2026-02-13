@@ -756,20 +756,23 @@ footer p {
 
 footer .footer-contact {
     margin-top: 12px;
-    font-size: 0.8em;
 }
 
 footer .footer-contact a {
+    display: inline-block;
     color: var(--text-muted);
     text-decoration: none;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 1px;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
+    line-height: 1;
 }
 
 footer .footer-contact a:hover {
     color: var(--accent);
-    border-color: rgba(91, 164, 217, 0.3);
+    transform: scale(1.15);
+}
+
+footer .footer-contact svg {
+    vertical-align: middle;
 }
 
 /* ===== 페이지 진입 애니메이션 ===== */
