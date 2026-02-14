@@ -158,6 +158,10 @@
         <div class="popup-content">
             <button class="close-btn" id="author-popup-close" aria-label="閉じる">&times;</button>
             <img src="../assets/photographer/leedongjoo.jpg" alt="写真作家 流木 李東周（1952-2024）">
+            <div class="popup-bottom">
+                <a class="download-btn" href="../assets/photographer/leedongjoo.jpg" download="leedongjoo.jpg" aria-label="ダウンロード"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                <button class="share-btn" id="author-share-btn" aria-label="共有"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+            </div>
         </div>
     </div>
     <script>
@@ -169,6 +173,8 @@
             var photo = document.getElementById('author-photo');
             var popup = document.getElementById('author-popup');
             var closeBtn = document.getElementById('author-popup-close');
+            var shareBtn = document.getElementById('author-share-btn');
+            if (!navigator.share && shareBtn) shareBtn.style.display = 'none';
             function openAuthor() { popup.style.display = 'flex'; closeBtn.focus(); }
             function closeAuthor() { popup.style.display = 'none'; photo.focus(); }
             photo.addEventListener('click', openAuthor);
@@ -176,13 +182,25 @@
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAuthor(); }
             });
             closeBtn.addEventListener('click', closeAuthor);
+            if (shareBtn) shareBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navigator.share({ title: document.title, url: window.location.href }).catch(function() {});
+            });
             popup.addEventListener('click', function(e) {
                 if (e.target === popup || e.target === popup.querySelector('.popup-content')) closeAuthor();
             });
             document.addEventListener('keydown', function(e) {
                 if (popup.style.display !== 'flex') return;
                 if (e.key === 'Escape') closeAuthor();
-                if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
+                if (e.key === 'Tab') {
+                    var focusable = popup.querySelectorAll('button, a[href]');
+                    var first = focusable[0], last = focusable[focusable.length - 1];
+                    if (e.shiftKey) {
+                        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+                    } else {
+                        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+                    }
+                }
             });
         })();
     </script>
