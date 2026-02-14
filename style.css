@@ -474,6 +474,25 @@ main {
     border-color: var(--text-primary);
 }
 
+/* 작가 소개 페이지 사진 */
+.author-photo-about {
+    text-align: center;
+    padding: 20px 0 0;
+}
+.author-photo-about img {
+    display: block;
+    max-width: 480px;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 60px rgba(91, 164, 217, 0.06);
+    transition: box-shadow 0.5s ease;
+}
+.author-photo-about img:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(91, 164, 217, 0.1);
+}
+
 /* 소개 섹션 하단 구분선 */
 .introduction::after {
     content: '';
