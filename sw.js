@@ -1,5 +1,5 @@
 // Service Worker - 유목의 물빛사진 PWA
-var CACHE_NAME = 'yumok-v1';
+var CACHE_NAME = 'yumok-v2';
 
 // 설치 시 기본 셸 캐싱
 self.addEventListener('install', function(event) {
@@ -10,7 +10,7 @@ self.addEventListener('install', function(event) {
                 '/style.css',
                 '/bookmark.js',
                 '/popup_gallery.js',
-                '/assets/photographer/leedongjoo.jpg'
+                '/assets/photographer/photographer.jpg'
             ]);
         })
     );
