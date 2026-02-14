@@ -16,8 +16,8 @@ popup.innerHTML = `
         <button class="close-btn" aria-label="닫기">&times;</button>
         <div class="popup-bottom">
             <span class="popup-counter"></span>
-            <a class="download-btn" href="" download aria-label="다운로드">⬇️</a>
-            <button class="share-btn" aria-label="공유">🔗</button>
+            <a class="download-btn" href="" download aria-label="다운로드"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            <button class="share-btn" aria-label="공유"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         </div>
     </div>
 `;
