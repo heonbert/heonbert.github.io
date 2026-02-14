@@ -88,7 +88,7 @@
             <h2>研究実績および著書</h2>
             <div class="section-with-photo">
                 <div class="author-photo-about">
-                    <img src="../assets/photographer/lab.png" alt="水理実験室">
+                    <img src="../assets/photographer/lab.jpg" alt="水理実験室" class="clickable-photo" tabindex="0" role="button" style="cursor:pointer" data-popup="lab-popup">
                 </div>
                 <div class="author-info">
                     <dl class="timeline">
@@ -124,7 +124,7 @@
             <h2>作品活動</h2>
             <div class="section-with-photo">
                 <div class="author-photo-about">
-                    <img src="../assets/photographer/photographer.jpg" alt="写真作家 流木 李東周">
+                    <img src="../assets/photographer/photographer.jpg" alt="写真作家 流木 李東周" class="clickable-photo" tabindex="0" role="button" style="cursor:pointer" data-popup="photographer-popup">
                 </div>
                 <div class="author-info">
                     <dl class="timeline">
@@ -164,7 +164,7 @@
             <h2>家族</h2>
             <div class="section-with-photo">
                 <div class="author-photo-about">
-                    <img src="../assets/photographer/family.png" alt="家族写真">
+                    <img src="../assets/photographer/family.png" alt="家族写真" class="clickable-photo" tabindex="0" role="button" style="cursor:pointer" data-popup="family-popup">
                 </div>
                 <div class="author-info">
                     <dl class="timeline">
@@ -215,6 +215,36 @@
             </div>
         </div>
     </div>
+    <!-- 実験室写真ポップアップ -->
+    <div class="popup" id="lab-popup" role="dialog" aria-modal="true" aria-label="水理実験室写真" style="display:none">
+        <div class="popup-content">
+            <button class="close-btn" aria-label="閉じる">&times;</button>
+            <img src="../assets/photographer/lab.jpg" alt="水理実験室">
+            <div class="popup-bottom">
+                <a class="download-btn" href="../assets/photographer/lab.jpg" download="lab.jpg" aria-label="ダウンロード"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            </div>
+        </div>
+    </div>
+    <!-- 写真作家写真ポップアップ -->
+    <div class="popup" id="photographer-popup" role="dialog" aria-modal="true" aria-label="写真作家写真" style="display:none">
+        <div class="popup-content">
+            <button class="close-btn" aria-label="閉じる">&times;</button>
+            <img src="../assets/photographer/photographer.jpg" alt="写真作家 流木 李東周">
+            <div class="popup-bottom">
+                <a class="download-btn" href="../assets/photographer/photographer.jpg" download="photographer.jpg" aria-label="ダウンロード"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            </div>
+        </div>
+    </div>
+    <!-- 家族写真ポップアップ -->
+    <div class="popup" id="family-popup" role="dialog" aria-modal="true" aria-label="家族写真" style="display:none">
+        <div class="popup-content">
+            <button class="close-btn" aria-label="閉じる">&times;</button>
+            <img src="../assets/photographer/family.png" alt="家族写真">
+            <div class="popup-bottom">
+                <a class="download-btn" href="../assets/photographer/family.png" download="family.png" aria-label="ダウンロード"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            </div>
+        </div>
+    </div>
     <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
     <script src="../contact.js"></script>
@@ -225,22 +255,40 @@
         var closeBtn = document.getElementById('about-popup-close');
         var shareBtn = document.getElementById('about-share-btn');
         if (!navigator.share && shareBtn) shareBtn.style.display = 'none';
-        function open() { popup.style.display = 'flex'; closeBtn.focus(); }
-        function close() { popup.style.display = 'none'; photo.focus(); }
-        photo.addEventListener('click', open);
+        function openPopup(p) { p.style.display = 'flex'; p.querySelector('.close-btn').focus(); }
+        function closePopup(p, trigger) { p.style.display = 'none'; if (trigger) trigger.focus(); }
+        photo.addEventListener('click', function() { openPopup(popup); });
         photo.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPopup(popup); }
         });
-        closeBtn.addEventListener('click', close);
+        closeBtn.addEventListener('click', function() { closePopup(popup, photo); });
         if (shareBtn) shareBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             navigator.share({ title: document.title, url: window.location.href }).catch(function() {});
         });
         popup.addEventListener('click', function(e) {
-            if (e.target === popup || e.target === popup.querySelector('.popup-content')) close();
+            if (e.target === popup || e.target === popup.querySelector('.popup-content')) closePopup(popup, photo);
+        });
+        document.querySelectorAll('.clickable-photo').forEach(function(img) {
+            var popupId = img.getAttribute('data-popup');
+            var targetPopup = document.getElementById(popupId);
+            if (!targetPopup) return;
+            var targetClose = targetPopup.querySelector('.close-btn');
+            img.addEventListener('click', function() { openPopup(targetPopup); });
+            img.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPopup(targetPopup); }
+            });
+            targetClose.addEventListener('click', function() { closePopup(targetPopup, img); });
+            targetPopup.addEventListener('click', function(e) {
+                if (e.target === targetPopup || e.target === targetPopup.querySelector('.popup-content')) closePopup(targetPopup, img);
+            });
         });
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && popup.style.display === 'flex') close();
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.popup').forEach(function(p) {
+                    if (p.style.display === 'flex') p.style.display = 'none';
+                });
+            }
         });
     })();
     </script>
