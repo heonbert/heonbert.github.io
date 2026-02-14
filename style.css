@@ -763,7 +763,6 @@ a.home-link:hover::before {
     height: 40px;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 1.1em;
     border: 1px solid var(--border);
     border-radius: 50%;
     background: none;
@@ -774,6 +773,11 @@ a.home-link:hover::before {
     font-family: inherit;
     -webkit-appearance: none;
     appearance: none;
+}
+
+.popup .download-btn svg,
+.popup .share-btn svg {
+    flex-shrink: 0;
 }
 
 .popup .download-btn:hover,
