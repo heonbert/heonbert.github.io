@@ -1173,10 +1173,6 @@ footer .footer-contact svg {
 .pdf-download svg {
     display: inline-block;
     vertical-align: middle;
-    transition: transform 0.3s ease;
-}
-.pdf-download:hover svg {
-    transform: scale(1.15);
 }
 
 /* ===== 반응형 ===== */
