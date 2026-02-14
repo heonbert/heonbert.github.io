@@ -474,6 +474,29 @@ main {
     border-color: var(--text-primary);
 }
 
+/* 작가 소개 페이지 — 사진+타임라인 좌우 배치 */
+.section-with-photo {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.section-with-photo .author-photo-about {
+    flex-shrink: 0;
+    width: 300px;
+    position: sticky;
+    top: 40px;
+    text-align: center;
+    padding: 0;
+}
+
+.section-with-photo .author-info {
+    flex: 1;
+    min-width: 0;
+}
+
 /* 작가 소개 페이지 사진 */
 .author-photo-about {
     text-align: center;
@@ -482,11 +505,11 @@ main {
 .introduction .author-photo-about img {
     display: block;
     width: 100%;
-    max-width: 520px;
+    max-width: 300px;
     height: auto;
     object-fit: contain;
     margin: 0 auto;
-    border-radius: 24px;
+    border-radius: 20px;
     border: 2px solid rgba(91, 164, 217, 0.15);
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.4),
@@ -1194,6 +1217,21 @@ footer .footer-contact svg {
         padding: 60px 30px;
     }
 
+    .section-with-photo {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .section-with-photo .author-photo-about {
+        width: auto;
+        position: static;
+    }
+
+    .introduction .author-photo-about img {
+        max-width: 360px;
+    }
+
     .introduction .author-profile {
         flex-direction: column;
         align-items: center;
@@ -1276,6 +1314,15 @@ footer .footer-contact svg {
         letter-spacing: 0.3em;
         margin-top: 25px;
         margin-bottom: 30px;
+    }
+
+    .section-with-photo {
+        gap: 24px;
+    }
+
+    .introduction .author-photo-about img {
+        max-width: 260px;
+        border-radius: 16px;
     }
 
     .introduction .author-profile {
@@ -1434,6 +1481,19 @@ footer .footer-contact svg {
 
     .introduction .author-profile {
         gap: 60px;
+    }
+
+    .section-with-photo {
+        gap: 56px;
+        max-width: 1060px;
+    }
+
+    .section-with-photo .author-photo-about {
+        width: 340px;
+    }
+
+    .introduction .author-photo-about img {
+        max-width: 340px;
     }
 }
 
