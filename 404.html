@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지를 찾을 수 없습니다 - 유목의 물빛사진</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .error-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .error-code {
+            font-size: 6em;
+            font-weight: 300;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        .error-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .error-links a {
+            color: var(--accent);
+            text-decoration: none;
+            padding: 8px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+        .error-links a:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <main class="error-page">
+        <div class="error-code">404</div>
+        <p class="error-message">페이지를 찾을 수 없습니다<br>Page not found</p>
+        <div class="error-links">
+            <a href="/">홈 / Home</a>
+            <a href="/en/">English</a>
+            <a href="/ja/">日本語</a>
+            <a href="/de/">Deutsch</a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 유목의 물빛사진</p>
+    </footer>
+</body>
+</html>

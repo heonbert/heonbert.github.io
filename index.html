@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
@@ -32,6 +36,9 @@
     <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:site_name" content="유목의 물빛사진">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Yumok Lee Dong-joo water light photography">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -103,7 +110,7 @@
 <body>
     <header>
         <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
-        <nav class="lang-switcher">
+        <nav class="lang-switcher" aria-label="언어 선택">
             <a href="index.html" class="active">KO</a>
             <a href="en/index.html">EN</a>
             <a href="ja/index.html">JA</a>
@@ -160,7 +167,7 @@
     <!-- 작가 사진 팝업 -->
     <div class="popup" id="author-popup" style="display:none">
         <div class="popup-content">
-            <button class="close-btn" id="author-popup-close">&times;</button>
+            <button class="close-btn" id="author-popup-close" aria-label="닫기">&times;</button>
             <img src="assets/photographer/leedongjoo.jpg" alt="사진작가 유목 이동주 (1952-2024)">
         </div>
     </div>

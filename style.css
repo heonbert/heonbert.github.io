@@ -1,5 +1,14 @@
-/* 이롭게 바탕체 */
-@import url('//cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css');
+/* 이롭게 바탕체 — font-display: swap으로 FOIT 방지 */
+@font-face {
+    font-family: 'Iropke Batang';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot');
+    src: url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot?#iefix') format('embedded-opentype'),
+         url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.woff') format('woff'),
+         url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.ttf') format('truetype');
+}
 
 /* ===== CSS 변수 ===== */
 :root {
