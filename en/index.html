@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
@@ -15,6 +19,7 @@
     <title>Yumok's Water Light Photography</title>
     <meta name="description" content="Photo gallery of Yumok (流木) Lee Dong-joo (1952-2024). Art photography exploring the beauty of water and light.">
     <meta name="keywords" content="Yumok, Lee Dong-joo, water light photography, art photography, abstract, reflection, landscape, Korean photographer">
+    <meta name="author" content="Lee Dong-joo (Yumok)">
     <link rel="canonical" href="https://seungheon.com/en/">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -36,6 +41,9 @@
     <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Yumok's Water Light Photography">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Yumok Lee Dong-joo water light photography">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -61,13 +69,42 @@
         "url": "https://seungheon.com/"
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Yumok's Water Light Photography",
+        "alternateName": ["유목의 물빛사진", "流木の水光写真", "Yumoks Wasserlicht-Fotografie"],
+        "url": "https://seungheon.com/en/",
+        "description": "Photo gallery of Yumok (流木) Lee Dong-joo (1952-2024). Art photography exploring the beauty of water and light.",
+        "inLanguage": ["ko", "en", "ja", "de"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ImageGallery",
+        "name": "Yumok's Water Light Photography Gallery",
+        "description": "Art photography gallery featuring abstract, reflection, pattern, and landscape works themed on water and light",
+        "url": "https://seungheon.com/en/",
+        "author": {
+            "@type": "Person",
+            "name": "Lee Dong-joo",
+            "alternateName": "Yumok (流木)"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": "Water and light art photography"
+        }
+    }
+    </script>
 
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <header>
         <button class="bookmark-btn" aria-label="Add to bookmarks">&#9733;</button>
-        <nav class="lang-switcher"><a href="../index.html">KO</a> <a href="#" class="active">EN</a> <a href="../ja/index.html">JA</a> <a href="../de/index.html">DE</a></nav>
+        <nav class="lang-switcher" aria-label="Language selection"><a href="../index.html">KO</a> <a href="#" class="active">EN</a> <a href="../ja/index.html">JA</a> <a href="../de/index.html">DE</a></nav>
         <h1>Yumok's Water Light Photography</h1>
         <p>Art of fleeting moments, shaped by water and light</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
@@ -118,7 +155,7 @@
     </footer>
     <div class="popup" id="author-popup" style="display:none">
         <div class="popup-content">
-            <button class="close-btn" id="author-popup-close">&times;</button>
+            <button class="close-btn" id="author-popup-close" aria-label="Close">&times;</button>
             <img src="../assets/photographer/leedongjoo.jpg" alt="Photographer Yumok Lee Dong-joo (1952-2024)">
         </div>
     </div>

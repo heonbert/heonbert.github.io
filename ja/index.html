@@ -2,6 +2,10 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
@@ -12,9 +16,10 @@
         gtag('config', 'G-9ZBRVGQ4CH');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>流木の水光写真</title>
+    <title>流木の水光写真 - 故 李東周 写真ギャラリー</title>
     <meta name="description" content="流木（ユモク）李東周（イ・ドンジュ）作家（1952-2024）の水光写真ギャラリー。水と光をテーマにした抽象、反映、文様、風景の写真作品。">
     <meta name="keywords" content="流木, 李東周, 水光写真, 芸術写真, 抽象, 反映, 風景, 韓国写真家">
+    <meta name="author" content="Lee Dong-joo (Yumok)">
     <link rel="canonical" href="https://seungheon.com/ja/">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -36,6 +41,9 @@
     <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
     <meta property="og:locale" content="ja_JP">
     <meta property="og:site_name" content="流木の水光写真">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Yumok Lee Dong-joo water light photography">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -61,13 +69,42 @@
         "url": "https://seungheon.com/"
     }
     </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "流木の水光写真",
+        "alternateName": ["유목의 물빛사진", "Yumok's Water Light Photography", "Yumoks Wasserlicht-Fotografie"],
+        "url": "https://seungheon.com/ja/",
+        "description": "流木（ユモク）李東周（イ・ドンジュ）作家（1952-2024）の水光写真ギャラリー",
+        "inLanguage": ["ko", "en", "ja", "de"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ImageGallery",
+        "name": "流木の水光写真ギャラリー",
+        "description": "水と光をテーマにした抽象、反映、文様、風景の写真作品ギャラリー",
+        "url": "https://seungheon.com/ja/",
+        "author": {
+            "@type": "Person",
+            "name": "Lee Dong-joo",
+            "alternateName": "流木（ユモク）"
+        },
+        "about": {
+            "@type": "Thing",
+            "name": "水と光の芸術写真"
+        }
+    }
+    </script>
 
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <header>
         <button class="bookmark-btn" aria-label="ブックマークに追加">&#9733;</button>
-        <nav class="lang-switcher"><a href="../index.html">KO</a> <a href="../en/index.html">EN</a> <a href="#" class="active">JA</a> <a href="../de/index.html">DE</a></nav>
+        <nav class="lang-switcher" aria-label="言語選択"><a href="../index.html">KO</a> <a href="../en/index.html">EN</a> <a href="#" class="active">JA</a> <a href="../de/index.html">DE</a></nav>
         <h1>流木の水光写真</h1>
         <p>水と光が織りなす刹那の芸術</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
@@ -118,7 +155,7 @@
     </footer>
     <div class="popup" id="author-popup" style="display:none">
         <div class="popup-content">
-            <button class="close-btn" id="author-popup-close">&times;</button>
+            <button class="close-btn" id="author-popup-close" aria-label="閉じる">&times;</button>
             <img src="../assets/photographer/leedongjoo.jpg" alt="写真作家 流木 李東周（1952-2024）">
         </div>
     </div>

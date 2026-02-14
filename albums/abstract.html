@@ -2,6 +2,10 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
@@ -15,6 +19,7 @@
     <title>추상 앨범 - 유목의 물빛사진</title>
     <meta name="description" content="유목(流木) 이동주 작가의 추상 사진 작품 갤러리. 물과 빛이 만들어내는 추상적인 아름다움을 담은 143점의 사진 작품.">
     <meta name="keywords" content="유목, 이동주, 추상사진, 물빛사진, 예술사진, 추상예술, 물사진, 빛사진">
+    <meta name="author" content="Lee Dong-joo (Yumok)">
     <link rel="canonical" href="https://seungheon.com/albums/abstract.html">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -31,7 +36,15 @@
     <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:site_name" content="유목의 물빛사진">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="800">
+    <meta property="og:image:alt" content="Yumok Lee Dong-joo water light photography">
 
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="추상 앨범 - 유목의 물빛사진">
+    <meta name="twitter:description" content="유목(流木) 이동주 작가의 추상 사진 작품 갤러리. 물과 빛이 만들어내는 추상적 아름다움.">
+    <meta name="twitter:image" content="https://seungheon.com/assets/abstract/cover.jpg">
     <!-- 구조화 데이터 -->
     <script type="application/ld+json">
     {
@@ -41,6 +54,7 @@
         "description": "물과 빛이 만들어내는 추상적인 아름다움을 담은 사진 작품 갤러리",
         "url": "https://seungheon.com/albums/abstract.html",
         "numberOfItems": 143,
+        "inLanguage": "ko",
         "author": {
             "@type": "Person",
             "name": "이동주",
@@ -56,12 +70,33 @@
     <link rel="alternate" hreflang="de" href="https://seungheon.com/de/albums/abstract.html">
     <link rel="alternate" hreflang="x-default" href="https://seungheon.com/albums/abstract.html">
 
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "홈",
+            "item": "https://seungheon.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "추상 앨범",
+            "item": "https://seungheon.com/albums/abstract.html"
+        }
+        ]
+    }
+    </script>
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <header>
         <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
-        <nav class="lang-switcher">
+        <nav class="lang-switcher" aria-label="언어 선택">
             <a href="abstract.html" class="active">KO</a>
             <a href="../en/albums/abstract.html">EN</a>
             <a href="../ja/albums/abstract.html">JA</a>
