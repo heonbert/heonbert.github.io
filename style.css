@@ -449,6 +449,12 @@ main {
     color: var(--text-secondary);
     margin-bottom: 18px;
     word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+/* 일본어는 문자 단위 줄바꿈이 자연스러움 (keep-all은 줄바꿈을 과도하게 막음) */
+:lang(ja) .introduction p {
+    word-break: normal;
 }
 
 .introduction p:last-child {
