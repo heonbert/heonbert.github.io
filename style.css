@@ -452,9 +452,10 @@ main {
     overflow-wrap: break-word;
 }
 
-/* 일본어는 문자 단위 줄바꿈이 자연스러움 (keep-all은 줄바꿈을 과도하게 막음) */
+/* 일본어: 문자 단위 줄바꿈 + 좌측 정렬 (justify가 글자 간격을 과도하게 벌림) */
 :lang(ja) .introduction p {
     word-break: normal;
+    text-align: left;
 }
 
 .introduction p:last-child {
