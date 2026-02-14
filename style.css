@@ -1161,19 +1161,22 @@ footer .footer-contact svg {
     margin-left: 6px;
     color: var(--accent);
     vertical-align: middle;
-    transition: color 0.3s ease, transform 0.3s ease;
     border: none;
     text-decoration: none;
+    transition: color 0.3s ease;
 }
 .pdf-download:hover {
     color: var(--text-primary);
-    transform: scale(1.15);
     background: none;
     border: none;
 }
 .pdf-download svg {
     display: inline-block;
     vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+.pdf-download:hover svg {
+    transform: scale(1.15);
 }
 
 /* ===== 반응형 ===== */
