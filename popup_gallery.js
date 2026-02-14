@@ -24,6 +24,7 @@ popup.setAttribute('aria-label', lang === 'ko' ? '사진 보기' : lang === 'ja'
 popup.innerHTML = `
     <div class="popup-content">
         <button class="popup-nav popup-prev" aria-label="${labels.prev}">&#10094;</button>
+        <span class="popup-title"></span>
         <img src="" alt="Popup Image">
         <button class="popup-nav popup-next" aria-label="${labels.next}">&#10095;</button>
         <button class="close-btn" aria-label="${labels.close}">&times;</button>
@@ -38,6 +39,7 @@ document.body.appendChild(popup);
 
 // 팝업 내부 요소 참조
 const popupImage = popup.querySelector('img');
+const popupTitle = popup.querySelector('.popup-title');
 const closeBtn = popup.querySelector('.close-btn');
 const downloadBtn = popup.querySelector('.download-btn');
 const prevBtn = popup.querySelector('.popup-prev');
@@ -81,6 +83,7 @@ function showImage(index, direction) {
         setTimeout(() => {
             popupImage.src = image.src;
             popupImage.alt = image.alt;
+            popupTitle.textContent = image.alt;
             downloadBtn.href = image.src;
             downloadBtn.download = image.src.split('/').pop();
             counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
@@ -89,6 +92,7 @@ function showImage(index, direction) {
     } else {
         popupImage.src = image.src;
         popupImage.alt = image.alt;
+        popupTitle.textContent = image.alt;
         downloadBtn.href = image.src;
         downloadBtn.download = image.src.split('/').pop();
         counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
