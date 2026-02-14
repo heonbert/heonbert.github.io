@@ -1157,19 +1157,21 @@ footer .footer-contact svg {
     display: block;
 }
 /* PDF 다운로드 링크 */
-.pdf-download {
+.introduction .pdf-download {
     display: inline-block;
     margin-left: 6px;
     color: var(--accent);
     vertical-align: middle;
     border: none;
+    border-bottom: none;
     text-decoration: none;
     transition: color 0.3s ease;
 }
-.pdf-download:hover {
+.introduction .pdf-download:hover {
     color: var(--text-primary);
     background: none;
     border: none;
+    border-bottom: none;
 }
 .pdf-download svg {
     display: inline-block;
