@@ -481,7 +481,7 @@ main {
 }
 .author-photo-about img {
     display: block;
-    max-width: 420px;
+    max-width: 600px;
     width: 100%;
     height: auto;
     margin: 0 auto;
