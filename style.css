@@ -1148,6 +1148,24 @@ footer .footer-contact svg {
     height: 350px;
     display: block;
 }
+/* PDF 다운로드 링크 */
+.pdf-download {
+    display: inline-block;
+    font-size: 0.75em;
+    padding: 2px 8px;
+    margin-left: 6px;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    vertical-align: middle;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.pdf-download:hover {
+    background: var(--accent);
+    color: var(--bg-deep);
+}
 
 /* ===== 반응형 ===== */
 
