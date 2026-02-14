@@ -1045,6 +1045,87 @@ footer .footer-contact svg {
     letter-spacing: 0.2em;
 }
 
+/* ===== 작가 소개 (타임라인) ===== */
+.timeline {
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--border);
+    margin-left: 8px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 20px;
+    padding: 14px 0 14px 24px;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 20px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.timeline-item dt {
+    flex-shrink: 0;
+    width: 100px;
+    font-size: 0.85em;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    font-family: system-ui, sans-serif;
+    padding-top: 2px;
+}
+
+.timeline-item dd {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+    line-height: 1.7;
+}
+
+/* 봉안당 */
+.memorial-name {
+    font-size: 1.1em;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.memorial-name a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.3s ease;
+}
+
+.memorial-name a:hover {
+    text-decoration-color: var(--accent);
+}
+
+.memorial-address {
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.memorial-map-embed {
+    margin-top: 20px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.memorial-map-embed iframe {
+    width: 100%;
+    height: 350px;
+    display: block;
+}
+
 /* ===== 반응형 ===== */
 
 /* 태블릿 */
@@ -1165,6 +1246,15 @@ footer .footer-contact svg {
         font-size: 0.95em;
         text-align: left;
         line-height: 1.9;
+    }
+
+    .timeline-item {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .timeline-item dt {
+        width: auto;
     }
 
     section.albums {
