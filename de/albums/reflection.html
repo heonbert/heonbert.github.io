@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
     <link rel="manifest" href="../../site.webmanifest">
     <meta name="theme-color" content="#0a0e14">
-        <link rel="alternate" hreflang="ko" href="https://seungheon.com/albums/reflection.html">
+    <link rel="alternate" hreflang="ko" href="https://seungheon.com/albums/reflection.html">
     <link rel="alternate" hreflang="en" href="https://seungheon.com/en/albums/reflection.html">
     <link rel="alternate" hreflang="ja" href="https://seungheon.com/ja/albums/reflection.html">
     <link rel="alternate" hreflang="de" href="https://seungheon.com/de/albums/reflection.html">
@@ -91,14 +91,15 @@
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
     <header>
         <button class="bookmark-btn" aria-label="Lesezeichen hinzufügen">&#9733;</button>
-        <nav class="lang-switcher" aria-label="Sprachauswahl"><a href="../../albums/reflection.html">KO</a> <a href="../../en/albums/reflection.html">EN</a> <a href="../../ja/albums/reflection.html">JA</a> <a href="#" class="active">DE</a></nav>
+        <nav class="lang-switcher" aria-label="Sprachauswahl"><a href="../../albums/reflection.html">KO</a> <a href="../../en/albums/reflection.html">EN</a> <a href="../../ja/albums/reflection.html">JA</a> <a href="" class="active" aria-current="page">DE</a></nav>
         <h1>Spiegelung Album</h1>
         <p>Die Schönheit der Natur, gespiegelt im Wasser</p>
         <a href="../index.html" class="home-link">Zurück zur Startseite</a>
     </header>
-    <main>
+    <main id="main-content">
         <section class="gallery">
             <h2>Spiegelung Werke &middot; 46</h2>
             <div class="grid">
@@ -179,7 +180,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
-    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../../bookmark.js"></script>
 </body>
 </html>

@@ -94,10 +94,11 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
     <header>
         <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
         <nav class="lang-switcher" aria-label="언어 선택">
-            <a href="pattern.html" class="active">KO</a>
+            <a href="pattern.html" class="active" aria-current="page">KO</a>
             <a href="../en/albums/pattern.html">EN</a>
             <a href="../ja/albums/pattern.html">JA</a>
             <a href="../de/albums/pattern.html">DE</a>
@@ -106,7 +107,7 @@
         <p>자연이 만들어낸 아름다운 문양과 패턴</p>
         <a href="../index.html" class="home-link">홈으로 돌아가기</a>
     </header>
-    <main>
+    <main id="main-content">
         <section class="gallery">
             <h2>문양 작품 · 24</h2>
             <div class="grid">
@@ -166,7 +167,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
-    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
 </body>
 </html>

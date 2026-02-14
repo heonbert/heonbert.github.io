@@ -4,10 +4,8 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot');
-    src: url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.eot?#iefix') format('embedded-opentype'),
-         url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.woff') format('woff'),
-         url('//cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.ttf') format('truetype');
+    src: url('https://cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.woff') format('woff'),
+         url('https://cdn.jsdelivr.net/font-iropke-batang/1.2/IropkeBatangM.ttf') format('truetype');
 }
 
 /* ===== CSS 변수 ===== */
@@ -59,6 +57,73 @@ body {
 ::selection {
     background: var(--accent-soft);
     color: var(--text-primary);
+}
+
+/* ===== 스킵 링크 (접근성) ===== */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 10000;
+    padding: 12px 24px;
+    background: var(--bg-card);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    font-size: 0.9em;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 16px;
+}
+
+/* ===== 포커스 표시 (접근성) ===== */
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* 배경이 어두운 버튼/링크에 은은한 글로우 추가 */
+.bookmark-btn:focus-visible,
+.lang-switcher a:focus-visible,
+a.album-card:focus-visible,
+.scroll-top:focus-visible,
+footer .footer-contact a:focus-visible,
+a.home-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* 팝업 내부 버튼 포커스 */
+.popup .close-btn:focus-visible,
+.popup-nav:focus-visible,
+.popup .download-btn:focus-visible,
+.popup .share-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* 갤러리 이미지 포커스 */
+.gallery img:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    box-shadow: 0 0 16px var(--accent-glow);
+}
+
+/* 작가 사진 포커스 */
+.introduction img:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px var(--accent-glow);
 }
 
 /* ===== 물결 배경 애니메이션 ===== */
@@ -145,14 +210,19 @@ header::after {
 /* 즐겨찾기 버튼 */
 .bookmark-btn {
     position: absolute;
-    top: 16px;
-    left: 20px;
+    top: 12px;
+    left: 16px;
     z-index: 10;
     background: none;
     border: none;
     color: var(--text-muted);
     font-size: 0.95em;
-    padding: 3px 4px;
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: color 0.3s ease;
     line-height: 1;
@@ -212,7 +282,10 @@ header::after {
     text-decoration: none;
     font-size: 0.7em;
     letter-spacing: 0.05em;
-    padding: 3px 8px;
+    padding: 6px 10px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
     border: 1px solid transparent;
     border-radius: 4px;
     transition: all 0.3s ease;
@@ -802,17 +875,20 @@ a.home-link:hover::before {
     border-radius: 50%;
     cursor: pointer;
     font-size: 1em;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.4s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease, color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
     z-index: 900;
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .scroll-top.visible {
-    display: flex;
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .scroll-top:hover {
@@ -1164,5 +1240,20 @@ footer .footer-contact svg {
 
     .introduction .author-profile {
         gap: 60px;
+    }
+}
+
+/* ===== 모션 감소 (접근성) ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
     }
 }
