@@ -180,7 +180,9 @@
                 if (e.target === popup || e.target === popup.querySelector('.popup-content')) closeAuthor();
             });
             document.addEventListener('keydown', function(e) {
-                if (popup.style.display === 'flex' && e.key === 'Escape') closeAuthor();
+                if (popup.style.display !== 'flex') return;
+                if (e.key === 'Escape') closeAuthor();
+                if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
             });
         })();
     </script>
