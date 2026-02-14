@@ -487,6 +487,10 @@ main {
     background: linear-gradient(90deg, transparent, rgba(91, 164, 217, 0.25), transparent);
     animation: dividerPulse 4s ease-in-out infinite alternate;
 }
+/* main 내 마지막 섹션은 footer::before와 겹치므로 하단 구분선 제거 */
+main > .introduction:last-child::after {
+    display: none;
+}
 
 @keyframes dividerPulse {
     0% { opacity: 0.5; }
