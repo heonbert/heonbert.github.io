@@ -977,6 +977,9 @@ footer p a:hover {
 
 footer .footer-contact {
     margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
 }
 
 footer .footer-contact a {
