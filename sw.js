@@ -35,8 +35,9 @@ self.addEventListener('activate', function(event) {
 
 // 네트워크 우선, 실패 시 캐시 (사진 갤러리이므로 항상 최신 우선)
 self.addEventListener('fetch', function(event) {
-    // GET 요청만 캐시 (POST, analytics beacon 등 제외)
+    // GET 요청만, http(s)만 캐시 (chrome-extension 등 제외)
     if (event.request.method !== 'GET') return;
+    if (!event.request.url.startsWith('http')) return;
 
     event.respondWith(
         fetch(event.request).then(function(response) {
