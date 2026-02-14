@@ -5,19 +5,32 @@ let currentIndex = 0;
 // 모바일 감지
 const isMobile = () => window.innerWidth <= 580;
 
-// 팝업 요소 생성
+// 다국어 ARIA 레이블
+const ariaLabels = {
+    ko: { prev: '이전 사진', next: '다음 사진', close: '닫기', download: '다운로드', share: '공유' },
+    en: { prev: 'Previous photo', next: 'Next photo', close: 'Close', download: 'Download', share: 'Share' },
+    ja: { prev: '前の写真', next: '次の写真', close: '閉じる', download: 'ダウンロード', share: '共有' },
+    de: { prev: 'Vorheriges Foto', next: 'Nächstes Foto', close: 'Schließen', download: 'Herunterladen', share: 'Teilen' }
+};
+const lang = document.documentElement.lang || 'ko';
+const labels = ariaLabels[lang] || ariaLabels.ko;
+
+// 팝업 요소 생성 (dialog 시맨틱)
 const popup = document.createElement('div');
 popup.classList.add('popup');
+popup.setAttribute('role', 'dialog');
+popup.setAttribute('aria-modal', 'true');
+popup.setAttribute('aria-label', lang === 'ko' ? '사진 보기' : lang === 'ja' ? '写真ビューアー' : lang === 'de' ? 'Foto-Viewer' : 'Photo viewer');
 popup.innerHTML = `
     <div class="popup-content">
-        <button class="popup-nav popup-prev" aria-label="이전 사진">&#10094;</button>
+        <button class="popup-nav popup-prev" aria-label="${labels.prev}">&#10094;</button>
         <img src="" alt="Popup Image">
-        <button class="popup-nav popup-next" aria-label="다음 사진">&#10095;</button>
-        <button class="close-btn" aria-label="닫기">&times;</button>
+        <button class="popup-nav popup-next" aria-label="${labels.next}">&#10095;</button>
+        <button class="close-btn" aria-label="${labels.close}">&times;</button>
         <div class="popup-bottom">
-            <span class="popup-counter"></span>
-            <a class="download-btn" href="" download aria-label="다운로드"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
-            <button class="share-btn" aria-label="공유"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+            <span class="popup-counter" aria-live="polite"></span>
+            <a class="download-btn" href="" download aria-label="${labels.download}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            <button class="share-btn" aria-label="${labels.share}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         </div>
     </div>
 `;
@@ -36,6 +49,14 @@ const shareBtn = popup.querySelector('.share-btn');
 if (!navigator.share) {
     shareBtn.style.display = 'none';
 }
+
+// 포커스 트랩을 위한 요소 목록
+function getFocusableElements() {
+    return popup.querySelectorAll('button:not([style*="display: none"]):not([style*="display:none"]), a[href]');
+}
+
+// 포커스 복원을 위한 변수
+let lastFocusedElement = null;
 
 // 이미지 전환 애니메이션 방향
 let slideDirection = 'none'; // 'up', 'down', 'none'
@@ -83,6 +104,7 @@ function showImage(index, direction) {
 
 // 팝업 열기
 function openPopup(index) {
+    lastFocusedElement = document.activeElement;
     showImage(index, 'none');
     popup.style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -90,6 +112,8 @@ function openPopup(index) {
     if (isMobile()) {
         document.body.style.overscrollBehavior = 'none';
     }
+    // 닫기 버튼에 포커스
+    closeBtn.focus();
 }
 
 // 팝업 닫기
@@ -99,11 +123,24 @@ function closePopup() {
     document.body.style.overscrollBehavior = '';
     // 해시 제거
     history.replaceState(null, '', window.location.pathname + window.location.search);
+    // 포커스 복원
+    if (lastFocusedElement && lastFocusedElement.focus) {
+        lastFocusedElement.focus();
+    }
 }
 
-// 갤러리 이미지 클릭 이벤트
+// 갤러리 이미지 클릭 및 키보드 이벤트
 galleryImages.forEach((image, index) => {
+    image.setAttribute('tabindex', '0');
+    image.setAttribute('role', 'button');
+    image.style.cursor = 'pointer';
     image.addEventListener('click', () => openPopup(index));
+    image.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openPopup(index);
+        }
+    });
 });
 
 // 닫기 버튼
@@ -138,14 +175,39 @@ popup.addEventListener('click', (e) => {
     if (e.target === popup) closePopup();
 });
 
-// 키보드 이벤트
+// 키보드 이벤트 (포커스 트랩 포함)
 document.addEventListener('keydown', (e) => {
     if (popup.style.display !== 'flex') return;
-    if (e.key === 'Escape') closePopup();
+
+    if (e.key === 'Escape') {
+        closePopup();
+        return;
+    }
     if (e.key === 'ArrowLeft') showImage(currentIndex - 1, 'down');
     if (e.key === 'ArrowRight') showImage(currentIndex + 1, 'up');
     if (e.key === 'ArrowUp') showImage(currentIndex - 1, 'down');
     if (e.key === 'ArrowDown') showImage(currentIndex + 1, 'up');
+
+    // 포커스 트랩: Tab 키로 팝업 밖으로 나가지 않도록
+    if (e.key === 'Tab') {
+        const focusable = getFocusableElements();
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+            if (document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            }
+        } else {
+            if (document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    }
 });
 
 // 터치 스와이프 (숏츠 스타일)
@@ -159,7 +221,7 @@ popup.addEventListener('touchstart', (e) => {
     touchStartY = e.touches[0].clientY;
     touchStartTime = Date.now();
     isSwiping = true;
-}, { passive: false });
+}, { passive: true });
 
 popup.addEventListener('touchmove', (e) => {
     if (!isSwiping) return;

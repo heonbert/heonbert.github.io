@@ -94,10 +94,11 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
     <header>
         <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
         <nav class="lang-switcher" aria-label="언어 선택">
-            <a href="abstract.html" class="active">KO</a>
+            <a href="abstract.html" class="active" aria-current="page">KO</a>
             <a href="../en/albums/abstract.html">EN</a>
             <a href="../ja/albums/abstract.html">JA</a>
             <a href="../de/albums/abstract.html">DE</a>
@@ -106,7 +107,7 @@
         <p>물과 빛이 만들어내는 추상적 아름다움</p>
         <a href="../index.html" class="home-link">홈으로 돌아가기</a>
     </header>
-    <main>
+    <main id="main-content">
         <section class="gallery">
             <h2>추상 작품 · 143</h2>
             <div class="grid">
@@ -285,7 +286,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
-    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
     <link rel="manifest" href="../../site.webmanifest">
     <meta name="theme-color" content="#0a0e14">
-        <link rel="alternate" hreflang="ko" href="https://seungheon.com/albums/abstract.html">
+    <link rel="alternate" hreflang="ko" href="https://seungheon.com/albums/abstract.html">
     <link rel="alternate" hreflang="en" href="https://seungheon.com/en/albums/abstract.html">
     <link rel="alternate" hreflang="ja" href="https://seungheon.com/ja/albums/abstract.html">
     <link rel="alternate" hreflang="de" href="https://seungheon.com/de/albums/abstract.html">
@@ -91,14 +91,15 @@
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">本文へスキップ</a>
     <header>
         <button class="bookmark-btn" aria-label="ブックマークに追加">&#9733;</button>
-        <nav class="lang-switcher" aria-label="言語選択"><a href="../../albums/abstract.html">KO</a> <a href="../../en/albums/abstract.html">EN</a> <a href="#" class="active">JA</a> <a href="../../de/albums/abstract.html">DE</a></nav>
+        <nav class="lang-switcher" aria-label="言語選択"><a href="../../albums/abstract.html">KO</a> <a href="../../en/albums/abstract.html">EN</a> <a href="" class="active" aria-current="page">JA</a> <a href="../../de/albums/abstract.html">DE</a></nav>
         <h1>抽象 アルバム</h1>
         <p>水と光が生み出す抽象的な美しさ</p>
         <a href="../index.html" class="home-link">ホームに戻る</a>
     </header>
-    <main>
+    <main id="main-content">
         <section class="gallery">
             <h2>抽象 作品 &middot; 143</h2>
             <div class="grid">
@@ -276,7 +277,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
-    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../../bookmark.js"></script>
 </body>
 </html>

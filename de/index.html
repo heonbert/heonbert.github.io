@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
     <meta name="theme-color" content="#0a0e14">
-        <link rel="alternate" hreflang="ko" href="https://seungheon.com/">
+    <link rel="alternate" hreflang="ko" href="https://seungheon.com/">
     <link rel="alternate" hreflang="en" href="https://seungheon.com/en/">
     <link rel="alternate" hreflang="ja" href="https://seungheon.com/ja/">
     <link rel="alternate" hreflang="de" href="https://seungheon.com/de/">
@@ -102,19 +102,20 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
     <header>
         <button class="bookmark-btn" aria-label="Lesezeichen hinzufügen">&#9733;</button>
-        <nav class="lang-switcher" aria-label="Sprachauswahl"><a href="../index.html">KO</a> <a href="../en/index.html">EN</a> <a href="../ja/index.html">JA</a> <a href="#" class="active">DE</a></nav>
+        <nav class="lang-switcher" aria-label="Sprachauswahl"><a href="../index.html">KO</a> <a href="../en/index.html">EN</a> <a href="../ja/index.html">JA</a> <a href="" class="active" aria-current="page">DE</a></nav>
         <h1>Yumoks Wasserlicht-Fotografie</h1>
         <p>Kunst flüchtiger Momente aus Wasser und Licht</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
     </header>
-    <main>
+    <main id="main-content">
         <section class="introduction">
             <h2>Künstler</h2>
             <div class="author-profile">
                 <div class="author-photo">
-                    <img src="../assets/photographer/leedongjoo.jpg" alt="Fotograf Yumok Lee Dong-joo (1952-2024) Profilfoto" id="author-photo" style="cursor:pointer">
+                    <img src="../assets/photographer/leedongjoo.jpg" alt="Fotograf Yumok Lee Dong-joo (1952-2024) Profilfoto" id="author-photo" tabindex="0" role="button" style="cursor:pointer">
                 </div>
                 <div class="author-info">
                     <h3>Yumok<sub>流木</sub> Lee Dong-joo<sub>(李東周, 1952-2024)</sub></h3>
@@ -153,7 +154,7 @@
         <p>&copy; Yumoks Wasserlicht-Fotografie</p>
         <p class="footer-contact"><a href="https://github.com/heonbert/heonbert.github.io" target="_blank" rel="noopener" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/></svg></a></p>
     </footer>
-    <div class="popup" id="author-popup" style="display:none">
+    <div class="popup" id="author-popup" role="dialog" aria-modal="true" aria-label="Künstlerfoto" style="display:none">
         <div class="popup-content">
             <button class="close-btn" id="author-popup-close" aria-label="Schließen">&times;</button>
             <img src="../assets/photographer/leedongjoo.jpg" alt="Fotograf Yumok Lee Dong-joo (1952-2024)">
@@ -168,14 +169,22 @@
             var photo = document.getElementById('author-photo');
             var popup = document.getElementById('author-popup');
             var closeBtn = document.getElementById('author-popup-close');
-            photo.addEventListener('click', function() { popup.style.display = 'flex'; });
-            closeBtn.addEventListener('click', function() { popup.style.display = 'none'; });
+            function openAuthor() { popup.style.display = 'flex'; closeBtn.focus(); }
+            function closeAuthor() { popup.style.display = 'none'; photo.focus(); }
+            photo.addEventListener('click', openAuthor);
+            photo.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAuthor(); }
+            });
+            closeBtn.addEventListener('click', closeAuthor);
             popup.addEventListener('click', function(e) {
-                if (e.target === popup || e.target === popup.querySelector('.popup-content')) popup.style.display = 'none';
+                if (e.target === popup || e.target === popup.querySelector('.popup-content')) closeAuthor();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (popup.style.display === 'flex' && e.key === 'Escape') closeAuthor();
             });
         })();
     </script>
-    <div class="bookmark-toast" id="bookmark-toast"></div>
+    <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
 </body>
 </html>
