@@ -58,7 +58,14 @@ huggingface-cli upload <계정이름>/yumok-water-light dist/yumok-water-light-1
 
 1. <https://archive.org> 에서 가입합니다.
 2. `Upload`에서 zip 파일을 올립니다. Creator는 `Lee Dong-joo (Yumok)`, License는 `CC BY 4.0`, Collection은 `Community image`(또는 `Community data`)로 둡니다.
-3. 사이트 페이지 자체는 공개할 때마다 제가 Wayback Machine에 저장을 요청해 둡니다. 직접 하실 때에는 <https://web.archive.org/save> 에 주소를 넣으면 됩니다.
+3. 사이트의 주요 페이지 134개는 2026년 10월 5일에 Wayback Machine에 저장해 두었습니다. 작품 페이지는 한국어판 303개 중 30개까지 저장된 뒤 Archive가 요청을 거절하기 시작해 멈췄습니다.
+   하루쯤 지난 뒤 아래 명령을 다시 실행하면 저장된 것은 건너뛰고 이어서 요청합니다. 한 번에 수십 개씩만 받아 주므로 며칠에 걸쳐 나누어 실행하면 됩니다.
+
+```bash
+python tools/archive_pages.py works ko
+```
+
+   `ko` 자리에 `en` 같은 다른 언어 코드를 넣을 수 있습니다. 주요 페이지만 다시 저장할 때에는 `python tools/archive_pages.py` 입니다.
 
 ## 4. 위키미디어 공용: 가장 널리 쓰이는 곳
 

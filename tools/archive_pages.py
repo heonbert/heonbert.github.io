@@ -43,16 +43,21 @@ def main():
         urls = [page_url(sys.argv[2], work_page(p)) for p in cat]
     log = json.load(open(LOG, encoding='utf-8')) if os.path.exists(LOG) else {}
     os.makedirs(os.path.dirname(LOG), exist_ok=True)
-    done = failed = skipped = 0
+    done = failed = skipped = refused = 0
     for i, url in enumerate(urls):
         if time.time() - log.get(url, 0) < FRESH: skipped += 1; continue
         status = save(url)
         ok = status == 200
         done += ok; failed += not ok
+        refused = 0 if ok else refused + 1
         if ok:
             log[url] = int(time.time())
             with open(LOG, 'w', encoding='utf-8') as f: json.dump(log, f, indent=0)
         print('%3d/%d %s %s' % (i + 1, len(urls), status, url), flush=True)
+        if refused >= 6:                        # after a few dozen captures the Archive turns one address away for some hours
+            print('The Archive is refusing for now. Run this again tomorrow; what is already saved will be skipped.')
+            failed += len(urls) - i - 1
+            break
         time.sleep(8 if ok else 30)             # stay well under the Archive's limit; wait longer after a refusal
     print('saved %d, saved earlier %d, not saved %d' % (done, skipped, failed))
     return failed
