@@ -1,5 +1,5 @@
 // Service Worker - 유목의 물빛사진 PWA
-var CACHE_NAME = 'yumok-v3';
+var CACHE_NAME = 'yumok-v6';
 
 // 설치 시 기본 셸 캐싱
 self.addEventListener('install', function(event) {

@@ -1,0 +1,11 @@
+name = "yumok-hall"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[[durable_objects.bindings]]
+name = "HALL"
+class_name = "Hall"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Hall"]

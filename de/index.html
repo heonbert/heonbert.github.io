@@ -100,6 +100,7 @@
     </script>
 
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../motion.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Zum Inhalt springen</a>
@@ -109,6 +110,22 @@
         <h1>Yumoks Wasserlicht-Fotografie</h1>
         <p>Kunst flüchtiger Momente aus Wasser und Licht</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
+        <!-- gate:start -->
+        <nav class="gate" aria-label="Zur Ausstellung">
+            <a class="door door-3d" href="../exhibition/?lang=de">
+                <span class="door-kicker">Zu Fuß</span>
+                <strong>3D-Ausstellung</strong>
+                <span class="door-desc">Durch die Säle gehen und jedem Bild begegnen</span>
+                <span class="door-go">Eintreten</span>
+            </a>
+            <a class="door door-2d" href="#main-content">
+                <span class="door-kicker">Auf einen Blick</span>
+                <strong>2D-Galerie</strong>
+                <span class="door-desc">Alle 282 Fotografien nach Alben</span>
+                <span class="door-go">Ansehen</span>
+            </a>
+        </nav>
+        <!-- gate:end -->
     </header>
     <main id="main-content">
         <section class="introduction">
@@ -207,5 +224,6 @@
     <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
     <script src="../contact.js"></script>
+    <script type="module" src="../motion.js"></script>
 </body>
 </html>

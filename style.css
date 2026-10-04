@@ -1511,3 +1511,24 @@ footer .footer-contact svg {
         scroll-behavior: auto;
     }
 }
+
+/* ===== 3D 전시관 안내 ===== */
+.exhibition-link { text-align: center; }
+a.exhibition-cta {
+    display: inline-block;
+    margin-top: 0.4rem;
+    padding: 0.8rem 2.2rem;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+a.exhibition-cta:hover,
+a.exhibition-cta:focus-visible {
+    background: var(--accent-glow);
+    box-shadow: 0 0 24px var(--accent-glow);
+}
+.exhibition-link p { text-align: center; }

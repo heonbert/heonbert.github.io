@@ -1,0 +1,293 @@
+/* Motion layer for the 2D pages. Everything here is an enhancement: without motion.js the pages look as before. */
+
+/* The old load animations are replaced by scroll-driven reveals in motion.js. */
+.intro-animate .introduction,
+.intro-animate section.albums,
+.intro-animate .gallery img { animation: none; }
+
+/* Page-to-page: the old page sinks back, the new one rises. */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: m-page-out 260ms ease both; }
+::view-transition-new(root) { animation: m-page-in 620ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes m-page-out { to { opacity: 0; transform: scale(0.985); } }
+@keyframes m-page-in { from { opacity: 0; transform: translateY(18px); } }
+
+/* ---------- hero: his photographs seen through moving water ---------- */
+header.m-hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 84px;
+    padding-bottom: 96px;
+}
+.m-hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.8s ease;
+    pointer-events: none;
+}
+.m-hero-canvas.on { opacity: 1; }
+header.m-hero h1 { font-size: clamp(2em, 5vw, 3.4em); text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55); }
+header.m-hero p, header.m-hero .subtitle { text-shadow: 0 1px 18px rgba(0, 0, 0, 0.7); }
+header.m-hero p { color: var(--text-primary); }
+header.m-hero .subtitle { color: var(--text-secondary); }
+
+.m-hero-cap {
+    position: absolute;
+    left: clamp(16px, 4vw, 48px);
+    bottom: 74px;
+    z-index: 10;
+    font-size: 0.8em;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    text-decoration: none;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+    transition: opacity 0.9s ease, color 0.3s ease;
+}
+.m-hero-cap:hover { color: var(--text-primary); }
+.m-hero-cap.swap { opacity: 0; }
+.m-hero-cap b { font-weight: 400; color: var(--text-primary); margin-right: 0.7em; }
+
+/* ---------- title: letters surface one by one ---------- */
+.m-char { display: inline-block; white-space: pre; will-change: transform, opacity, filter; }
+
+/* ---------- gallery: caption rises on hover ---------- */
+.gallery .m-fig {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 16px var(--shadow);
+    line-height: 0;
+}
+.gallery .m-fig img { box-shadow: none; border-radius: 0; }
+.gallery .m-fig img:hover { transform: scale(1.06); box-shadow: none; }
+.gallery .m-fig figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 34px 14px 12px;
+    font-size: 0.86rem;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: linear-gradient(to top, rgba(5, 8, 14, 0.82), transparent);
+    transform: translateY(102%);
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+.gallery .m-fig:hover figcaption,
+.gallery .m-fig:focus-within figcaption { transform: none; }
+@media (hover: none) { .gallery .m-fig figcaption { display: none; } }
+
+/* The lightbox image flies out of its thumbnail (motion.js); the old pop-in is not needed. */
+.popup-content > img { animation: none; }
+
+/* ---------- album cards lean toward the pointer ---------- */
+.albums .album-grid { perspective: 1100px; }
+a.album-card.m-tilt { transition: transform 0.18s ease-out, box-shadow 0.5s ease, border-color 0.5s ease; }
+
+/* ---------- the gate: two doors ---------- */
+.gate {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    gap: 18px;
+    width: min(1040px, calc(100% - 8px));
+    height: clamp(200px, 36svh, 400px);
+    margin: 34px auto 0;
+}
+.door {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 26px 28px;
+    overflow: hidden;
+    text-align: start;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: rgba(8, 12, 18, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px;
+    backdrop-filter: blur(7px) saturate(1.25);
+    -webkit-backdrop-filter: blur(7px) saturate(1.25);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+    transition: flex-grow 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.7s ease;
+}
+.door::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to top, rgba(5, 8, 14, 0.92) 0%, rgba(5, 8, 14, 0.35) 48%, rgba(5, 8, 14, 0.1) 100%);
+    pointer-events: none;
+}
+.door > span:not(.door-scene), .door > strong { position: relative; z-index: 2; }
+.door-kicker { font-size: 0.74em; letter-spacing: 0.26em; text-transform: uppercase; color: var(--accent); }
+.door strong { font-size: clamp(1.45em, 2.8vw, 2.15em); font-weight: 400; letter-spacing: 0.12em; line-height: 1.25; }
+.door-desc { font-size: 0.9em; color: var(--text-secondary); letter-spacing: 0.03em; line-height: 1.6; }
+.door-go { display: inline-flex; align-items: center; margin-top: 10px; font-size: 0.82em; letter-spacing: 0.3em; }
+.door-go::after {
+    content: '';
+    width: 34px;
+    height: 1px;
+    margin-left: 14px;
+    background: currentColor;
+    transform-origin: left center;
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.door-scene {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0.5;
+    transition: opacity 0.8s ease, transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (hover: hover) {
+    .gate:hover .door { flex-grow: 0.8; }
+    .gate .door:hover { flex-grow: 1.35; border-color: rgba(91, 164, 217, 0.6); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(91, 164, 217, 0.14); }
+    .door:hover .door-scene { opacity: 0.95; transform: scale(1.04); }
+    .door:hover .door-go::after { transform: scaleX(2.2); }
+}
+.door:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* inside the 3D door: a small corridor hung with his pictures, walked slowly */
+.scene-3d { perspective: 330px; perspective-origin: 50% 44%; }
+.scene-3d::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 34% 40% at 50% 44%, rgba(5, 8, 14, 1) 0%, rgba(5, 8, 14, 0.6) 55%, transparent 100%);
+}
+.corridor { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; animation: m-dolly 44s linear infinite; }
+.corridor i { position: absolute; display: block; }
+.corridor .wall { width: 4200px; height: 220px; top: -110px; background: linear-gradient(#262c36, #151920); transform-origin: left center; transform: rotateY(90deg); }
+.corridor .wall.l { left: -150px; }
+.corridor .wall.r { left: 150px; }
+.corridor .floor, .corridor .ceil { width: 300px; height: 4200px; left: -150px; transform-origin: top center; transform: rotateX(-90deg); }
+.corridor .floor { top: 110px; background: linear-gradient(#0b0e13, #05070a); }
+.corridor .ceil { top: -110px; background: #0c0f14; }
+.corridor .wall b { position: absolute; top: 50%; width: 150px; height: 100px; margin-top: -56px; background-size: cover; background-position: center; border: 5px solid #dedbd4; box-shadow: 0 0 40px rgba(190, 212, 238, 0.28); }
+@keyframes m-dolly { from { transform: translateZ(0); } to { transform: translateZ(1800px); } }
+
+/* inside the 2D door: columns of his pictures drifting past */
+.scene-2d { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 10px; transform: rotate(-7deg) scale(1.4); }
+.door:hover .scene-2d { transform: rotate(-7deg) scale(1.46); }
+.scene-2d .col { display: flex; flex-direction: column; gap: 10px; animation: m-rise 46s linear infinite; }
+.scene-2d .col:nth-child(2) { animation-direction: reverse; animation-duration: 58s; }
+.scene-2d .col b { display: block; aspect-ratio: 3 / 2; flex: none; border-radius: 4px; background-size: cover; background-position: center; }
+@keyframes m-rise { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+
+/* leaving through the 3D door */
+.m-wipe { position: fixed; inset: 0; z-index: 2000; background: #050608; pointer-events: none; }
+
+/* ---------- flowers and visitors ---------- */
+.gate-foot { position: relative; z-index: 5; margin-top: 26px; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 84px; }
+.gate-flowers { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 3px; max-width: min(760px, 92vw); min-height: 22px; }
+.gate-flowers svg { width: 20px; height: 20px; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)); }
+.gate-count { margin: 0; font-size: 0.86em; font-style: normal; letter-spacing: 0.08em; color: var(--text-secondary); }
+.gate-count strong { font-weight: 400; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.gate-count .m-now { margin-left: 1.2em; color: var(--accent); }
+.gate-offer {
+    padding: 8px 22px;
+    font: inherit;
+    font-size: 0.86em;
+    letter-spacing: 0.2em;
+    color: var(--text-primary);
+    background: rgba(8, 12, 18, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: border-color 0.4s ease, background 0.4s ease;
+}
+.gate-offer:hover { border-color: var(--accent); background: rgba(91, 164, 217, 0.16); }
+.gate-offer:disabled { cursor: default; opacity: 0.65; border-color: rgba(255, 255, 255, 0.12); letter-spacing: 0.08em; }
+
+.m-hero-cap { bottom: 58px; }
+
+@media (max-width: 700px) {
+    header.m-hero { padding-top: 76px; }
+    .gate { flex-direction: column; height: auto; gap: 12px; margin-top: 28px; }
+    .door { min-height: 168px; padding: 20px 22px; }
+    .m-hero-cap { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .corridor, .scene-2d .col { animation: none; }
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+/* ---------- language menu ---------- */
+.lang-switcher.m-lang { gap: 0; }
+.m-lang-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 7px 10px;
+    font: inherit;
+    font-size: 0.82em;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    background: rgba(8, 12, 18, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.m-lang-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.m-lang-btn:hover { border-color: var(--accent); }
+.m-lang-list {
+    position: fixed;
+    z-index: 1500;
+    max-height: calc(100vh - 80px);
+    overflow: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    min-width: 270px;
+    padding: 8px;
+    background: rgba(10, 13, 18, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+.m-lang-list[hidden] { display: none; }
+.m-lang-list a {
+    display: block;
+    padding: 9px 14px;
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
+    text-align: start;
+    text-transform: none;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    text-decoration: none;
+}
+.m-lang-list a:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.07); }
+.m-lang-list a.active { color: var(--accent); }
+
+/* scripts whose letters join must not be spaced apart */
+:lang(ar) *, :lang(hi) * { letter-spacing: 0 !important; }
+[dir="rtl"] .introduction p { text-align: right; }
+header.m-hero h1 { max-width: 100%; padding: 0 14px; white-space: normal; overflow-wrap: anywhere; line-height: 1.25; }

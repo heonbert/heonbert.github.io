@@ -106,6 +106,7 @@
     <link rel="alternate" hreflang="x-default" href="https://seungheon.com/">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="motion.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
@@ -120,6 +121,22 @@
         <h1>유목의 물빛사진</h1>
         <p>물과 빛이 빚어낸 찰나의 예술</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
+        <!-- gate:start -->
+        <nav class="gate" aria-label="전시 입장">
+            <a class="door door-3d" href="exhibition/?lang=ko">
+                <span class="door-kicker">걸어서 보는</span>
+                <strong>3D 전시관</strong>
+                <span class="door-desc">전시실을 거닐며 한 점씩 마주합니다</span>
+                <span class="door-go">입장</span>
+            </a>
+            <a class="door door-2d" href="#main-content">
+                <span class="door-kicker">한눈에 보는</span>
+                <strong>2D 갤러리</strong>
+                <span class="door-desc">앨범별로 282점을 펼쳐 봅니다</span>
+                <span class="door-go">보기</span>
+            </a>
+        </nav>
+        <!-- gate:end -->
     </header>
     <main id="main-content">
         <section class="introduction">
@@ -221,5 +238,6 @@
     </script>
     <script src="bookmark.js"></script>
     <script src="contact.js"></script>
+    <script type="module" src="motion.js"></script>
 </body>
 </html>

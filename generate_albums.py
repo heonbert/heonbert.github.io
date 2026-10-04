@@ -127,6 +127,7 @@ def generate_album_html(album):
     </script>
 
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../motion.css">
 </head>
 <body>
     <header>
@@ -157,6 +158,7 @@ def generate_album_html(album):
         });
     </script>
     <script src="../popup_gallery.js"></script>
+    <script type="module" src="../motion.js"></script>
     <script>
         // 위로 가기 버튼
         const scrollTopBtn = document.querySelector('.scroll-top');

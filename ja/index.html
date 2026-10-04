@@ -100,6 +100,7 @@
     </script>
 
     <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../motion.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">本文へスキップ</a>
@@ -109,6 +110,22 @@
         <h1>流木の水光写真</h1>
         <p>水と光が織りなす刹那の芸術</p>
         <span class="subtitle">Photography by 流木 Lee Dong-joo</span>
+        <!-- gate:start -->
+        <nav class="gate" aria-label="展示への入口">
+            <a class="door door-3d" href="../exhibition/?lang=ja">
+                <span class="door-kicker">歩いて観る</span>
+                <strong>3D展示館</strong>
+                <span class="door-desc">展示室を巡り、一点ずつ向き合います</span>
+                <span class="door-go">入場</span>
+            </a>
+            <a class="door door-2d" href="#main-content">
+                <span class="door-kicker">一望する</span>
+                <strong>2Dギャラリー</strong>
+                <span class="door-desc">アルバムごとに282点を見渡します</span>
+                <span class="door-go">見る</span>
+            </a>
+        </nav>
+        <!-- gate:end -->
     </header>
     <main id="main-content">
         <section class="introduction">
@@ -207,5 +224,6 @@
     <div class="bookmark-toast" id="bookmark-toast" aria-live="polite"></div>
     <script src="../bookmark.js"></script>
     <script src="../contact.js"></script>
+    <script type="module" src="../motion.js"></script>
 </body>
 </html>

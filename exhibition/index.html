@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-9ZBRVGQ4CH');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>3D 전시관 - 유목의 물빛사진</title>
+    <meta name="description" content="유목(流木) 이동주 작가의 물빛사진 282점을 걸어 다니며 감상하는 3D 가상 전시관. A walk-through 3D exhibition of 282 water-light photographs by Yumok Lee Dong-joo (1952-2024), in 16 languages.">
+    <link rel="canonical" href="https://seungheon.com/exhibition/">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="manifest" href="../site.webmanifest">
+    <meta name="theme-color" content="#0a0e14">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="3D 전시관 - 유목의 물빛사진">
+    <meta property="og:description" content="물과 빛을 찍은 사진 282점을 걸어 다니며 감상하는 가상 전시관">
+    <meta property="og:url" content="https://seungheon.com/exhibition/">
+    <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
+    <link rel="stylesheet" href="exhibition.css">
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    } }
+    </script>
+</head>
+<body>
+    <canvas id="stage" aria-label="3D exhibition hall" tabindex="0"></canvas>
+
+    <div id="bar" class="chrome">
+        <a id="home" class="ic" href="../index.html"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></a>
+        <span id="where"></span>
+        <button id="sound" class="ic" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 10v4h3l4 4V6L7 10H4z"/><path class="on" d="M15 9a4 4 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+        <button id="langBtn" class="ic" aria-haspopup="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></svg></button>
+    </div>
+    <div id="langs" class="pop" hidden></div>
+    <nav id="halls" class="pop" hidden></nav>
+
+    <canvas id="map" class="chrome" role="img"></canvas>
+    <p id="together" class="chrome" aria-live="polite"></p>
+
+    <div id="dock" class="chrome">
+        <button id="roomsBtn" class="ic" aria-haspopup="true"><svg viewBox="0 0 24 24"><path d="M5 20V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v15M15 9h3a1 1 0 0 1 1 1v10M3 20h18M11.5 12v1.5"/></svg></button>
+        <button id="tour" class="ic" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path class="off" d="M10.2 8.4l5.6 3.6-5.6 3.6z"/><path class="on" d="M9.8 8.5v7M14.2 8.5v7"/></svg></button>
+        <button id="look" class="ic" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><path d="M12 2.5v4M12 17.5v4M2.5 12h4M17.5 12h4"/><circle cx="12" cy="12" r="0.8"/></svg></button>
+        <button id="mapBtn" class="ic" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M9 4.5L3.5 6.5v13L9 17.5l6 2 5.5-2v-13L15 6.5l-6-2zM9 4.5v13M15 6.5v13"/></svg></button>
+        <i class="sep"></i>
+        <button id="bow" class="ic"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="5.5" r="2"/><path d="M9.5 8.5l6.5 3.5M12.5 10.2L11 20M16 12v4.5M11 20h3"/></svg></button>
+        <button id="flower" class="ic" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="1.8"/><path d="M12 2.5v3.2M12 11.3v3.2M6.8 8.5H10M14 8.5h3.2M8.3 4.8l2.3 2.3M13.4 9.9l2.3 2.3M15.7 4.8l-2.3 2.3M10.6 9.9l-2.3 2.3M12 14.5V21.5M12 19c-2.2 0-3.4-1.1-3.4-3M12 18c2.2 0 3.4-1.1 3.4-3"/></svg></button>
+    </div>
+
+    <div id="joy" class="chrome" aria-hidden="true"><i></i></div>
+    <div id="reticle" aria-hidden="true"></div>
+    <div id="hint" role="status" hidden></div>
+    <div id="caption" aria-live="polite" hidden></div>
+
+    <aside id="panel" hidden>
+        <button id="panel-close" aria-label="Close">&times;</button>
+        <p id="panel-count"></p>
+        <h2 id="panel-title"></h2>
+        <p id="panel-titleby"></p>
+        <dl id="panel-meta"></dl>
+        <p id="panel-credit"></p>
+        <div id="panel-actions">
+            <button id="prev" aria-label="Previous">&#8592;</button>
+            <a id="open" target="_blank" rel="noopener"></a>
+            <button id="share"></button>
+            <button id="next" aria-label="Next">&#8594;</button>
+        </div>
+    </aside>
+
+    <section id="welcome">
+        <div class="card">
+            <p class="eyebrow" data-t="eyebrow"></p>
+            <h1 data-t="title"></h1>
+            <p class="dates"><span data-t="name"></span> · <span data-t="dates"></span></p>
+            <p class="lead" data-t="lead"></p>
+            <ul class="how">
+                <li data-t="how1"></li>
+                <li data-t="how2"></li>
+                <li data-t="how3"></li>
+                <li class="keys" data-t="howKeys"></li>
+            </ul>
+            <button id="enter" disabled data-t="loading"></button>
+            <p class="fallback"><a href="../index.html" data-t="flat"></a></p>
+        </div>
+    </section>
+
+    <div id="fade"></div>
+    <script type="module" src="main.js"></script>
+    <noscript><p style="padding:2rem;color:#e4e8f0">이 전시관은 JavaScript가 필요합니다. <a href="../index.html">일반 갤러리 보기</a></p></noscript>
+</body>
+</html>
