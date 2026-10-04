@@ -45,7 +45,7 @@
   "soundOn": "Turn sound on",
   "soundOff": "Turn sound off",
   "tour": "Guided visit",
-  "tourStop": "Stop the visit",
+  "tourStop": "End the visit",
   "map": "Plan",
   "hallText": {
    "abstract": "When ripples scatter the light, familiar things remain only as colour and line.",
@@ -119,7 +119,12 @@
    "I kept putting it off, saying I was busy.",
    "This hall is what I could not make for him while he was alive,",
    "built late by his son Seungheon, with regret and with longing."
-  ]
+  ],
+  "pause": "Pause",
+  "resume": "Resume",
+  "prevWork": "Previous work",
+  "nextWork": "Next work",
+  "info": "Details"
  },
  "motion": {
   "count": "{f} flowers · {v} visitors",

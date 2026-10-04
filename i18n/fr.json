@@ -45,7 +45,7 @@
   "soundOn": "Activer le son",
   "soundOff": "Couper le son",
   "tour": "Visite guidée",
-  "tourStop": "Arrêter la visite",
+  "tourStop": "Terminer la visite",
   "map": "Plan",
   "hallText": {
    "abstract": "Quand les rides de l'eau dispersent la lumière, les choses familières ne sont plus que couleurs et lignes.",
@@ -119,7 +119,12 @@
    "Je remettais toujours à plus tard, en disant que j'étais occupé.",
    "Cette salle est ce que je n'ai pas su lui offrir de son vivant,",
    "bâtie trop tard par son fils Seungheon, avec regret et parce qu'il me manque."
-  ]
+  ],
+  "pause": "Pause",
+  "resume": "Reprendre",
+  "prevWork": "Œuvre précédente",
+  "nextWork": "Œuvre suivante",
+  "info": "Informations"
  },
  "motion": {
   "count": "{f} fleurs · {v} visiteurs",

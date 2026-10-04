@@ -45,7 +45,7 @@
   "soundOn": "Activar el sonido",
   "soundOff": "Desactivar el sonido",
   "tour": "Visita guiada",
-  "tourStop": "Detener la visita",
+  "tourStop": "Terminar la visita",
   "map": "Plano",
   "hallText": {
    "abstract": "Cuando las ondas dispersan la luz, lo conocido queda solo como color y línea.",
@@ -119,7 +119,12 @@
    "Lo fui aplazando con la excusa de que estaba ocupado.",
    "Esta sala es lo que no llegué a hacerle mientras vivía;",
    "la he levantado tarde yo, su hijo Seungheon, con pesar y con añoranza."
-  ]
+  ],
+  "pause": "Pausar",
+  "resume": "Reanudar",
+  "prevWork": "Obra anterior",
+  "nextWork": "Obra siguiente",
+  "info": "Información"
  },
  "motion": {
   "count": "{f} flores · {v} visitantes",

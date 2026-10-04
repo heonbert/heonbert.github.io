@@ -119,7 +119,12 @@
    "Ich schob es auf und sagte, ich sei beschäftigt.",
    "Diese Halle ist das, was ich ihm zu Lebzeiten nicht bauen konnte,",
    "spät errichtet von seinem Sohn Seungheon, mit Reue und mit Sehnsucht."
-  ]
+  ],
+  "pause": "Pause",
+  "resume": "Fortsetzen",
+  "prevWork": "Vorheriges Werk",
+  "nextWork": "Nächstes Werk",
+  "info": "Angaben zum Werk"
  },
  "motion": {
   "count": "{f} Blumen · {v} Besucher",

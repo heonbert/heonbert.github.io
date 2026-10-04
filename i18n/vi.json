@@ -45,7 +45,7 @@
   "soundOn": "Bật âm thanh",
   "soundOff": "Tắt âm thanh",
   "tour": "Tham quan có hướng dẫn",
-  "tourStop": "Dừng tham quan",
+  "tourStop": "Kết thúc tham quan",
   "map": "Sơ đồ",
   "hallText": {
    "abstract": "Khi sóng nước làm ánh sáng tản ra, những điều quen thuộc chỉ còn lại màu sắc và đường nét.",
@@ -119,7 +119,12 @@
    "Khi ấy tôi cứ lần lữa, viện cớ là bận.",
    "Phòng triển lãm này là điều tôi đã không kịp làm cho cha khi cha còn sống,",
    "nay con trai Seungheon muộn màng dựng nên, với tất cả niềm ân hận và nỗi nhớ thương."
-  ]
+  ],
+  "pause": "Tạm dừng",
+  "resume": "Tiếp tục",
+  "prevWork": "Tác phẩm trước",
+  "nextWork": "Tác phẩm tiếp theo",
+  "info": "Thông tin tác phẩm"
  },
  "motion": {
   "count": "{f} bông hoa đã dâng · {v} lượt ghé thăm",

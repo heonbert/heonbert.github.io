@@ -668,7 +668,7 @@ function viewpoint(w) {
 function fmtDate(s) { return s ? s.slice(0, 10).replace(/-/g, '.') : null; }
 function renderPanel() {
     const w = state.focus;
-    $('panel').hidden = !w;
+    $('panel').hidden = !w || (!!state.tour && !!state.hidePanel);
     document.body.classList.toggle('focused', !!w);
     if (!w) return;
     const p = w.p;
@@ -701,6 +701,7 @@ function focus(w, instant) {
     renderPanel();
     $('caption').hidden = true;
     state.tourClock = 0;
+    if (state.tour) state.tourAt = w.index;
 }
 function unfocus() {
     if (!state.focus) return;
@@ -712,18 +713,61 @@ function neighbour(d) {
     const n = state.works.length, i = state.focus ? state.focus.index : (d > 0 ? -1 : 0);
     focus(state.works[(i + d + n) % n]);
 }
-function setTour(on) {
-    if (state.tour === on) return;
-    state.tour = on; state.tourClock = 0;
-    const b = $('tour');
-    b.setAttribute('aria-pressed', on);
-    tip('tour', on ? t('tourStop') : t('tour'));
-    if (on && !state.focus) neighbour(1);
+// The guided visit. state.tour is false, 'play' or 'pause'.
+function tourUi() {
+    const on = !!state.tour;
+    document.body.classList.toggle('touring', on);
+    $('transport').hidden = !on;
+    $('t-play').setAttribute('aria-pressed', state.tour === 'play');
+    tip('t-play', state.tour === 'play' ? t('pause') : t('resume'));
+    $('t-info').setAttribute('aria-pressed', !state.hidePanel);
+    $('tour').setAttribute('aria-pressed', on);
+    if (on) $('t-count').textContent = `${state.tourAt + 1} / ${state.works.length}`;
+    if (state.tour !== 'play') $('t-bar').firstElementChild.style.transform = `scaleX(${state.tour ? Math.min(1, state.tourClock / 7) : 0})`;
+    renderPanel();
 }
-$('panel-close').addEventListener('click', () => { setTour(false); unfocus(); });
-$('prev').addEventListener('click', () => { setTour(false); neighbour(-1); });
-$('next').addEventListener('click', () => { setTour(false); neighbour(1); });
-$('tour').addEventListener('click', () => setTour(!state.tour));
+function tourStart() {
+    // from the work in front of you, or the nearest one if you are inside a gallery; otherwise from the beginning
+    const here = L.roomAt(state.pos.x, state.pos.z);
+    const w = state.focus || (here && here.album ? state.works.reduce((a, b) => ((b.dist ?? 1e9) < (a.dist ?? 1e9) ? b : a)) : state.works[0]);
+    state.tour = 'play'; state.hidePanel = false; state.tourAt = w.index;
+    if (state.look) setLook(false);
+    focus(w);
+    tourUi();
+}
+function tourPause() { if (state.tour === 'play') { state.tour = 'pause'; tourUi(); } }
+function tourResume() {
+    if (!state.tour) return;
+    state.tour = 'play';
+    if (!state.focus || state.focus.index !== state.tourAt) focus(state.works[state.tourAt]);
+    tourUi();
+}
+function tourStep(d) {
+    const n = state.works.length;
+    state.tourAt = (state.tourAt + d + n) % n;
+    focus(state.works[state.tourAt]);
+    tourUi();
+}
+function tourStop() {
+    if (!state.tour) return;
+    state.tour = false; state.hidePanel = false;
+    tourUi();
+}
+// Anything the visitor does by hand (looking around, walking, choosing a room) pauses the visit; it never ends it.
+const setTour = on => { if (!on) tourPause(); };
+
+$('panel-close').addEventListener('click', () => {
+    if (state.tour) { state.hidePanel = true; tourUi(); }   // closing the label does not end the visit
+    else unfocus();
+});
+$('prev').addEventListener('click', () => (state.tour ? tourStep(-1) : neighbour(-1)));
+$('next').addEventListener('click', () => (state.tour ? tourStep(1) : neighbour(1)));
+$('tour').addEventListener('click', () => (state.tour ? tourStop() : tourStart()));
+$('t-prev').addEventListener('click', () => tourStep(-1));
+$('t-next').addEventListener('click', () => tourStep(1));
+$('t-play').addEventListener('click', () => (state.tour === 'play' ? tourPause() : tourResume()));
+$('t-stop').addEventListener('click', tourStop);
+$('t-info').addEventListener('click', () => { state.hidePanel = !state.hidePanel; tourUi(); });
 $('share').addEventListener('click', async () => {
     const w = state.focus; if (!w) return;
     const data = { title: `${titleOf(w.p)} - ${t('title')}`, url: location.href };
@@ -804,7 +848,8 @@ function applyLang() {
     $('home').href = lang === 'ko' ? '../index.html' : `../${lang}/index.html`;
     document.querySelector('.fallback a').href = $('home').href;
     tip('home', t('home')); tip('langBtn', t('language')); tip('roomsBtn', t('rooms')); tip('look', t('look'));
-    tip('mapBtn', t('map')); tip('bow', t('bow')); tip('tour', state.tour ? t('tourStop') : t('tour'));
+    tip('mapBtn', t('map')); tip('bow', t('bow')); tip('tour', t('tour')); tip('t-prev', t('prevWork')); tip('t-next', t('nextWork')); tip('t-stop', t('tourStop')); tip('t-info', t('info'));
+    tip('t-play', state.tour === 'play' ? t('pause') : t('resume'));
     tip('sound', media.soundOn ? t('soundOff') : t('soundOn'));
     $('map').setAttribute('aria-label', t('map'));
     $('panel-close').setAttribute('aria-label', t('close'));
@@ -948,9 +993,10 @@ canvas.addEventListener('wheel', ev => {
 const MOVE = { KeyW: [0, 1], ArrowUp: [0, 1], KeyS: [0, -1], ArrowDown: [0, -1], KeyA: [-1, 0], KeyD: [1, 0] };
 window.addEventListener('keydown', ev => {
     if (!state.entered || ev.metaKey || ev.ctrlKey || ev.altKey) return;
-    if (ev.code === 'Escape') { closePops(); setTour(false); unfocus(); return; }
+    if (ev.code === 'Escape') { closePops(); if (state.tour) tourStop(); else unfocus(); return; }
+    if (ev.code === 'Space' && state.tour) { ev.preventDefault(); if (state.tour === 'play') tourPause(); else tourResume(); return; }
     if (ev.code === 'KeyF') { setLook(!state.look); return; }
-    if (state.focus && (ev.code === 'ArrowLeft' || ev.code === 'ArrowRight')) { setTour(false); neighbour(ev.code === 'ArrowLeft' ? -1 : 1); ev.preventDefault(); return; }
+    if (state.focus && (ev.code === 'ArrowLeft' || ev.code === 'ArrowRight')) { const d = ev.code === 'ArrowLeft' ? -1 : 1; if (state.tour) tourStep(d); else neighbour(d); ev.preventDefault(); return; }
     if (MOVE[ev.code] || ev.code === 'ArrowLeft' || ev.code === 'ArrowRight' || ev.code.startsWith('Shift')) { state.keys.add(ev.code); ev.preventDefault(); }
 });
 window.addEventListener('keyup', ev => state.keys.delete(ev.code));
@@ -1022,12 +1068,12 @@ function frame() {
             step(((mx / l) * cs - (mz / l) * sn) * speed, 0); step(0, (-(mx / l) * sn - (mz / l) * cs) * speed);
         }
     }
-    if (state.tour && state.focus && !state.path) {
+    if (state.tour === 'play' && state.focus && !state.path) {
         state.tourClock += real;
-        const big = state.focus.kind === 'hero' || state.focus.kind === 'finale';
-        if (state.tourClock > (big ? 11 : 7)) neighbour(1);
+        const dwell = state.focus.kind === 'hero' || state.focus.kind === 'finale' ? 11 : 7;
+        $('t-bar').firstElementChild.style.transform = `scaleX(${Math.min(1, state.tourClock / dwell)})`;
+        if (state.tourClock > dwell) tourStep(1);
     }
-    camera.position.copy(state.pos);
     let dip = 0;                                 // your own bow: the view lowers and returns
     if (state.bowT > 0) { state.bowT -= real; dip = -0.36 * Math.sin(Math.PI * Math.max(0, 1 - state.bowT / 1.6)); }
     camera.rotation.set(state.pitch + dip, state.yaw, 0);

@@ -45,7 +45,7 @@
   "soundOn": "Sesi aç",
   "soundOff": "Sesi kapat",
   "tour": "Rehberli gezi",
-  "tourStop": "Geziyi durdur",
+  "tourStop": "Turu bitir",
   "map": "Kat planı",
   "hallText": {
    "abstract": "Dalgacıklar ışığı dağıttığında, tanıdık şeylerden geriye yalnızca renk ve çizgi kalır.",
@@ -119,7 +119,12 @@
    "O zaman, işlerim var diyerek hep erteledim.",
    "Bu sergi salonu, o hayattayken yapamadığım şeydir;",
    "oğlu Seungheon'un pişmanlık ve özlemle, geç de olsa kurduğu yerdir."
-  ]
+  ],
+  "pause": "Duraklat",
+  "resume": "Devam et",
+  "prevWork": "Önceki eser",
+  "nextWork": "Sonraki eser",
+  "info": "Eser bilgisi"
  },
  "motion": {
   "count": "{f} çiçek · {v} ziyaretçi",

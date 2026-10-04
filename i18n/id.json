@@ -45,7 +45,7 @@
   "soundOn": "Nyalakan suara",
   "soundOff": "Matikan suara",
   "tour": "Kunjungan berpemandu",
-  "tourStop": "Hentikan kunjungan",
+  "tourStop": "Akhiri kunjungan",
   "map": "Denah",
   "hallText": {
    "abstract": "Ketika riak air menghamburkan cahaya, benda-benda yang akrab tinggal menjadi warna dan garis.",
@@ -119,7 +119,12 @@
    "Waktu itu saya terus menundanya dengan alasan sibuk.",
    "Ruang pamer ini adalah apa yang tidak sempat saya buatkan selagi beliau masih ada,",
    "dibangun terlambat oleh putranya, Seungheon, dengan rasa sesal dan rindu."
-  ]
+  ],
+  "pause": "Jeda",
+  "resume": "Lanjutkan",
+  "prevWork": "Karya sebelumnya",
+  "nextWork": "Karya berikutnya",
+  "info": "Info karya"
  },
  "motion": {
   "count": "{f} tangkai bunga · {v} pengunjung",

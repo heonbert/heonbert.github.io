@@ -45,7 +45,7 @@
   "soundOn": "Ligar o som",
   "soundOff": "Desligar o som",
   "tour": "Visita guiada",
-  "tourStop": "Interromper a visita",
+  "tourStop": "Encerrar a visita",
   "map": "Planta",
   "hallText": {
    "abstract": "Quando as ondulações dispersam a luz, as coisas familiares permanecem apenas como cor e linha.",
@@ -119,7 +119,12 @@
    "Fui adiando, com a desculpa de que estava ocupado.",
    "Esta sala é aquilo que não consegui fazer para ele enquanto estava vivo,",
    "construída tarde demais pelo seu filho Seungheon, com remorso e com saudade."
-  ]
+  ],
+  "pause": "Pausar",
+  "resume": "Retomar",
+  "prevWork": "Obra anterior",
+  "nextWork": "Próxima obra",
+  "info": "Informações"
  },
  "motion": {
   "count": "{f} flores · {v} visitantes",

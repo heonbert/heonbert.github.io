@@ -45,7 +45,7 @@
   "soundOn": "Attiva il suono",
   "soundOff": "Disattiva il suono",
   "tour": "Visita guidata",
-  "tourStop": "Interrompi la visita",
+  "tourStop": "Termina la visita",
   "map": "Pianta",
   "hallText": {
    "abstract": "Quando le increspature disperdono la luce, delle cose familiari restano soltanto il colore e la linea.",
@@ -119,7 +119,12 @@
    "Allora rimandai, con la scusa che avevo da fare.",
    "Questa sala è ciò che non seppi fargli mentre era vivo,",
    "costruita in ritardo da suo figlio Seungheon, con rimorso e con nostalgia."
-  ]
+  ],
+  "pause": "Pausa",
+  "resume": "Riprendi",
+  "prevWork": "Opera precedente",
+  "nextWork": "Opera successiva",
+  "info": "Informazioni"
  },
  "motion": {
   "count": "{f} fiori · {v} visitatori",
