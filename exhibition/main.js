@@ -303,12 +303,13 @@ function updateMedia(here) {
     a.volume = Math.max(0, Math.min(1, media.vol));
     if (!media.soundOn && media.vol < 0.01 && !a.paused) a.pause();
 }
-function setSound(on) {
+function setSound(on, remember = true) {
     media.soundOn = on;
+    if (remember) try { localStorage.setItem('sound', on ? 'on' : 'off'); } catch (e) { /* storage unavailable */ }
     const b = $('sound');
     b.setAttribute('aria-pressed', on);
     tip('sound', on ? t('soundOff') : t('soundOn'));
-    if (on) media.audio.play().catch(() => setSound(false));
+    if (on) media.audio.play().catch(() => setSound(false, false));   // the browser refused; not the visitor's choice
 }
 $('sound').addEventListener('click', () => setSound(!media.soundOn));
 
@@ -912,8 +913,9 @@ canvas.addEventListener('pointermove', ev => {
     if (Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) > 7) { if (!drag.moved) userActs(); drag.moved = true; }
     if (drag.moved && !state.look) {
         const k = 0.0042 * (camera.fov / 60);
-        state.yaw += dx * k;
-        state.pitch = Math.max(-0.75, Math.min(0.75, state.pitch + dy * k));
+        // the view follows the hand, as in a game: drag right to look right, drag up to look up
+        state.yaw -= dx * k;
+        state.pitch = Math.max(-0.75, Math.min(0.75, state.pitch - dy * k));
     }
 });
 function endDrag(ev) {
@@ -1076,6 +1078,10 @@ Promise.all([fetch('../data/photos.json').then(r => r.json()), fontReady, shoots
         if (target) focus(target, true);
         else goTo(0, 6.6, 0, 0, 1.1);   // a slow walk up to the portal
         Presence.enter();
+        // sound is on unless this visitor turned it off before
+        let quiet = false;
+        try { quiet = localStorage.getItem('sound') === 'off'; } catch (e) { /* storage unavailable */ }
+        if (!quiet) setSound(true, false);
         canvas.focus();
     });
     requestAnimationFrame(frame);
