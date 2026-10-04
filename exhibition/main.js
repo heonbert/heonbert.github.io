@@ -48,6 +48,8 @@ scene.background = new THREE.Color(0x050608);
 const camera = new THREE.PerspectiveCamera(60, 16 / 9, 0.08, 200);
 camera.rotation.order = 'YXZ';
 const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+Object.assign(state, { camera, scene, renderer });   // handles for inspection from the console
+camera.position.copy(state.pos);                      // never draw a frame from the origin
 
 function fail() {
     $('enter').hidden = true;
@@ -1128,7 +1130,7 @@ Promise.all([fetch('../data/photos.json').then(r => r.json()), fontReady, shoots
         document.body.classList.add('inside');
         const target = state.works.find(w => '#' + w.p.id === decodeURIComponent(location.hash));
         if (target) focus(target, true);
-        else goTo(0, 6.6, 0, 0, 1.1);   // a slow walk up to the portal
+        else goTo((Math.random() - 0.5) * 2.4, 6.4 + Math.random() * 0.6, 0, 0, 1.1);   // a slow walk towards the portal, each visitor to a slightly different spot
         Presence.enter();
         // sound is on unless this visitor turned it off before
         let quiet = false;

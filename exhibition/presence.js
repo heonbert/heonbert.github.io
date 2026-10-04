@@ -93,6 +93,8 @@ function refresh() {
     onChange();
 }
 
+// Everyone arrives at the same spot. A visitor still standing there is not drawn, or newcomers would walk into them.
+const atDoor = p => Math.abs(p.x) < 0.05 && Math.abs(p.z - 8.9) < 0.05;
 function addPeer(p) {
     if (peers.has(p.id)) return peers.get(p.id);
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: figureTex, transparent: true, depthWrite: false }));
@@ -122,11 +124,12 @@ function open(first) {
         if (m.t === 'hi') {
             retry = 0;
             for (const id of [...peers.keys()]) dropPeer(id);
-            for (const p of m.peers) addPeer(p);
+            for (const p of m.peers) if (!atDoor(p)) addPeer(p);
             Object.assign(shared, { visits: m.visits, flowers: m.flowers, here: peers.size + 1 });
             sent.x = 1e9;
             refresh();
         } else if (m.t === 'p') {
+            if (atDoor(m) && !peers.has(m.id)) return;   // has only just arrived and not moved yet
             const p = addPeer(m); p.tx = m.x; p.tz = m.z;
             if (shared.here !== peers.size + 1) { shared.here = peers.size + 1; onChange(); }
         } else if (m.t === 'bye') {
@@ -194,6 +197,7 @@ export function update(real, state) {
         p.shadow.position.set(p.x, 0.01, p.z);
         // step aside visually when someone stands exactly where you are
         const near = Math.hypot(p.x - state.pos.x, p.z - state.pos.z);
-        p.sprite.material.opacity = Math.min(1, Math.max(0, (near - 0.5) / 0.9));
+        p.sprite.material.opacity = Math.min(1, Math.max(0, (near - 1.1) / 1.4));
+        p.shadow.material.opacity = 0.28 * p.sprite.material.opacity;
     }
 }
