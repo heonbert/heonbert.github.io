@@ -276,41 +276,67 @@ body.looking #stage { cursor: none; }
 [dir="rtl"] #panel { right: auto; left: 20px; }
 [dir="rtl"] #panel-actions #prev, [dir="rtl"] #panel-actions #next { transform: scaleX(-1); }
 
-/* ---------- welcome ---------- */
+/* ---------- welcome: a quiet title page; the hall stays unseen until you enter ---------- */
 #welcome {
     position: fixed;
     inset: 0;
     z-index: 30;
     display: grid;
     place-items: center;
-    padding: 20px;
-    background: radial-gradient(ellipse at 50% 30%, rgba(26, 58, 92, 0.5), rgba(8, 11, 16, 0.97) 70%);
+    padding: 32px 24px;
+    background:
+        radial-gradient(ellipse 70% 55% at 50% 0%, rgba(40, 84, 128, 0.42), transparent 70%),
+        linear-gradient(#0b1018, #07090d);
     overflow: auto;
-    transition: opacity 0.9s ease;
+    transition: opacity 1.4s ease;
 }
 #welcome.gone { opacity: 0; pointer-events: none; }
-#welcome .card { width: min(540px, 100%); text-align: center; }
-.eyebrow { margin: 0 0 12px; font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--accent); }
-#welcome h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 7vw, 46px); line-height: 1.2; letter-spacing: 0.06em; }
-.dates { margin: 12px 0 0; font-family: var(--serif); color: var(--text-2); font-size: 14px; letter-spacing: 0.06em; }
-.lead { margin: 24px 0 0; font-family: var(--serif); font-size: 16px; line-height: 1.85; }
-.how { list-style: none; margin: 24px 0 0; padding: 0; font-size: 13px; line-height: 1.95; color: var(--text-2); }
-@media (pointer: coarse) { .how .keys { display: none; } }
+#welcome .card { width: min(640px, 100%); text-align: center; }
+.eyebrow { margin: 0 0 22px; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--accent); }
+#welcome h1 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(30px, 6.4vw, 52px); line-height: 1.2; letter-spacing: 0.08em; text-wrap: balance; }
+.dates { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; margin: 18px 0 0; font-family: var(--serif); color: var(--text-2); font-size: 14px; letter-spacing: 0.1em; }
+.dates i { width: 28px; height: 1px; background: rgba(255, 255, 255, 0.28); }
+.lead {
+    max-width: 30em;
+    margin: 34px auto 0;
+    padding-top: 34px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: var(--serif);
+    font-size: 15.5px;
+    line-height: 2;
+    color: #d5dae3;
+    word-break: keep-all;
+    text-wrap: pretty;
+}
+.how { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 38px 0 0; padding: 0; }
+.how li { display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 12.5px; line-height: 1.6; color: var(--text-2); word-break: keep-all; text-wrap: balance; }
+.how svg { width: 26px; height: 26px; fill: none; stroke: var(--text); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.85; }
 #enter {
-    margin-top: 28px;
-    padding: 13px 44px;
+    margin-top: 44px;
+    min-width: 220px;
+    padding: 15px 44px;
     font-family: var(--serif);
     font-size: 16px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 999px;
-    transition: background 0.4s ease, border-color 0.4s ease;
+    transition: background 0.4s ease, border-color 0.4s ease, letter-spacing 0.6s var(--ease);
 }
 #enter:hover:not(:disabled) { background: rgba(125, 182, 227, 0.16); border-color: var(--accent); }
-#enter:disabled { opacity: 0.5; cursor: progress; letter-spacing: 0.06em; }
-.fallback { margin: 18px 0 0; font-size: 12px; }
-.fallback a { color: var(--text-2); }
+#enter:disabled { opacity: 0.45; cursor: progress; letter-spacing: 0.06em; text-indent: 0; font-size: 14px; }
+.fallback { margin: 20px 0 0; font-size: 12px; letter-spacing: 0.04em; }
+.fallback a { color: var(--text-2); text-underline-offset: 4px; text-decoration-color: rgba(255, 255, 255, 0.25); }
+@media (max-width: 560px) {
+    .dates { flex-direction: column; gap: 6px; }
+    .dates i { display: none; }
+    .how { grid-template-columns: 1fr; gap: 12px; margin-top: 28px; }
+    .how li { flex-direction: row; justify-content: flex-start; text-align: start; gap: 14px; }
+    .how svg { flex: none; width: 22px; height: 22px; }
+    .lead { margin-top: 26px; padding-top: 26px; font-size: 15px; line-height: 1.9; }
+    #enter { margin-top: 32px; }
+}
 
 #fade { position: fixed; inset: 0; z-index: 25; background: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.28s ease; }
 #fade.on { opacity: 1; }
