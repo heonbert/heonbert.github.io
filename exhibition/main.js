@@ -794,6 +794,11 @@ function applyLang() {
     try { localStorage.setItem('lang', lang); } catch (e) { /* storage unavailable */ }
     document.title = `${t('eyebrow')} - ${t('title')}`;
     for (const el of document.querySelectorAll('[data-t]')) el.textContent = t(el.dataset.t);
+    // on touch screens the note about the keyboard is left out
+    if (window.matchMedia('(pointer: coarse)').matches) for (const el of document.querySelectorAll('[data-touch-trim]')) {
+        el.textContent = el.textContent.replace(/\s*[(（][^)）]*[)）]\s*[.。]?\s*$/, '');
+    }
+    $('welcome-lang').lastElementChild.textContent = info.name || lang;
     if (state.ready) $('enter').textContent = t('enter');
     for (const b of document.querySelectorAll('#langs button')) b.setAttribute('aria-pressed', b.dataset.lang === lang);
     $('home').href = lang === 'ko' ? '../index.html' : `../${lang}/index.html`;
@@ -821,6 +826,7 @@ for (const info of LANG_LIST) {
 function closePops() { $('langs').hidden = true; $('halls').hidden = true; }
 function togglePop(id) { const el = $(id), open = el.hidden; closePops(); el.hidden = !open; }
 $('langBtn').addEventListener('click', ev => { ev.stopPropagation(); togglePop('langs'); });
+$('welcome-lang').addEventListener('click', ev => { ev.stopPropagation(); togglePop('langs'); });
 $('roomsBtn').addEventListener('click', ev => { ev.stopPropagation(); togglePop('halls'); });
 document.addEventListener('pointerdown', ev => { if (!ev.target.closest('.pop')) closePops(); });
 $('mapBtn').addEventListener('click', () => {
