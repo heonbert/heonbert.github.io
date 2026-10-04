@@ -1,0 +1,25 @@
+# Checks that run on every push: translations are complete, no link inside the site is broken, scripts parse.
+# The site itself is published by GitHub Pages straight from the main branch; this only warns when something is wrong.
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install tools
+        run: pip install pillow piexif beautifulsoup4 fonttools brotli
+      - name: Translations, links and scripts
+        run: python tools/build.py --check
+      - name: Photographs still carry the photographer's name and licence
+        run: python tools/embed_metadata.py --check

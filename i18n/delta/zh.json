@@ -1,0 +1,30 @@
+{
+ "lang": "zh",
+ "name": "简体中文",
+ "site": {
+  "He served for 46 years in the Department of Civil Engineering at Kunsan National University, including as professor, dedicating himself to nurturing the next generation of scholars, and was awarded the Order of Service Merit with Yellow Stripes. After retirement, he pursued photography, creating works of profound philosophy and artistry centered on water and light.": {
+   "en": "He served for 46 years in the Department of Civil Engineering at Kunsan National University, including as professor, dedicating himself to nurturing the next generation of scholars, and was awarded the Order of Service Merit with Yellow Stripes. After retirement, he pursued photography, creating works of profound philosophy and artistry centered on water and light.",
+   "hint": "An earlier version of this sentence was translated as: 他在群山大学土木工程系任教并担任教授，前后46年，倾力培养后学，获授黄条勤政勋章。退休后投身摄影，以水与光为主题，留下了富于哲思与艺术性的作品。"
+  },
+  "Order of Service Merit (Yellow Stripes)": {
+   "en": "Order of Service Merit (Yellow Stripes)",
+   "hint": "An earlier version of this sentence was translated as: 黄条勤政勋章"
+  },
+  "Biography of Yumok (流木) Lee Dong-joo (1952-2024). Professor of Civil Engineering at Kunsan National University, recipient of the Order of Service Merit, water light photographer.": {
+   "en": "Biography of Yumok (流木) Lee Dong-joo (1952-2024). Professor of Civil Engineering at Kunsan National University, recipient of the Order of Service Merit, water light photographer.",
+   "hint": "An earlier version of this sentence was translated as: 流木 李东周（1952-2024）生平。群山大学土木工程系教授，勤政勋章获得者，水光摄影家。"
+  },
+  "Retired from Kunsan National University — 46 years of service, awarded the Order of Service Merit (Yellow Stripes)": {
+   "en": "Retired from Kunsan National University — 46 years of service, awarded the Order of Service Merit (Yellow Stripes)",
+   "hint": "An earlier version of this sentence was translated as: 自群山大学退休——任教46年，获授黄条勤政勋章"
+  },
+  "Lecture Notes — <cite>Hydraulics (Ⅱ) Lecture Notes</cite>, Hydraulics Laboratory, Department of Civil Engineering, Kunsan National University <x1/>": {
+   "en": "Lecture Notes — <cite>Hydraulics (Ⅱ) Lecture Notes</cite>, Hydraulics Laboratory, Department of Civil Engineering, Kunsan National University <x1/>",
+   "hint": "An earlier version of this sentence was translated as: 授课教材——<cite>《水力学（Ⅱ）讲义》</cite>，群山大学 <x1/>"
+  },
+  "Lecture Notes — <cite>Hydraulics (Ⅰ) Lecture Notes</cite>, Hydraulics Laboratory, Department of Civil Engineering, Kunsan National University <x1/>": {
+   "en": "Lecture Notes — <cite>Hydraulics (Ⅰ) Lecture Notes</cite>, Hydraulics Laboratory, Department of Civil Engineering, Kunsan National University <x1/>",
+   "hint": "An earlier version of this sentence was translated as: 授课教材——<cite>《水力学（Ⅰ）讲义》</cite>，群山大学 <x1/>"
+  }
+ }
+}

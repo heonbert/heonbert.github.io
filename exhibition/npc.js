@@ -15,7 +15,7 @@ const CAST = [
 ];
 const START = [40, 150, 215];          // where in the hanging order each family begins
 const people = [], groups = [];
-let works = [], scene = null;
+let works = [], scene = null, quiet = false, started = false;
 
 const rnd = (a, b) => a + Math.random() * (b - a);
 function wrapPi(d) { d %= Math.PI * 2; if (d > Math.PI) d -= Math.PI * 2; if (d < -Math.PI) d += Math.PI * 2; return d; }
@@ -53,7 +53,11 @@ function play(p, name) {
     p.playing = name;
 }
 
+export function setQuiet(on) { quiet = on; }
+
 export function start(ctx) {
+    if (started) return;
+    started = true;
     scene = ctx.scene;
     works = ctx.works.filter(w => w.kind !== 'finale');
     // the figures are lit; nothing else in the hall uses lights
@@ -126,8 +130,8 @@ export function update(dt, camPos) {
             play(p, 'idle');
             p.yaw += wrapPi(p.face - p.yaw) * Math.min(1, dt * 4);
         }
-        p.root.visible = !far; p.shadow.visible = !far;
-        if (far) continue;
+        p.root.visible = !far && !quiet; p.shadow.visible = !far && !quiet;
+        if (far || quiet) continue;
         p.root.position.set(p.x, 0, p.z);
         p.root.rotation.y = p.yaw;
         p.shadow.position.set(p.x, 0.011, p.z);

@@ -11,9 +11,6 @@ if ('serviceWorker' in navigator) {
     var toast = document.getElementById('bookmark-toast');
     var toastTimer;
 
-    // 언어 감지
-    var lang = document.documentElement.lang || 'ko';
-
     // PWA 설치 프롬프트 저장
     var deferredPrompt = null;
     var isInstalledPwa = false;
@@ -47,50 +44,17 @@ if ('serviceWorker' in navigator) {
         }).catch(function() {});
     }
 
-    var messages = {
-        ko: {
-            desktop: 'Ctrl+D를 눌러 즐겨찾기에 추가하세요',
-            mac: '\u2318+D를 눌러 즐겨찾기에 추가하세요',
-            iosGuide: '하단 공유 버튼(□↑)을 누른 후\n"홈 화면에 추가"를 선택하세요',
-            androidGuide: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
-            installed: '홈 화면에 추가되었습니다!',
-            dismissed: '브라우저 메뉴(⋮)에서\n"홈 화면에 추가"를 선택하세요',
-            alreadyInstalled: '이미 앱으로 설치되어 있습니다 ✓',
-            alreadyStandalone: '이미 앱으로 실행 중입니다'
-        },
-        en: {
-            desktop: 'Press Ctrl+D to bookmark this page',
-            mac: 'Press \u2318+D to bookmark this page',
-            iosGuide: 'Tap the Share button (□↑) below,\nthen select "Add to Home Screen"',
-            androidGuide: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
-            installed: 'Added to Home Screen!',
-            dismissed: 'Tap browser menu (\u22ee) and select\n"Add to Home Screen"',
-            alreadyInstalled: 'Already installed as an app ✓',
-            alreadyStandalone: 'Already running as an app'
-        },
-        ja: {
-            desktop: 'Ctrl+Dでブックマークに追加できます',
-            mac: '\u2318+Dでブックマークに追加できます',
-            iosGuide: '下の共有ボタン(□↑)をタップし、\n「ホーム画面に追加」を選択してください',
-            androidGuide: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
-            installed: 'ホーム画面に追加しました！',
-            dismissed: 'ブラウザメニュー(\u22ee)から\n「ホーム画面に追加」を選択してください',
-            alreadyInstalled: 'すでにアプリとしてインストール済みです ✓',
-            alreadyStandalone: 'すでにアプリとして実行中です'
-        },
-        de: {
-            desktop: 'Dr\u00fccken Sie Strg+D, um ein Lesezeichen zu setzen',
-            mac: 'Dr\u00fccken Sie \u2318+D, um ein Lesezeichen zu setzen',
-            iosGuide: 'Tippen Sie auf Teilen (□↑) unten,\ndann "Zum Home-Bildschirm"',
-            androidGuide: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
-            installed: 'Zum Home-Bildschirm hinzugef\u00fcgt!',
-            dismissed: 'Tippen Sie auf das Browsermen\u00fc (\u22ee)\nund w\u00e4hlen Sie "Zum Home-Bildschirm"',
-            alreadyInstalled: 'Bereits als App installiert ✓',
-            alreadyStandalone: 'Bereits als App ge\u00f6ffnet'
-        }
+    // 안내 문구는 각 언어의 페이지가 넘겨준다(window.YUMOK_LABELS). 없으면 영어.
+    var L = window.YUMOK_LABELS || {};
+    var msg = {
+        desktop: L.bm_desktop || 'Press Ctrl+D to bookmark this page',
+        mac: L.bm_mac || 'Press ⌘+D to bookmark this page',
+        iosGuide: L.bm_ios || 'Tap the Share button below,\nthen select "Add to Home Screen"',
+        androidGuide: L.bm_android || 'Tap the browser menu and select\n"Add to Home Screen"',
+        installed: L.bm_installed || 'Added to Home Screen!',
+        alreadyInstalled: L.bm_already || 'Already installed as an app',
+        alreadyStandalone: L.bm_running || 'Already running as an app'
     };
-
-    var msg = messages[lang] || messages.ko;
 
     // beforeinstallprompt 이벤트 캡처
     window.addEventListener('beforeinstallprompt', function(e) {
@@ -138,12 +102,9 @@ if ('serviceWorker' in navigator) {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then(function(choiceResult) {
                 if (choiceResult.outcome === 'accepted') {
-                    // appinstalled 이벤트에서 처리되므로 토스트는 여기서 표시
                     showToast(msg.installed);
-                } else {
-                    if (isMobile) {
-                        showToast(msg.dismissed);
-                    }
+                } else if (isMobile) {
+                    showToast(msg.androidGuide);
                 }
                 deferredPrompt = null;
             });

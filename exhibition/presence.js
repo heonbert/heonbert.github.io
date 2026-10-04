@@ -14,7 +14,7 @@ try { laidToday = localStorage.getItem('flower-day') === DAY; } catch (e) { /* s
 export const shared = { visits: 0, flowers: 0, here: 1, laid: laidToday };
 
 const peers = new Map();
-let scene = null, onChange = () => {}, ws = null, retry = 0, wantOpen = false;
+let scene = null, onChange = () => {}, ws = null, retry = 0, wantOpen = false, quiet = false, tongue = '';
 let figureTex = null, lanterns = null, flowers = null;
 const sent = { x: 1e9, z: 0, yaw: 0, at: 0, beat: 0 };
 const NAVE = L.ROOMS.find(r => r.id === 'nave');
@@ -103,6 +103,7 @@ function addPeer(p) {
     shadow.rotation.x = -Math.PI / 2; shadow.renderOrder = 2;
     const peer = { id: p.id, x: p.x, z: p.z, tx: p.x, tz: p.z, sprite, shadow, bow: 0 };
     sprite.position.set(p.x, 0, p.z); shadow.position.set(p.x, 0.01, p.z);
+    sprite.visible = shadow.visible = !quiet;
     scene.add(sprite, shadow);
     peers.set(p.id, peer);
     return peer;
@@ -117,7 +118,7 @@ function dropPeer(id) {
 
 function open(first) {
     if (!enabled || ws) return;
-    const url = BASE.replace(/^http/, 'ws') + '/ws' + (first ? '?new=1' : '');
+    const url = BASE.replace(/^http/, 'ws') + '/ws?l=' + encodeURIComponent(tongue) + (first ? '&new=1' : '');
     try { ws = new WebSocket(url); } catch (e) { ws = null; return; }
     ws.onmessage = ev => {
         let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
@@ -163,8 +164,14 @@ export function start(ctx) {
         refresh();
     }).catch(() => { /* server unreachable: stay alone */ });
 }
-export function enter() {
+/** Other visitors can be put out of sight; they still see you. */
+export function setQuiet(on) {
+    quiet = on;
+    for (const p of peers.values()) p.sprite.visible = p.shadow.visible = !on;
+}
+export function enter(lang) {
     if (!enabled) return;
+    tongue = lang || '';
     let first = false;
     const day = new Date().toISOString().slice(0, 10);
     try { first = localStorage.getItem('visit-day') !== day; localStorage.setItem('visit-day', day); } catch (e) { /* storage unavailable */ }

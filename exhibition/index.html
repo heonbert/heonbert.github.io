@@ -2,32 +2,45 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-9ZBRVGQ4CH');
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>3D 전시관 - 유목의 물빛사진</title>
-    <meta name="description" content="유목(流木) 이동주 작가의 물빛사진 282점을 걸어 다니며 감상하는 3D 가상 전시관. A walk-through 3D exhibition of 282 water-light photographs by Yumok Lee Dong-joo (1952-2024), in 16 languages.">
+    <meta name="description" content="유목(流木) 이동주 작가의 물빛사진을 걸어 다니며 감상하는 3D 가상 전시관. 생전에 직접 고른 282점과 2019년 공모전 입상작 21점. A walk-through 3D exhibition of water-light photographs by Yumok Lee Dong-joo (1952-2024), in 16 languages.">
     <link rel="canonical" href="https://seungheon.com/exhibition/">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
     <meta name="theme-color" content="#0a0e14">
     <meta property="og:type" content="website">
     <meta property="og:title" content="3D 전시관 - 유목의 물빛사진">
-    <meta property="og:description" content="물과 빛을 찍은 사진 282점을 걸어 다니며 감상하는 가상 전시관">
+    <meta property="og:description" content="물과 빛을 찍은 사진을 걸어 다니며 감상하는 가상 전시관 · A walk-through exhibition of water-light photographs by Yumok Lee Dong-joo">
     <meta property="og:url" content="https://seungheon.com/exhibition/">
-    <meta property="og:image" content="https://seungheon.com/assets/abstract/cover.jpg">
+    <meta property="og:image" content="https://seungheon.com/exhibition/og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="The nave of the 3D exhibition: a long pool under a skylight, galleries on both sides">
+    <meta property="og:site_name" content="유목의 물빛사진">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="3D 전시관 - 유목의 물빛사진">
+    <meta name="twitter:description" content="A walk-through 3D exhibition of water-light photographs by Yumok Lee Dong-joo (1952-2024)">
+    <meta name="twitter:image" content="https://seungheon.com/exhibition/og.jpg">
     <link rel="stylesheet" href="exhibition.css">
+    <link rel="modulepreload" href="vendor/three/three.module.min.js">
     <script type="importmap">
     { "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        "three": "./vendor/three/three.module.min.js",
+        "three/addons/": "./vendor/three/addons/"
     } }
+    </script>
+    <script>
+        // If the hall cannot be built (a script that did not arrive, a device without 3D), say so and show the way to the flat gallery.
+        (function () {
+            var root = document.documentElement;
+            window.addEventListener('error', function (ev) {
+                if (!root.dataset.hall && ev.target && ev.target.tagName === 'SCRIPT') root.dataset.hall = 'failed';
+            }, true);
+            setTimeout(function () { if (!root.dataset.hall) root.dataset.hall = 'slow'; }, 20000);
+        })();
     </script>
 </head>
 <body>
@@ -53,6 +66,7 @@
         <i class="sep"></i>
         <button id="bow" class="ic"><svg viewBox="0 0 24 24"><circle cx="8.5" cy="5.5" r="2"/><path d="M9.5 8.5l6.5 3.5M12.5 10.2L11 20M16 12v4.5M11 20h3"/></svg></button>
         <button id="flower" class="ic" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="1.8"/><path d="M12 2.5v3.2M12 11.3v3.2M6.8 8.5H10M14 8.5h3.2M8.3 4.8l2.3 2.3M13.4 9.9l2.3 2.3M15.7 4.8l-2.3 2.3M10.6 9.9l-2.3 2.3M12 14.5V21.5M12 19c-2.2 0-3.4-1.1-3.4-3M12 18c2.2 0 3.4-1.1 3.4-3"/></svg></button>
+        <button id="quiet" class="ic" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="2.6"/><path d="M3.5 19c.6-3.4 2.7-5.2 5.5-5.2s4.9 1.8 5.5 5.2"/><path class="off" d="M15.8 5.8a2.5 2.5 0 0 1 0 4.6M17.4 14.2c1.7.8 2.8 2.4 3.1 4.8"/><path class="on" d="M15.5 6.5l5 5M20.5 6.5l-5 5"/></svg></button>
     </div>
 
     <div id="transport" class="chrome" hidden>
@@ -86,30 +100,32 @@
         </div>
     </aside>
 
+    <!-- The words below are in Korean until the scripts put them into the visitor's language. -->
     <section id="welcome">
         <div class="art" aria-hidden="true"></div>
-        <button id="welcome-lang" type="button" aria-haspopup="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></svg><span></span></button>
+        <button id="welcome-lang" type="button" aria-haspopup="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></svg><span>한국어</span></button>
         <div class="card">
             <div class="head">
-                <p class="eyebrow" data-t="eyebrow"></p>
-                <h1 data-t="title"></h1>
-                <p class="dates"><span data-t="name"></span><i></i><span data-t="dates"></span></p>
+                <p class="eyebrow" data-t="eyebrow">3D 전시관</p>
+                <h1 data-t="title">유목의 물빛사진</h1>
+                <p class="dates"><span data-t="name">유목 流木 이동주</span><i></i><span data-t="dates">1952 – 2024</span></p>
             </div>
-            <p class="lead" data-t="lead"></p>
+            <p class="lead" data-t="lead">평생 물의 흐름을 계산하던 수리학자가, 카메라를 들고 물의 표면을 찍었습니다. 그가 생전에 직접 골라 둔 282점을 걸었습니다. 천천히 걸으며 보아 주세요.</p>
             <ul class="how">
-                <li><svg viewBox="0 0 24 24"><path d="M4 12h16M7.5 8.5 4 12l3.5 3.5M16.5 8.5 20 12l-3.5 3.5"/></svg><span data-t="how1"></span></li>
-                <li><svg viewBox="0 0 24 24"><ellipse cx="12" cy="17.5" rx="7" ry="2.5"/><path d="M12 4v10M8.5 10.5 12 14l3.5-3.5"/></svg><span data-t="how2" data-touch-trim></span></li>
-                <li><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="0.5"/><rect x="7" y="9" width="10" height="6"/></svg><span data-t="how3"></span></li>
+                <li><svg viewBox="0 0 24 24"><path d="M4 12h16M7.5 8.5 4 12l3.5 3.5M16.5 8.5 20 12l-3.5 3.5"/></svg><span data-t="how1">화면을 끌어 둘러봅니다</span></li>
+                <li><svg viewBox="0 0 24 24"><ellipse cx="12" cy="17.5" rx="7" ry="2.5"/><path d="M12 4v10M8.5 10.5 12 14l3.5-3.5"/></svg><span data-t="how2" data-touch-trim>바닥을 누르면 그곳으로 걸어갑니다 (키보드 W A S D)</span></li>
+                <li><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="0.5"/><rect x="7" y="9" width="10" height="6"/></svg><span data-t="how3">사진을 누르면 그 앞에 섭니다</span></li>
             </ul>
             <div class="go">
-                <button id="enter" disabled data-t="loading"></button>
-                <p class="fallback"><a href="../index.html" data-t="flat"></a></p>
+                <button id="enter" disabled data-t="loading">전시관을 짓고 있습니다</button>
+                <p id="slow" data-t="slow">전시관을 여는 데 시간이 걸리고 있습니다. 조금 더 기다리거나 일반 갤러리로 보실 수 있습니다. · The hall is taking a while to open. You can wait a little longer, or view the flat gallery instead.</p>
+                <p class="fallback"><a href="../index.html" data-t="flat">일반 갤러리로 보기</a></p>
             </div>
         </div>
     </section>
 
     <div id="fade"></div>
     <script type="module" src="main.js"></script>
-    <noscript><p style="padding:2rem;color:#e4e8f0">이 전시관은 JavaScript가 필요합니다. <a href="../index.html">일반 갤러리 보기</a></p></noscript>
+    <noscript><p style="position:fixed;left:0;right:0;bottom:0;z-index:50;margin:0;padding:1rem 1.5rem;text-align:center;color:#e4e8f0;background:#0a0e14">이 전시관은 JavaScript가 필요합니다. <a href="../index.html" style="color:#7db6e3">일반 갤러리 보기</a> · This exhibition needs JavaScript. <a href="../en/index.html" style="color:#7db6e3">View the flat gallery</a></p></noscript>
 </body>
 </html>

@@ -2,25 +2,29 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9ZBRVGQ4CH"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-9ZBRVGQ4CH');
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>유목의 물빛사진 - 故 이동주 작가 사진 갤러리</title>
     <meta name="description" content="유목(流木) 이동주 작가(1952-2024)의 물빛사진 갤러리. 물과 빛을 주제로 한 추상, 반영, 문양, 풍경 사진 작품을 감상하실 수 있습니다.">
     <meta name="keywords" content="유목, 이동주, 물빛사진, 사진작가, 물사진, 빛사진, 추상사진, 반영사진, 풍경사진, 예술사진, 한국사진작가">
     <meta name="author" content="이동주 (유목)">
     <link rel="canonical" href="https://seungheon.com/">
+    <link rel="alternate" hreflang="ko" href="https://seungheon.com/">
+    <link rel="alternate" hreflang="en" href="https://seungheon.com/en/">
+    <link rel="alternate" hreflang="ja" href="https://seungheon.com/ja/">
+    <link rel="alternate" hreflang="de" href="https://seungheon.com/de/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://seungheon.com/zh/">
+    <link rel="alternate" hreflang="zh-Hant" href="https://seungheon.com/zh-tw/">
+    <link rel="alternate" hreflang="es" href="https://seungheon.com/es/">
+    <link rel="alternate" hreflang="fr" href="https://seungheon.com/fr/">
+    <link rel="alternate" hreflang="pt" href="https://seungheon.com/pt/">
+    <link rel="alternate" hreflang="it" href="https://seungheon.com/it/">
+    <link rel="alternate" hreflang="ru" href="https://seungheon.com/ru/">
+    <link rel="alternate" hreflang="ar" href="https://seungheon.com/ar/">
+    <link rel="alternate" hreflang="hi" href="https://seungheon.com/hi/">
+    <link rel="alternate" hreflang="id" href="https://seungheon.com/id/">
+    <link rel="alternate" hreflang="vi" href="https://seungheon.com/vi/">
+    <link rel="alternate" hreflang="tr" href="https://seungheon.com/tr/">
+    <link rel="alternate" hreflang="x-default" href="https://seungheon.com/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -58,7 +62,7 @@
         "alternateName": ["Yumok Water Light Photography", "流木の水光写真"],
         "url": "https://seungheon.com/",
         "description": "유목(流木) 이동주 작가(1952-2024)의 물빛사진 갤러리",
-        "inLanguage": ["ko", "en", "ja", "de"]
+        "inLanguage": ["ko", "en", "ja", "de", "zh", "zh-tw", "es", "fr", "pt", "it", "ru", "ar", "hi", "id", "vi", "tr"]
     }
     </script>
     <script type="application/ld+json">
@@ -98,25 +102,38 @@
     }
     </script>
 
-    <!-- hreflang -->
-    <link rel="alternate" hreflang="ko" href="https://seungheon.com/">
-    <link rel="alternate" hreflang="en" href="https://seungheon.com/en/">
-    <link rel="alternate" hreflang="ja" href="https://seungheon.com/ja/">
-    <link rel="alternate" hreflang="de" href="https://seungheon.com/de/">
-    <link rel="alternate" hreflang="x-default" href="https://seungheon.com/">
 
+    <link rel="preload" href="assets/fonts/yumok-batang-core.b8cbd496.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" as="image" href="assets/view/abstract/C27A2287_1.webp" fetchpriority="high">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="motion.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
-    <header>
+    <header class="m-hero">
         <button class="bookmark-btn" aria-label="즐겨찾기 추가">&#9733;</button>
         <nav class="lang-switcher" aria-label="언어 선택">
-            <a href="index.html" class="active" aria-current="page">KO</a>
-            <a href="en/index.html">EN</a>
-            <a href="ja/index.html">JA</a>
-            <a href="de/index.html">DE</a>
+            <details class="lang-menu">
+                <summary><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></svg><span>한국어</span></summary>
+                <div class="lang-list">
+                    <a href="index.html" lang="ko" hreflang="ko" class="active" aria-current="page">한국어</a>
+                    <a href="en/index.html" lang="en" hreflang="en">English</a>
+                    <a href="ja/index.html" lang="ja" hreflang="ja">日本語</a>
+                    <a href="de/index.html" lang="de" hreflang="de">Deutsch</a>
+                    <a href="zh/index.html" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+                    <a href="zh-tw/index.html" lang="zh-Hant" hreflang="zh-Hant">繁體中文</a>
+                    <a href="es/index.html" lang="es" hreflang="es">Español</a>
+                    <a href="fr/index.html" lang="fr" hreflang="fr">Français</a>
+                    <a href="pt/index.html" lang="pt" hreflang="pt">Português</a>
+                    <a href="it/index.html" lang="it" hreflang="it">Italiano</a>
+                    <a href="ru/index.html" lang="ru" hreflang="ru">Русский</a>
+                    <a href="ar/index.html" lang="ar" hreflang="ar">العربية</a>
+                    <a href="hi/index.html" lang="hi" hreflang="hi">हिन्दी</a>
+                    <a href="id/index.html" lang="id" hreflang="id">Bahasa Indonesia</a>
+                    <a href="vi/index.html" lang="vi" hreflang="vi">Tiếng Việt</a>
+                    <a href="tr/index.html" lang="tr" hreflang="tr">Türkçe</a>
+                </div>
+            </details>
         </nav>
         <h1>유목의 물빛사진</h1>
         <p>물과 빛이 빚어낸 찰나의 예술</p>
@@ -132,18 +149,19 @@
             <a class="door door-2d" href="#main-content">
                 <span class="door-kicker">한눈에 보는</span>
                 <strong>2D 갤러리</strong>
-                <span class="door-desc">앨범별로 282점을 펼쳐 봅니다</span>
+                <span class="door-desc">앨범별로 303점을 펼쳐 봅니다</span>
                 <span class="door-go">보기</span>
             </a>
         </nav>
         <!-- gate:end -->
+        <div class="gate-foot"></div>
     </header>
     <main id="main-content">
         <section class="introduction">
             <h2>작가</h2>
             <div class="author-profile">
                 <div class="author-photo">
-                    <img src="assets/photographer/leedongjoo.jpg" alt="사진작가 유목 이동주 (1952-2024) 프로필 사진" id="author-photo" tabindex="0" role="button" style="cursor:pointer">
+                    <img src="assets/photographer/web/leedongjoo-s.webp" width="840" height="560" alt="사진작가 유목 이동주 (1952-2024) 프로필 사진" id="author-photo" tabindex="0" role="button" style="cursor:pointer">
                 </div>
                 <div class="author-info">
                     <h3>유목<sub>流木</sub> 이동주<sub>(李東周, 1952-2024)</sub></h3>
@@ -156,37 +174,42 @@
             <h2>앨범</h2>
             <div class="album-grid">
                 <a href="albums/abstract.html" class="album-card">
-                    <img src="assets/abstract/cover.jpg" alt="추상 앨범 - 물과 빛의 추상적 표현 사진 모음" loading="lazy">
+                    <img src="assets/covers/abstract.webp" width="600" height="800" alt="추상 앨범 - 물과 빛의 추상적 표현 사진 모음" loading="lazy">
                     <span class="album-count">143</span>
                     <span>추상</span>
                 </a>
                 <a href="albums/reflection.html" class="album-card">
-                    <img src="assets/reflection/cover.jpg" alt="반영 앨범 - 수면 위 반영을 담은 사진 모음" loading="lazy">
+                    <img src="assets/covers/reflection.webp" width="600" height="800" alt="반영 앨범 - 수면 위 반영을 담은 사진 모음" loading="lazy">
                     <span class="album-count">46</span>
                     <span>반영</span>
                 </a>
                 <a href="albums/pattern.html" class="album-card">
-                    <img src="assets/pattern/cover.jpg" alt="문양 앨범 - 자연이 만든 문양 사진 모음" loading="lazy">
+                    <img src="assets/covers/pattern.webp" width="600" height="800" alt="문양 앨범 - 자연이 만든 문양 사진 모음" loading="lazy">
                     <span class="album-count">24</span>
                     <span>문양</span>
                 </a>
                 <a href="albums/landscape.html" class="album-card">
-                    <img src="assets/landscape/cover.jpg" alt="풍경 앨범 - 자연 풍경 사진 모음" loading="lazy">
+                    <img src="assets/covers/landscape.webp" width="600" height="800" alt="풍경 앨범 - 자연 풍경 사진 모음" loading="lazy">
                     <span class="album-count">69</span>
                     <span>풍경</span>
+                </a>
+                <a href="albums/awards.html" class="album-card">
+                    <img src="assets/covers/awards.webp" width="600" height="800" alt="입상작 앨범 - 2019년 공모전과 촬영대회에 낸 사진 모음" loading="lazy">
+                    <span class="album-count">21</span>
+                    <span>입상작</span>
                 </a>
             </div>
         </section>
     </main>
     <footer>
-        <p>&copy; 유목의 물빛사진 · <a href="license.html">라이선스</a> · <a href="about.html">작가 소개</a></p>
+        <p>&copy; 유목의 물빛사진 · <a href="license.html">라이선스</a> · <a href="license.html#privacy">개인정보</a> · <a href="about.html">작가 소개</a></p>
         <p class="footer-contact"><a href="https://github.com/heonbert/heonbert.github.io" target="_blank" rel="noopener" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/></svg></a></p>
     </footer>
     <!-- 작가 사진 팝업 -->
     <div class="popup" id="author-popup" role="dialog" aria-modal="true" aria-label="작가 사진" style="display:none">
         <div class="popup-content">
             <button class="close-btn" id="author-popup-close" aria-label="닫기">&times;</button>
-            <img src="assets/photographer/leedongjoo.jpg" alt="사진작가 유목 이동주 (1952-2024)">
+            <img src="assets/photographer/web/leedongjoo-l.webp" width="1800" height="1200" loading="lazy" alt="사진작가 유목 이동주 (1952-2024)">
             <div class="popup-bottom">
                 <a class="download-btn" href="assets/photographer/leedongjoo.jpg" download="leedongjoo.jpg" aria-label="다운로드"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
                 <button class="share-btn" id="author-share-btn" aria-label="공유"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
@@ -236,6 +259,7 @@
             });
         })();
     </script>
+    <script id="yumok-labels">window.YUMOK_LABELS = {"viewer":"사진 보기","prev":"이전 사진","next":"다음 사진","close":"닫기","download":"원본 파일 받기","share":"공유","page":"작품 페이지","copied":"링크를 복사했습니다","bm_desktop":"Ctrl+D를 눌러 즐겨찾기에 추가하세요","bm_mac":"⌘+D를 눌러 즐겨찾기에 추가하세요","bm_ios":"하단 공유 버튼(□↑)을 누른 후\n\"홈 화면에 추가\"를 선택하세요","bm_android":"브라우저 메뉴(⋮)에서\n\"홈 화면에 추가\"를 선택하세요","bm_installed":"홈 화면에 추가되었습니다!","bm_already":"이미 앱으로 설치되어 있습니다 ✓","bm_running":"이미 앱으로 실행 중입니다"};</script>
     <script src="bookmark.js"></script>
     <script src="contact.js"></script>
     <script type="module" src="motion.js"></script>

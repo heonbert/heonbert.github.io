@@ -3,6 +3,7 @@
 // Plan (north is -z). A dark vestibule opens onto a tall nave with a long pool under a skylight.
 // Abstract fills the three west rooms; Reflection, Pattern and Landscape the three east rooms.
 // The pool runs north to the end wall, where the photographer's self-portrait hangs alone.
+// Off the vestibule: his film to the west; to the east his field log, and beyond it the pictures he sent to contests.
 
 export const TH = 0.5;          // wall thickness
 export const RADIUS = 0.38;     // visitor radius
@@ -26,6 +27,8 @@ export const ROOMS = [
     { id: 'refl', album: 'reflection', x0: E0, x1: E1, z0: -25.5, z1: -0.5, h: GH, style: 'moss', part: 12 },
     { id: 'patt', album: 'pattern', x0: E0, x1: E1, z0: -39, z1: -26, h: GH, style: 'clay', allGrid: true },
     { id: 'land', album: 'landscape', x0: E0, x1: E1, z0: -73.5, z1: -39.5, h: GH, style: 'stone', part: 16 },
+    // the contest pictures of 2019, reached through the field log; not part of the 282 he chose for his site
+    { id: 'awards', album: 'awards', x0: 6.5, x1: 22.5, z0: 10, z1: 26, h: 4.4, style: 'dusk', axis: 12.75, endSide: 'S', entry: 'log-awards', noGrid: true },
 ];
 const AXW = W1 - 4, AXE = E0 + 4; // enfilade axes of the two wings
 
@@ -44,14 +47,17 @@ export const DOORS = [
     { id: 'a2-a3', type: 'z', z0: -49.5, z1: -49, c: AXW, w: 3, h: 3.2 },
     { id: 'refl-patt', type: 'z', z0: -26, z1: -25.5, c: AXE, w: 3, h: 3.2 },
     { id: 'patt-land', type: 'z', z0: -39.5, z1: -39, c: AXE, w: 3, h: 3.2 },
+    { id: 'log-awards', type: 'z', z0: 9.5, z1: 10, c: 12.75, w: 3, h: 3 },
 ];
 
 // Works given a wall of their own. Chosen on the photographer's own record where there is one:
 // 9, 11, 12 are his three contest pictures of 2019; 147 he showed at the 2020 club exhibition.
 // 1, 143, 155, 245, 247 close the long views through the wings. 274 is his self-portrait.
+// 299 is the one picture that took a prize (bronze, Gimje Horizon Festival); it faces the door of the contest room.
 export const HEROES = {
     a1: { part: 9, end: 1 }, a2: { part: 11 }, a3: { part: 12, end: 143 },
     refl: { part: 147, end: 155 }, land: { part: 245, end: 247 },
+    awards: { end: 299 },
 };
 export const FINALE = 274;
 
@@ -104,6 +110,8 @@ function partitionOf(r) {
 function benchOf(r) {
     if (!r.album) return null;
     const p = partitionOf(r), cz = (r.z0 + r.z1) / 2;
+    // in the contest room the bench faces the prize picture, across the way in from the door
+    if (r.axis !== undefined) return { x0: r.axis - 1.1, x1: r.axis + 1.1, z0: cz - 0.26, z1: cz + 0.26, room: r.id, kind: 'bench' };
     const x = p ? (p.x0 + p.x1) / 2 - p.toNave * 3.5 : (r.x0 + r.x1) / 2;
     return { x0: x - 0.26, x1: x + 0.26, z0: cz - 1.1, z1: cz + 1.1, room: r.id, kind: 'bench' };
 }
@@ -206,6 +214,13 @@ function sequence(s, g) {
     return isGrid.map(gr => gr ? { kind: 'grid', pitch: GRID.pitch, n: 6 } : { kind: 'single', pitch: SINGLE.pitch, n: 1 });
 }
 
+// Keep the area of the standard frame, in the picture's own proportions.
+function fit(p, base) {
+    const a = p.width && p.height ? p.width / p.height : base.w / base.h;
+    const h = Math.sqrt(base.w * base.h / a);
+    return { w: a * h, h };
+}
+
 function hangRoom(r, list, byN) {
     const works = [];
     const hero = HEROES[r.id] || {};
@@ -214,18 +229,19 @@ function hangRoom(r, list, byN) {
     const add = (p, kind, x, z, nx, nz, w, h, y = CY) => works.push({ p, kind, x, z, nx, nz, w, h, y, room: r.id });
 
     // hero zone at the end of the wing's long view
-    const endSide = r.id === 'a1' || r.id === 'refl' ? 'S' : r.id === 'a3' || r.id === 'land' ? 'N' : null;
-    const axis = r.x1 <= 0 ? AXW : AXE;
+    const endSide = r.endSide || (r.id === 'a1' || r.id === 'refl' ? 'S' : r.id === 'a3' || r.id === 'land' ? 'N' : null);
+    const axis = r.axis ?? (r.x1 <= 0 ? AXW : AXE);
     const walls = roomWalls(r);
     let runs = [], loop = 0, navePos = 0;
     for (const s of walls) {
-        for (const o of s.open) if (o.door.id.startsWith('nave-')) navePos = loop + o.t1;
+        for (const o of s.open) if (o.door.id.startsWith('nave-') || o.door.id === r.entry) navePos = loop + o.t1;
         for (const seg of s.solid) {
             let parts = [seg];
             if (hero.end && s.name === endSide) {
                 const t = s.name === 'N' ? axis - r.x0 : r.x1 - axis;
                 parts = [{ t0: seg.t0, t1: t - HERO.zone / 2 }, { t0: t + HERO.zone / 2, t1: seg.t1 }];
-                add(byN[hero.end], 'hero', s.sx + s.dx * t, s.sz + s.dz * t, s.nx, s.nz, HERO.w, HERO.h);
+                const big = fit(byN[hero.end], HERO);
+                add(byN[hero.end], 'hero', s.sx + s.dx * t, s.sz + s.dz * t, s.nx, s.nz, big.w, big.h);
             }
             for (const q of parts) if (q.t1 - q.t0 >= 2.6) runs.push({ ...s, t0: q.t0, t1: q.t1, pos: loop + q.t0 });
         }
@@ -245,7 +261,7 @@ function hangRoom(r, list, byN) {
     const usable = runs.map(q => Math.max(0, q.t1 - q.t0 - 1.0));
     let plan = null;
     search: for (const minF of [1.15, 1.0]) {
-        const maxG = Math.floor(list.length / 6);
+        const maxG = r.noGrid ? 0 : Math.floor(list.length / 6);
         for (let g = r.allGrid ? maxG : 0; g <= maxG; g++) {
             const units = sequence(list.length - 6 * g, g);
             for (const f of [1.6, 1.5, 1.4, 1.3, 1.2, 1.15, 1.1, 1.05, 1.0]) {
@@ -265,7 +281,7 @@ function hangRoom(r, list, byN) {
             const t = q.t0 + 0.5 + usable[j] * (cum + u.pitch / 2) / total;
             cum += u.pitch;
             const x = q.sx + q.dx * t, z = q.sz + q.dz * t;
-            if (u.kind === 'single') add(list[k++], 'single', x, z, q.nx, q.nz, SINGLE.w, SINGLE.h);
+            if (u.kind === 'single') { const one = fit(list[k], SINGLE); add(list[k++], 'single', x, z, q.nx, q.nz, one.w, one.h); }
             else for (let row = 0; row < 2; row++) for (let col = -1; col <= 1; col++) {
                 add(list[k++], 'grid', x + q.dx * col * GRID.dx, z + q.dz * col * GRID.dx, q.nx, q.nz, GRID.w, GRID.h, CY + (row ? -GRID.dy : GRID.dy));
             }
@@ -274,21 +290,26 @@ function hangRoom(r, list, byN) {
     return works;
 }
 
-/** Decide where every photograph hangs. Returns works in visiting order. */
+/** Decide where every photograph hangs. Returns works in visiting order: the 282, the last wall, then the contest room. */
 export function hang(photos) {
     const byN = {};
     for (const p of photos) byN[p.n] = p;
     const special = new Set([FINALE]);
     for (const h of Object.values(HEROES)) { if (h.part) special.add(h.part); if (h.end) special.add(h.end); }
     const works = [];
-    for (const album of ['abstract', 'reflection', 'pattern', 'landscape']) {
-        const rooms = ROOMS.filter(r => r.album === album);
-        const list = photos.filter(p => p.album === album && !special.has(p.n));
+    const album = name => {
+        const rooms = ROOMS.filter(r => r.album === name);
+        const list = photos.filter(p => p.album === name && !special.has(p.n));
         const share = Math.ceil(list.length / rooms.length);
-        rooms.forEach((r, i) => works.push(...hangRoom(r, list.slice(i * share, (i + 1) * share), byN)));
-    }
+        const out = [];
+        rooms.forEach((r, i) => out.push(...hangRoom(r, list.slice(i * share, (i + 1) * share), byN)));
+        return out;
+    };
+    for (const name of ['abstract', 'reflection', 'pattern', 'landscape']) works.push(...album(name));
     const nave = ROOMS.find(r => r.id === 'nave');
     works.push({ p: byN[FINALE], kind: 'finale', x: 0, z: nave.z0, nx: 0, nz: 1, w: 2.7, h: 1.8, y: 2.0, room: 'nave' });
+    for (const w of works) w.group = 'main';
+    if (photos.some(p => p.album === 'awards')) for (const w of album('awards')) { w.group = 'awards'; works.push(w); }
     return works;
 }
 export const partitions = () => OBSTACLES.filter(o => o.kind === 'partition');

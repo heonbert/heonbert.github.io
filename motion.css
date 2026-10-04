@@ -56,6 +56,7 @@ header.m-hero .subtitle { color: var(--text-secondary); }
 
 /* ---------- title: letters surface one by one ---------- */
 .m-char { display: inline-block; white-space: pre; will-change: transform, opacity, filter; }
+.m-word { display: inline-block; white-space: nowrap; }
 
 /* ---------- gallery: caption rises on hover ---------- */
 .gallery .m-fig {
@@ -231,61 +232,6 @@ a.album-card.m-tilt { transition: transform 0.18s ease-out, box-shadow 0.5s ease
     .corridor, .scene-2d .col { animation: none; }
     ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
-
-/* ---------- language menu ---------- */
-.lang-switcher.m-lang { gap: 0; }
-.m-lang-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 14px 7px 10px;
-    font: inherit;
-    font-size: 0.82em;
-    letter-spacing: 0.04em;
-    color: var(--text-primary);
-    background: rgba(8, 12, 18, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 999px;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-}
-.m-lang-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.4; }
-.m-lang-btn:hover { border-color: var(--accent); }
-.m-lang-list {
-    position: fixed;
-    z-index: 1500;
-    max-height: calc(100vh - 80px);
-    overflow: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    min-width: 270px;
-    padding: 8px;
-    background: rgba(10, 13, 18, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-}
-.m-lang-list[hidden] { display: none; }
-.m-lang-list a {
-    display: block;
-    padding: 9px 14px;
-    font-size: 0.86rem;
-    letter-spacing: 0.02em;
-    text-align: start;
-    text-transform: none;
-    white-space: nowrap;
-    color: var(--text-secondary);
-    background: none;
-    border: 0;
-    border-radius: 8px;
-    text-decoration: none;
-}
-.m-lang-list a:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.07); }
-.m-lang-list a.active { color: var(--accent); }
 
 /* scripts whose letters join must not be spaced apart */
 :lang(ar) *, :lang(hi) * { letter-spacing: 0 !important; }

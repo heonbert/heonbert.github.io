@@ -24,8 +24,19 @@ const titleOf = p => TX.titles[p.n - 1] || p.title.en;
 const isRtl = () => (LANG_LIST.find(x => x.code === lang) || {}).dir === 'rtl';
 const tip = (id, text) => { const el = document.getElementById(id); el.setAttribute('aria-label', text); el.dataset.tip = text; };
 
-const SERIF = "'Iropke Batang','Noto Serif KR','Batang',Georgia,serif";
-const SANS = "system-ui,-apple-system,'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif";
+// Fonts follow the language: exhibition.css sets --serif and --sans for each one. Only Korean downloads a font.
+let SERIF = 'Georgia,serif', SANS = 'system-ui,sans-serif';
+function readFonts() {
+    const cs = getComputedStyle(document.documentElement);
+    SERIF = cs.getPropertyValue('--serif').trim() || SERIF;
+    SANS = cs.getPropertyValue('--sans').trim() || SANS;
+}
+// Words drawn on walls need their font before they are drawn. Only Korean has one to wait for.
+function fontReady() {
+    if (lang !== 'ko' || !document.fonts) return Promise.resolve();
+    const sample = JSON.stringify(TX.ui) + TX.titles.join('') + (state.shoots || []).map(d => d[1]).join('');
+    return Promise.race([document.fonts.load("40px 'Yumok Batang'", sample).catch(() => null), new Promise(r => setTimeout(r, 3000))]);
+}
 const EYE = L.EYE;
 const small = Math.min(window.innerWidth || 800, window.innerHeight || 800) < 600;
 
@@ -42,7 +53,10 @@ try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 } catch (e) { fail(); throw e; }
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.75 : 2));
+// Sharpness gives way to smoothness on a device that cannot keep up (see the loop).
+let dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2);
+const fps = { t: 0, n: 0, low: 0, since: 1e9 };
+renderer.setPixelRatio(dpr);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050608);
 const camera = new THREE.PerspectiveCamera(60, 16 / 9, 0.08, 200);
@@ -52,6 +66,7 @@ Object.assign(state, { camera, scene, renderer });   // handles for inspection f
 camera.position.copy(state.pos);                      // never draw a frame from the origin
 
 function fail() {
+    document.documentElement.dataset.hall = 'failed';
     $('enter').hidden = true;
     document.querySelector('#welcome .lead').textContent = t('fail');
 }
@@ -123,6 +138,7 @@ const STYLE = {
     ink: { wall: [0.125, 0.135, 0.155], floor: [0.045, 0.046, 0.05], ceil: 0x0a0b0d, glow: 0.2, a: [0.9, 0.58] },
     moss: { wall: [0.15, 0.185, 0.165], floor: [0.05, 0.052, 0.048], ceil: 0x0a0c0b, glow: 0.19, a: [0.9, 0.58] },
     clay: { wall: [0.235, 0.17, 0.135], floor: [0.055, 0.047, 0.042], ceil: 0x0d0b0a, glow: 0.2, a: [0.9, 0.58] },
+    dusk: { wall: [0.165, 0.15, 0.172], floor: [0.05, 0.047, 0.052], ceil: 0x0b0a0c, glow: 0.2, a: [0.9, 0.58] },
     stone: { wall: [0.60, 0.585, 0.55], floor: [0.2, 0.19, 0.175], ceil: 0x2c2b28, glow: 0.03, a: [0.93, 0.7] },
     reveal: { wall: [0.60, 0.585, 0.56], concrete: 1, caustic: 0, floor: [0.2, 0.2, 0.21], a: [0.9, 0.56] },
 };
@@ -267,7 +283,7 @@ function buildPool() {
 
 /* ---------- his film, and the sound of that day ---------- */
 const media = { video: null, audio: null, screen: null, mat: null, vtex: null, soundOn: false, vol: 0 };
-const ROOM_VOLUME = { nave: 0.55, film: 0.75, vest: 0.35, log: 0.3 };
+const ROOM_VOLUME = { nave: 0.55, film: 0.75, vest: 0.35, log: 0.3, awards: 0.25 };
 function buildMedia() {
     const S = L.SCREEN, yaw = Math.atan2(S.nx, S.nz);
     const mat = new THREE.MeshBasicMaterial({ color: 0x0a0d12, side: THREE.DoubleSide });
@@ -283,7 +299,7 @@ function buildMedia() {
     mirror.position.set(S.x + S.nx * 0.03, -S.y, S.z + S.nz * 0.03); mirror.rotation.y = yaw; mirror.scale.y = -1;
     scene.add(screen, mirror);
     const v = document.createElement('video');
-    v.src = 'media/simpo-2019.mp4'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
+    v.src = small ? 'media/simpo-2019-s.mp4' : 'media/simpo-2019.mp4'; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none';
     v.addEventListener('playing', () => {
         if (media.vtex) return;
         media.vtex = new THREE.VideoTexture(v); media.vtex.colorSpace = THREE.SRGBColorSpace;
@@ -297,9 +313,10 @@ function buildMedia() {
 function updateMedia(here) {
     const v = media.video, a = media.audio;
     if (!v || !state.entered) return;
-    const d = Math.hypot(state.pos.x - L.SCREEN.x, state.pos.z - L.SCREEN.z);
-    if (d < 30 && v.paused) v.play().catch(() => { /* not allowed yet */ });
-    else if (d > 36 && !v.paused) v.pause();
+    // the film is fetched and played only in its own room, or at the door that looks into it
+    const seen = !!here && (here.id === 'film' || (here.id === 'vest' && state.pos.x < -1.5));
+    if (seen && v.paused) v.play().catch(() => { /* not allowed yet */ });
+    else if (!seen && !v.paused) v.pause();
     const target = media.soundOn ? (here && ROOM_VOLUME[here.id]) || 0.2 : 0;
     media.vol += (target - media.vol) * 0.25;
     a.volume = Math.max(0, Math.min(1, media.vol));
@@ -336,6 +353,65 @@ function makeLog() {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
     m.renderOrder = 3;
     return m;
+}
+
+// How he worked, counted from the camera records of the 282 photographs he chose.
+function makeChart() {
+    const P = (state.photos || []).filter(p => p.album !== 'awards' && p.taken);
+    const W = 8.4, H = 3.0, ppm = 300;
+    const c = document.createElement('canvas'); c.width = W * ppm; c.height = H * ppm;
+    const g = c.getContext('2d');
+    const rtl = isRtl();
+    g.direction = rtl ? 'rtl' : 'ltr';
+    g.textBaseline = 'alphabetic';
+    const X = x => (rtl ? W - x : x) * ppm;                 // the whole sheet is mirrored for right-to-left scripts
+    const text = (s, x, y, size, color, font = SANS, align = 'start', maxW) => {
+        g.font = `400 ${size * ppm}px ${font}`; g.fillStyle = color;
+        g.textAlign = align === 'center' ? 'center' : (align === 'end') !== rtl ? 'right' : 'left';
+        g.fillText(s, X(x), y * ppm, maxW ? maxW * ppm : undefined);
+    };
+    const rect = (x, y, w, h) => g.fillRect(rtl ? X(x) - w * ppm : X(x), y * ppm, w * ppm, h * ppm);
+    const days = new Set(P.map(p => p.taken.slice(0, 10))).size;
+    text(t('howTitle'), 0, 0.24, 0.2, '#e9ecf2', SERIF);
+    text(t('howSub').replace('{d}', days), 0, 0.42, 0.075, '#9aa8c0');
+    const hours = new Array(24).fill(0), months = new Array(12).fill(0);
+    for (const p of P) { hours[Number(p.taken.slice(11, 13))]++; months[Number(p.taken.slice(5, 7)) - 1]++; }
+    const FB = [[0, 35, '≤35'], [36, 70, '36–70'], [71, 135, '71–135'], [136, 200, '136–200'], [201, 400, '201–400'], [401, 9999, '400+']];
+    const focal = FB.map(([a, b]) => P.filter(p => p.focal_length_mm >= a && p.focal_length_mm <= b).length);
+    const count = {};
+    for (const p of P) if (p.place_en) count[p.place_en] = (count[p.place_en] || 0) + 1;
+    const places = Object.entries(count).sort((a, b) => b[1] - a[1]).slice(0, 7);
+    const pw = 1.86, gap = 0.32, top = 0.92, ph = 1.4;      // four panels side by side
+    const bars = (i, title, values, labels, note, hot) => {
+        const x0 = i * (pw + gap), max = Math.max(1, ...values), bw = pw / values.length;
+        text(title, x0, top - 0.14, 0.085, '#e9ecf2', SERIF);
+        values.forEach((v, k) => {
+            const h = Math.max(0.004, (v / max) * ph);
+            g.fillStyle = hot(k) ? '#6fb0e0' : 'rgba(233,236,242,0.4)';
+            rect(x0 + k * bw + bw * 0.14, top + ph - h, bw * 0.72, h);
+            if (labels[k] != null) text(String(labels[k]), x0 + k * bw + bw / 2, top + ph + 0.11, 0.048, '#7f8ba0', SANS, 'center');
+        });
+        text(note, x0, top + ph + 0.33, 0.062, '#9aa8c0', SANS, 'start', pw);
+    };
+    const hr = hours.slice(6, 21);
+    bars(0, t('howHour'), hr, hr.map((_, k) => ((k + 6) % 3 === 0 ? k + 6 : null)), t('howHourNote').replace('{n}', hours[15] + hours[16]), k => k === 9 || k === 10);
+    bars(1, t('howMonth'), months, months.map((_, k) => k + 1), t('howMonthNote').replace('{n}', months[9] + months[10]), k => k === 9 || k === 10);
+    bars(2, t('howFocal'), focal, FB.map(b => b[2]), t('howFocalNote').replace('{n}', P.filter(p => p.focal_length_mm > 70).length), k => k >= 2);
+    const x0 = 3 * (pw + gap), rowH = ph / 7, maxP = places.length ? places[0][1] : 1;
+    text(t('howPlace'), x0, top - 0.14, 0.085, '#e9ecf2', SERIF);
+    places.forEach(([name, n], k) => {
+        const y = top + k * rowH;
+        g.fillStyle = 'rgba(111,176,224,0.55)';
+        rect(x0, y + rowH * 0.66, (n / maxP) * pw, rowH * 0.16);
+        text(TX.places[name] || name, x0, y + rowH * 0.5, 0.06, '#e9ecf2', SANS, 'start', pw - 0.3);
+        text(String(n), x0 + pw, y + rowH * 0.5, 0.06, '#9aa8c0', SANS, 'end');
+    });
+    text(t('howPlaceNote').replace('{n}', P.filter(p => p.place_en).length), x0, top + ph + 0.33, 0.062, '#9aa8c0', SANS, 'start', pw);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
+    mesh.renderOrder = 3;
+    return mesh;
 }
 
 /* ---------- text on walls and floors ---------- */
@@ -401,13 +477,23 @@ function updateSocial(here) {
     const on = Presence.enabled;
     $('bow').hidden = !on;
     const n = Presence.shared.here;
-    $('together').textContent = on && n > 1 ? t('together').replace('{n}', n) : '';
+    $('together').textContent = on && n > 1 && !state.quiet ? t('together').replace('{n}', n) : '';
     const atEnd = on && !!here && here.id === 'nave' && state.pos.z < -58;
     $('flower').hidden = !atEnd;
     $('flower').disabled = Presence.shared.laid;
     tip('flower', Presence.shared.laid ? t('flowerDone') : t('flower'));
 }
 $('bow').addEventListener('click', () => { state.bowT = 1.6; Presence.gesture('bow'); });
+// alone with the pictures: other visitors, real and imagined, step out of sight
+function setQuiet(on, remember = true) {
+    state.quiet = on;
+    if (remember) try { localStorage.setItem('quiet', on ? 'on' : 'off'); } catch (e) { /* storage unavailable */ }
+    $('quiet').setAttribute('aria-pressed', on);
+    tip('quiet', on ? t('quietOff') : t('quiet'));
+    Presence.setQuiet(on); Npc.setQuiet(on);
+    updateSocial(L.roomAt(state.pos.x, state.pos.z));
+}
+$('quiet').addEventListener('click', () => setQuiet(!state.quiet));
 $('flower').addEventListener('click', () => { if (Presence.gesture('flower')) { state.bowT = 1.6; updateSocial(L.roomAt(state.pos.x, state.pos.z)); } });
 function buildTexts() {
     for (const m of [...texts.children]) { m.material.map.dispose(); m.material.dispose(); m.geometry.dispose(); texts.remove(m); }
@@ -432,6 +518,12 @@ function buildTexts() {
         { text: t('soundNote'), size: 0.075, color: BLUE, sans: true, gap: 0.1 },
     ], { width: 3.4, lineH: 1.6 }), -15.6, 1.95, 0.51);
     put(makeLog(), 18.99, 1.95, 5, -Math.PI / 2);
+    put(makeChart(), 12.75, 2.0, 0.51);
+    // beside the door at the far side of the log room: the pictures he sent to contests
+    put(makeText([
+        { text: TX.ui.halls.awards, size: 0.2, color: PALE },
+        { text: TX.ui.hallText.awards, size: 0.085, color: PALE2, gap: 0.06 },
+    ], { width: 3.0, lineH: 1.6 }), 16.45, 1.9, 9.49, Math.PI);
 
     // nave: each gallery is named beside its portal
     const roman = [' I', ' II', ' III'];
@@ -442,6 +534,7 @@ function buildTexts() {
         const i = seen[r.album] = (seen[r.album] || 0) + 1;
         const lines = [{ text: TX.ui.halls[r.album] + (r.album === 'abstract' ? roman[i - 1] : ''), size: 0.36, color: INK }];
         if (i === 1) lines.push({ text: TX.ui.hallText[r.album], size: 0.092, color: INK2, gap: 0.1 });
+        if (i === 1 && TX.ui.hallNote && TX.ui.hallNote[r.album]) lines.push({ text: TX.ui.hallNote[r.album], size: 0.068, color: INK2, sans: true, gap: 0.1 });
         const m = makeText(lines, { width: 3.4, lineH: 1.5 });
         const y = 2.55 - m.userData.h / 2;
         if (d.x0 < 0) put(m, -5.99, y, d.c - d.w / 2 - 2.4, Math.PI / 2);
@@ -551,6 +644,9 @@ function buildWorks(photos) {
     for (const im of [glowUp, glowDn, pools, shadows, frames, mats, cans, lens]) { im.frustumCulled = false; scene.add(im); }
     state.works = works;
     state.meshes = works.map(w => w.mesh);
+    // two sequences: the 282 with the last wall, and the contest room. Each work knows its place in its own.
+    state.main = works.filter(w => w.group !== 'awards');
+    for (const list of [state.main, works.filter(w => w.group === 'awards')]) list.forEach((w, i) => { w.seq = i; w.list = list; });
 
     // a small pool of wall labels that follows the visitor
     for (let i = 0; i < 12; i++) {
@@ -598,11 +694,19 @@ function updateLabels(force) {
 }
 
 /* ---------- lazy textures ---------- */
+// Each picture comes in three sizes: 384 px for anything in sight, 768 px when you stand near, and the
+// full picture when you stop in front of it. What is held in memory has a ceiling; beyond it the
+// farthest pictures are let go, and for a while nothing that far is fetched again.
 const loader = new THREE.TextureLoader();
-let loading = 0;
-function setTexture(w, url, kind) {
+let loading = 0, reach = 36;
+const RANK = { small: 1, thumb: 2, full: 3 };
+const EDGE = { small: 384, thumb: 768, full: 1200 };
+const TEX_BUDGET = (small ? 90 : 200) * 1e6;
+const texBytes = w => { const e = EDGE[w.loaded] || 0; return e * e * Math.min(1, w.p.height / w.p.width) * 4 * 1.34; };
+const texUrl = (w, kind) => '../' + encodeURI(kind === 'full' ? w.p.view : kind === 'thumb' ? w.p.thumb : w.p.thumb_s);
+function setTexture(w, kind) {
     loading++; w.loading = kind;
-    loader.load(url, tex => {
+    loader.load(texUrl(w, kind), tex => {
         loading--;
         tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
         if (w.material.map) w.material.map.dispose();
@@ -610,23 +714,44 @@ function setTexture(w, url, kind) {
         w.loaded = kind; w.loading = null;
     }, undefined, () => { loading--; w.loading = null; w.failed = (w.failed || 0) + 1; });
 }
+function dropTexture(w) {
+    if (!w.loaded) return;
+    w.material.map.dispose(); w.material.map = null; w.material.color.set(0x20262e);
+    w.material.needsUpdate = true; w.loaded = null;
+}
+function wanted(w) {
+    const big = w.kind === 'hero' || w.kind === 'finale';
+    if (w === state.focus || (big && w.dist < 22)) return 'full';
+    if (big) return w.dist < 60 ? 'thumb' : 'small';
+    return w.dist < (w.kind === 'grid' ? 4.5 : 9) ? 'thumb' : 'small';
+}
 function streamTextures() {
-    const near = [];
+    const todo = [];
+    let held = 0;
     for (const w of state.works) {
         const d = Math.hypot(w.x - state.pos.x, w.z - state.pos.z);
         w.dist = d;
         const big = w.kind === 'hero' || w.kind === 'finale';
         w.mesh.visible = d < (big ? 90 : 48);
         w.mirror.visible = d < 22;
-        if (d > 70 && w.loaded && !big) {
-            w.material.map.dispose(); w.material.map = null; w.material.color.set(0x20262e);
-            w.material.needsUpdate = true; w.loaded = null;
-        } else if (d < (big ? 80 : 36) && !w.loaded && !w.loading && (w.failed || 0) < 3) near.push(w);
+        if (d > 70 && w.loaded && !big) dropTexture(w);
+        held += texBytes(w);
+        if (w.loading || (w.failed || 0) >= 3 || d > (big ? 80 : reach)) continue;
+        const want = wanted(w);
+        if (!w.loaded || RANK[w.loaded] < RANK[want]) todo.push([w, want]);
     }
-    near.sort((a, b) => (a.dist - (a.kind === 'grid' ? 0 : 6)) - (b.dist - (b.kind === 'grid' ? 0 : 6)));
-    while (loading < 6 && near.length) { const w = near.shift(); setTexture(w, '../' + encodeURI(w.p.thumb), 'thumb'); }
-    const sharp = state.works.filter(w => w.loaded === 'thumb' && !w.loading && (w === state.focus || ((w.kind === 'hero' || w.kind === 'finale') && w.dist < 22)));
-    for (const w of sharp) if (loading < 8) setTexture(w, '../' + encodeURI(w.p.file), 'full');
+    if (held > TEX_BUDGET) {
+        const far = state.works.filter(w => w.loaded && w.dist > 14 && w !== state.focus).sort((a, b) => b.dist - a.dist);
+        for (const w of far) {
+            if (held <= TEX_BUDGET * 0.85) break;
+            held -= texBytes(w); dropTexture(w);
+            reach = Math.max(14, Math.min(reach, w.dist - 1));
+        }
+    } else if (held < TEX_BUDGET * 0.7) reach = Math.min(36, reach + 0.5);
+    state.texMB = Math.round(held / 1e6);
+    // nearest first; a picture with nothing on it yet goes before one that only wants sharpening
+    todo.sort((a, b) => (a[0].loaded ? 1 : 0) - (b[0].loaded ? 1 : 0) || a[0].dist - b[0].dist);
+    for (const [w, want] of todo) { if (loading >= (want === 'full' ? 8 : 6)) break; setTexture(w, want); }
 }
 
 /* ---------- moving ---------- */
@@ -674,7 +799,7 @@ function renderPanel() {
     document.body.classList.toggle('focused', !!w);
     if (!w) return;
     const p = w.p;
-    $('panel-count').textContent = `${TX.ui.halls[p.album]} · ${w.index + 1} / ${state.works.length}`;
+    $('panel-count').textContent = `${TX.ui.halls[p.album]} · ${w.seq + 1} / ${w.list.length}`;
     $('panel-title').textContent = titleOf(p);
     const own = p.title_by === 'yumok';
     $('panel-titleby').textContent = [noteOf(p), own ? t('own') : t('ai')].filter(Boolean).join(' · ');
@@ -689,9 +814,9 @@ function renderPanel() {
         const dt = document.createElement('dt'), dd = document.createElement('dd');
         dt.textContent = k; dd.textContent = val; dl.append(dt, dd);
     }
-    $('panel-credit').textContent = t('credit');
-    $('open').textContent = t('open');
-    $('open').href = '../' + encodeURI(p.file);
+    $('panel-credit').textContent = p.people ? '' : t('credit');      // pictures of people are not offered for free reuse
+    $('open').textContent = t('page');
+    $('open').href = `../${lang === 'ko' ? '' : lang + '/'}works/${p.album}/${p.id.split('/')[1].replace(/[^A-Za-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '')}.html`;
     $('share').textContent = t('share');
 }
 function focus(w, instant) {
@@ -703,7 +828,7 @@ function focus(w, instant) {
     renderPanel();
     $('caption').hidden = true;
     state.tourClock = 0;
-    if (state.tour) state.tourAt = w.index;
+    if (state.tour && w.group !== 'awards') state.tourAt = w.seq;
 }
 function unfocus() {
     if (!state.focus) return;
@@ -712,8 +837,8 @@ function unfocus() {
     renderPanel();
 }
 function neighbour(d) {
-    const n = state.works.length, i = state.focus ? state.focus.index : (d > 0 ? -1 : 0);
-    focus(state.works[(i + d + n) % n]);
+    const list = state.focus ? state.focus.list : state.main, n = list.length, i = state.focus ? state.focus.seq : (d > 0 ? -1 : 0);
+    focus(list[(i + d + n) % n]);
 }
 // The guided visit. state.tour is false, 'play' or 'pause'.
 function tourUi() {
@@ -724,15 +849,16 @@ function tourUi() {
     tip('t-play', state.tour === 'play' ? t('pause') : t('resume'));
     $('t-info').setAttribute('aria-pressed', !state.hidePanel);
     $('tour').setAttribute('aria-pressed', on);
-    if (on) $('t-count').textContent = `${state.tourAt + 1} / ${state.works.length}`;
+    if (on) $('t-count').textContent = `${state.tourAt + 1} / ${state.main.length}`;
     if (state.tour !== 'play') $('t-bar').firstElementChild.style.transform = `scaleX(${state.tour ? Math.min(1, state.tourClock / 7) : 0})`;
     renderPanel();
 }
 function tourStart() {
     // from the work in front of you, or the nearest one if you are inside a gallery; otherwise from the beginning
     const here = L.roomAt(state.pos.x, state.pos.z);
-    const w = state.focus || (here && here.album ? state.works.reduce((a, b) => ((b.dist ?? 1e9) < (a.dist ?? 1e9) ? b : a)) : state.works[0]);
-    state.tour = 'play'; state.hidePanel = false; state.tourAt = w.index;
+    const w = state.focus && state.focus.group !== 'awards' ? state.focus
+        : here && here.album && here.album !== 'awards' ? state.main.reduce((a, b) => ((b.dist ?? 1e9) < (a.dist ?? 1e9) ? b : a)) : state.main[0];
+    state.tour = 'play'; state.hidePanel = false; state.tourAt = w.seq;
     if (state.look) setLook(false);
     focus(w);
     tourUi();
@@ -741,13 +867,13 @@ function tourPause() { if (state.tour === 'play') { state.tour = 'pause'; tourUi
 function tourResume() {
     if (!state.tour) return;
     state.tour = 'play';
-    if (!state.focus || state.focus.index !== state.tourAt) focus(state.works[state.tourAt]);
+    if (state.focus !== state.main[state.tourAt]) focus(state.main[state.tourAt]);
     tourUi();
 }
 function tourStep(d) {
-    const n = state.works.length;
+    const n = state.main.length;
     state.tourAt = (state.tourAt + d + n) % n;
-    focus(state.works[state.tourAt]);
+    focus(state.main[state.tourAt]);
     tourUi();
 }
 function tourStop() {
@@ -786,7 +912,7 @@ function entryOf(roomId) {
 }
 const FILM_SEAT = { x: L.SCREEN.x + 5.9, z: L.SCREEN.z, yaw: Math.PI / 2 };
 const STOPS = [['film', () => FILM_SEAT], ['court', () => ({ x: -4.1, z: -2.2, yaw: 0 })], ['abstract', () => entryOf('a1')], ['reflection', () => entryOf('refl')],
-    ['pattern', () => entryOf('patt')], ['landscape', () => entryOf('land')]];
+    ['pattern', () => entryOf('patt')], ['landscape', () => entryOf('land')], ['awards', () => ({ x: 12.75, z: 12.6, yaw: Math.PI })]];
 function renderHalls() {
     const nav = $('halls');
     nav.textContent = '';
@@ -803,13 +929,13 @@ function renderHalls() {
 const MAP = { s: 2.5, x0: -23.5, z0: -75 };
 function drawMap() {
     const c = $('map'), dpr = Math.min(2, window.devicePixelRatio || 1);
-    const W = Math.round(47 * MAP.s), H = Math.round(85.5 * MAP.s);
+    const W = Math.round(47 * MAP.s), H = Math.round(101.5 * MAP.s);
     if (c.width !== W * dpr) { c.width = W * dpr; c.height = H * dpr; c.style.width = W + 'px'; c.style.height = H + 'px'; }
     const g = c.getContext('2d');
     g.setTransform(dpr * MAP.s, 0, 0, dpr * MAP.s, -MAP.x0 * dpr * MAP.s, -MAP.z0 * dpr * MAP.s);
-    g.clearRect(MAP.x0, MAP.z0, 47, 85.5);
+    g.clearRect(MAP.x0, MAP.z0, 47, 101.5);
     const here = L.roomAt(state.pos.x, state.pos.z);
-    const tint = { vest: '#2b3038', nave: '#8f8d88', ink: '#39404c', moss: '#3d4a42', clay: '#5b4336', stone: '#99958c' };
+    const tint = { vest: '#2b3038', nave: '#8f8d88', ink: '#39404c', moss: '#3d4a42', clay: '#5b4336', stone: '#99958c', dusk: '#453f4a' };
     for (const r of L.ROOMS) {
         g.globalAlpha = here && here.id === r.id ? 1 : 0.62;
         g.fillStyle = tint[r.style]; g.fillRect(r.x0, r.z0, r.x1 - r.x0, r.z1 - r.z0);
@@ -837,6 +963,7 @@ function applyLang() {
     const info = LANG_LIST.find(x => x.code === lang) || {};
     document.documentElement.lang = info.html || lang;
     document.documentElement.dir = info.dir || 'ltr';
+    readFonts();
     try { localStorage.setItem('lang', lang); } catch (e) { /* storage unavailable */ }
     document.title = `${t('eyebrow')} - ${t('title')}`;
     for (const el of document.querySelectorAll('[data-t]')) el.textContent = t(el.dataset.t);
@@ -850,7 +977,7 @@ function applyLang() {
     $('home').href = lang === 'ko' ? '../index.html' : `../${lang}/index.html`;
     document.querySelector('.fallback a').href = $('home').href;
     tip('home', t('home')); tip('langBtn', t('language')); tip('roomsBtn', t('rooms')); tip('look', t('look'));
-    tip('mapBtn', t('map')); tip('bow', t('bow')); tip('tour', t('tour')); tip('t-prev', t('prevWork')); tip('t-next', t('nextWork')); tip('t-stop', t('tourStop')); tip('t-info', t('info'));
+    tip('mapBtn', t('map')); tip('bow', t('bow')); tip('quiet', state.quiet ? t('quietOff') : t('quiet')); tip('tour', t('tour')); tip('t-prev', t('prevWork')); tip('t-next', t('nextWork')); tip('t-stop', t('tourStop')); tip('t-info', t('info'));
     tip('t-play', state.tour === 'play' ? t('pause') : t('resume'));
     tip('sound', media.soundOn ? t('soundOff') : t('soundOn'));
     $('map').setAttribute('aria-label', t('map'));
@@ -860,7 +987,9 @@ function applyLang() {
 }
 async function setLang(code) {
     if (code === lang) return;
-    try { TX = await loadLang(code); lang = code; applyLang(); } catch (e) { /* keep the current language */ }
+    try { TX = await loadLang(code); lang = code; applyLang(); } catch (e) { return; /* keep the current language */ }
+    // Korean words on the walls are drawn again once their font has arrived
+    if (code === 'ko') fontReady().then(() => { if (state.ready && lang === 'ko') { buildTexts(); buildShared(); updateLabels(true); } });
 }
 for (const info of LANG_LIST) {
     const b = document.createElement('button');
@@ -1031,6 +1160,15 @@ function frame() {
     const real = Math.min(clock.getDelta(), 0.5), dt = Math.min(real, 0.05);
     state.time += real;
     uTime.value = state.time;
+    // a device that cannot hold 38 frames a second for three seconds running gets a softer picture, down to 0.75
+    if (state.entered && real < 0.25 && state.time > fps.since) {
+        fps.t += real; fps.n++;
+        if (fps.t >= 1) {
+            fps.low = fps.n / fps.t < 38 ? fps.low + 1 : 0;
+            fps.t = 0; fps.n = 0;
+            if (fps.low >= 3 && dpr > 0.75) { dpr = Math.max(0.75, dpr - 0.25); renderer.setPixelRatio(dpr); resize(); fps.low = 0; }
+        }
+    }
     if (pool) pool.material.uniforms.time.value = state.time;
     const p = state.path;
     if (p) {
@@ -1105,20 +1243,18 @@ function frame() {
 
 /* ---------- start ---------- */
 applyLang();
-const fontReady = Promise.race([
-    document.fonts ? document.fonts.load(`40px 'Iropke Batang'`, '유목 流木 Yumok').catch(() => null) : Promise.resolve(),
-    new Promise(r => setTimeout(r, 3000)),
-]);
 const shoots = fetch('../data/shoots.json').then(r => r.json()).then(d => d.days).catch(() => []);
-Promise.all([fetch('../data/photos.json').then(r => r.json()), fontReady, shoots]).then(([data, , days]) => {
+Promise.all([fetch('../data/photos.json').then(r => r.json()), shoots]).then(async ([data, days]) => {
     state.shoots = days;
+    state.photos = data.photos;
+    await fontReady();
     buildArchitecture();
     buildPool();
     buildMedia();
     buildWorks(data.photos);
-    Npc.start({ scene, works: state.works });
     Presence.start({ scene, onChange: () => { buildShared(); updateSocial(L.roomAt(state.pos.x, state.pos.z)); } });
     state.ready = true;
+    document.documentElement.dataset.hall = 'ready';
     buildTexts();
     renderHalls();
     streamTextures();
@@ -1132,7 +1268,12 @@ Promise.all([fetch('../data/photos.json').then(r => r.json()), fontReady, shoots
         const target = state.works.find(w => '#' + w.p.id === decodeURIComponent(location.hash));
         if (target) focus(target, true);
         else goTo((Math.random() - 0.5) * 2.4, 6.4 + Math.random() * 0.6, 0, 0, 1.1);   // a slow walk towards the portal, each visitor to a slightly different spot
-        Presence.enter();
+        Presence.enter(lang);
+        fps.since = state.time + 6;                                      // judge smoothness once the first pictures are in
+        setTimeout(() => Npc.start({ scene, works: state.works }), 1500);  // the families come in after you
+        let alone = false;
+        try { alone = localStorage.getItem('quiet') === 'on'; } catch (e) { /* storage unavailable */ }
+        if (alone) setQuiet(true, false);
         // sound is on unless this visitor turned it off before
         let quiet = false;
         try { quiet = localStorage.getItem('sound') === 'off'; } catch (e) { /* storage unavailable */ }

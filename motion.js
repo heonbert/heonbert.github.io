@@ -14,37 +14,41 @@ const htmlLang = (document.documentElement.lang || 'ko').toLowerCase();
 const lang = (I18N.langs.find(l => (l.html || l.code).toLowerCase() === htmlLang) || I18N.langs.find(l => l.code === htmlLang.slice(0, 2)) || { code: 'ko' }).code;
 const TEXT = I18N.motion[lang] || I18N.motion.en;
 
-/* ---------- one language menu instead of a row of codes ---------- */
+/* ---------- language: the menu is plain HTML (<details>); this only adds comfort ---------- */
+const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } },
+};
 function languageMenu() {
-    const sw = document.querySelector('.lang-switcher');
-    if (!sw || I18N.langs.length < 2) return;
-    let page = location.href.slice(ROOT.length).split(/[?#]/)[0];
-    const first = page.split('/')[0];
-    if (I18N.langs.some(l => l.code === first)) page = page.slice(first.length + 1);
-    if (page === 'index.html') page = '';
-    const cur = I18N.langs.find(l => l.code === lang) || I18N.langs[0];
-    sw.textContent = '';
-    sw.classList.add('m-lang');
-    const btn = document.createElement('button');
-    btn.type = 'button'; btn.className = 'm-lang-btn'; btn.setAttribute('aria-haspopup', 'true'); btn.setAttribute('aria-expanded', 'false');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3.2 3 3.2 15 0 18M12 3c-3.2 3-3.2 15 0 18"/></svg>';
-    btn.append(cur.name);
-    const list = document.createElement('div'); list.className = 'm-lang-list'; list.hidden = true;
-    for (const l of I18N.langs) {
-        const a = document.createElement('a');
-        a.href = ROOT + (l.code === 'ko' ? '' : l.code + '/') + page;
-        a.textContent = l.name; a.lang = l.html || l.code;
-        if (l.code === lang) { a.className = 'active'; a.setAttribute('aria-current', 'page'); }
-        list.append(a);
-    }
-    btn.addEventListener('click', ev => { ev.stopPropagation(); list.hidden = !list.hidden; btn.setAttribute('aria-expanded', String(!list.hidden)); });
-    document.addEventListener('click', ev => { if (!ev.target.closest('.m-lang, .m-lang-list')) { list.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
-    document.addEventListener('keydown', ev => { if (ev.key === 'Escape') list.hidden = true; });
-    sw.append(btn);
-    document.body.append(list);
-    const place = () => { const r = btn.getBoundingClientRect(); list.style.top = (r.bottom + 8) + 'px'; list.style.right = Math.max(8, innerWidth - r.right) + 'px'; };
-    btn.addEventListener('click', place);
-    window.addEventListener('scroll', () => { list.hidden = true; }, { passive: true });
+    const menu = document.querySelector('.lang-menu');
+    if (!menu) return;
+    document.addEventListener('click', ev => { if (menu.open && !ev.target.closest('.lang-menu')) menu.open = false; });
+    document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && menu.open) { menu.open = false; menu.querySelector('summary').focus(); } });
+    // a language chosen by hand is remembered, so that nothing is suggested afterwards
+    menu.addEventListener('click', ev => { const a = ev.target.closest('a[hreflang]'); if (a) store.set('lang-choice', a.getAttribute('hreflang')); });
+}
+// If the reader's browser prefers another language that we have, offer it once, quietly. Never redirect.
+function languageSuggest() {
+    if (store.get('lang-choice') || store.get('lang-suggest') === 'no' || !I18N.suggest) return;
+    const known = tag => {
+        tag = tag.toLowerCase();
+        if (/^zh-(tw|hk|mo|hant)/.test(tag)) return 'zh-tw';
+        return (I18N.langs.find(l => l.code === tag) || I18N.langs.find(l => l.code === tag.slice(0, 2)) || {}).code;
+    };
+    const want = (navigator.languages || [navigator.language || '']).map(known).find(Boolean);
+    if (!want || want === lang) return;
+    const link = document.querySelector(`.lang-list a[hreflang="${(I18N.langs.find(l => l.code === want).html || want)}"]`);
+    const text = I18N.suggest[want];
+    if (!link || !text) return;
+    const bar = document.createElement('div'); bar.className = 'lang-suggest'; bar.lang = link.lang;
+    bar.dir = (I18N.langs.find(l => l.code === want) || {}).dir || 'ltr';
+    const a = document.createElement('a'); a.href = link.href; a.textContent = text[0];
+    a.addEventListener('click', () => store.set('lang-choice', want));
+    const x = document.createElement('button'); x.type = 'button'; x.setAttribute('aria-label', text[1]); x.textContent = '\u00d7';
+    x.addEventListener('click', () => { store.set('lang-suggest', 'no'); bar.remove(); });
+    bar.append(a, x);
+    document.body.append(bar);
+    if (!calm) bar.animate([{ opacity: 0, transform: 'translate(-50%, 14px)' }, { opacity: 1, transform: 'translate(-50%, 0)' }], { duration: 700, delay: 1200, easing: EASE, fill: 'backwards' });
 }
 
 /* ---------- reveal on scroll ---------- */
@@ -76,16 +80,32 @@ function splitTitle(h1) {
     const text = h1.textContent;
     h1.setAttribute('aria-label', text);
     h1.textContent = '';
-    // scripts whose letters join (Arabic, Devanagari) surface word by word; others letter by letter
+    // Letters surface one by one, but words are never broken across lines.
+    // Scripts whose letters join (Arabic, Devanagari) surface word by word. Chinese and Japanese may break anywhere.
+    // Latin letters on a right-to-left page stay in one piece, or they would be laid out backwards.
     const joined = /[؀-ۿऀ-ॿ]/.test(text);
-    const pieces = joined ? text.split(/(\s+)/) : [...text];
-    pieces.forEach((ch, i) => {
+    const rtl = getComputedStyle(h1).direction === 'rtl';
+    let n = 0;
+    const piece = (parent, str, step) => {
         const s = document.createElement('span');
-        s.className = 'm-char'; s.setAttribute('aria-hidden', 'true'); s.textContent = ch;
-        h1.append(s);
+        s.className = 'm-char'; s.setAttribute('aria-hidden', 'true'); s.textContent = str;
+        parent.append(s);
         s.animate([{ opacity: 0, transform: 'translateY(0.55em)', filter: 'blur(10px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }],
-            { duration: 1300, delay: 250 + i * (joined ? 90 : 55), easing: EASE, fill: 'backwards' });
-    });
+            { duration: 1300, delay: 250 + (n++) * step, easing: EASE, fill: 'backwards' });
+        return s;
+    };
+    if (rtl && !joined) { const s = piece(h1, text, 55); s.style.display = 'block'; s.style.whiteSpace = 'normal'; }
+    else for (const word of text.split(/(\s+)/)) {
+        if (!word.trim()) { if (word) h1.append(' '); continue; }
+        if (joined) { piece(h1, word, 90); continue; }
+        let box = h1;
+        if (!/[぀-ヿ㐀-鿿]/.test(word) && word.length <= 14) {
+            box = document.createElement('span'); box.className = 'm-word'; box.setAttribute('aria-hidden', 'true');
+            h1.append(box);
+        }
+        for (const ch of word) piece(box, ch, 55);
+    }
+    const pieces = { length: n };
     const after = 250 + pieces.length * 55;
     for (const [i, el] of [...h1.parentElement.querySelectorAll(':scope > p, :scope > .subtitle, :scope > .home-link')].entries()) {
         el.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }],
@@ -161,7 +181,7 @@ async function hero(header) {
         cap.classList.add('swap');
         setTimeout(() => {
             cap.textContent = '';
-            const tr = (item.t && (item.t[lang] || item.t.en)) || [item.title.en, item.place_en];
+            const tr = (item.t && (item.t[lang] || item.t.en)) || ['', item.place_en];
             const b = document.createElement('b'); b.textContent = tr[0];
             const place = tr[1];
             cap.append(b, [place, item.year].filter(Boolean).join(' · '));
@@ -275,7 +295,7 @@ function gallery() {
 }
 
 /* ---------- the gate ---------- */
-const thumb = item => `url("${ROOT}${encodeURI(item.file.replace('assets/', 'assets/thumbs/'))}")`;
+const thumb = item => `url("${ROOT}${encodeURI(item.thumb)}")`;
 function gateScenes(list) {
     const d3 = document.querySelector('.door-3d'), d2 = document.querySelector('.door-2d');
     if (!d3 || !d2) return;
@@ -350,18 +370,29 @@ function flowerSvg(i) {
 function countUp2(el, to) { countUp(el, to, 1600); }
 async function visitors(header) {
     if (!REALTIME) return;
-    const base = REALTIME.replace(/\/$/, '');
+    // on a developer's machine ?rt=<address> points the page at a local copy of the counting server
+    const dev = /^(localhost|127[.]0[.]0[.]1)$/.test(location.hostname) && new URLSearchParams(location.search).get('rt');
+    const base = (dev || REALTIME).replace(/[/]$/, '');
     let first = false, laid = false;
     try {
         first = localStorage.getItem('visit-day') !== DAY; if (first) localStorage.setItem('visit-day', DAY);
         laid = localStorage.getItem('flower-day') === DAY;
     } catch (e) { /* storage unavailable */ }
+    // what is counted: the kind of page and its language, as totals. Nothing about the reader.
+    const path = location.pathname.replace(/\/index\.html$/, '/');
+    const kind = /\/works\//.test(path) ? 'work' : /\/albums\/(\w+)/.test(path) ? 'album-' + RegExp.$1 : /about/.test(path) ? 'about' : /license/.test(path) ? 'license' : 'home';
     let data;
-    try { data = await (await fetch(base + (first ? '/visit' : '/state'), { method: first ? 'POST' : 'GET' })).json(); } catch (e) { return; }
+    try {
+        const r = await fetch(base + '/hit', { method: 'POST', body: JSON.stringify({ p: kind, l: lang, v: first ? 1 : 0 }) });
+        data = await r.json();
+        if (!r.ok || data.visits === undefined) throw new Error('older server');
+    } catch (e) {
+        try { data = await (await fetch(base + (first ? '/visit' : '/state'), { method: first ? 'POST' : 'GET' })).json(); } catch (e2) { return; }
+    }
     const nav = header && header.querySelector('.gate');
     if (!nav || !TEXT) return;
 
-    const foot = document.createElement('div'); foot.className = 'gate-foot';
+    const foot = header.querySelector('.gate-foot') || document.createElement('div'); foot.className = 'gate-foot';
     const bed = document.createElement('div'); bed.className = 'gate-flowers'; bed.setAttribute('aria-hidden', 'true');
     const line = document.createElement('p'); line.className = 'gate-count';
     const fNum = document.createElement('strong'), vNum = document.createElement('strong');
@@ -370,7 +401,7 @@ async function visitors(header) {
     if (data.here > 0) { const now = document.createElement('span'); now.className = 'm-now'; now.textContent = TEXT.now.replace('{n}', data.here); line.append(now); }
     const btn = document.createElement('button'); btn.className = 'gate-offer'; btn.type = 'button';
     foot.append(bed, line, btn);
-    nav.after(foot);
+    if (!foot.parentNode) nav.after(foot);
 
     const MAX = 60;
     let shown = 0;
@@ -405,9 +436,11 @@ async function visitors(header) {
 }
 
 /* ---------- start ---------- */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register(new URL('sw.js', ROOT)).catch(() => {});
 try {
     const header = document.querySelector('body > header');
     languageMenu();
+    languageSuggest();
     if (header) {
         splitTitle(header.querySelector('h1'));
         if (isHome) { hero(header); gate(header); }

@@ -1,14 +1,9 @@
 [
  {
   "id": "abstract/C27A2287_1",
-  "file": "assets/abstract/C27A2287_1.jpg",
-  "title": {
-   "ko": "물빛추억",
-   "en": "Water-Light Memories",
-   "ja": "水光の追憶",
-   "de": "Wasserlicht-Erinnerung"
-  },
-  "place": "김제 심포항",
+  "n": 9,
+  "file": "assets/view/abstract/C27A2287_1.webp",
+  "thumb": "assets/thumbs/384/abstract/C27A2287_1.webp",
   "place_en": "Simpo Port, Gimje",
   "year": "2019",
   "t": {
@@ -22,11 +17,11 @@
    ],
    "ja": [
     "水光の追憶",
-    "Simpo Port, Gimje"
+    "金堤 深浦港"
    ],
    "de": [
     "Wasserlicht-Erinnerung",
-    "Simpo Port, Gimje"
+    "Hafen Simpo, Gimje"
    ],
    "zh": [
     "水光追忆",
@@ -80,14 +75,9 @@
  },
  {
   "id": "reflection/C27A6270_1",
-  "file": "assets/reflection/C27A6270_1.jpg",
-  "title": {
-   "ko": "푸른 물 위의 흰 줄기",
-   "en": "White Stem on Blue Water",
-   "ja": "青い水の白い幹",
-   "de": "Weißer Stamm auf blauem Wasser"
-  },
-  "place": "새만금 가력도항",
+  "n": 147,
+  "file": "assets/view/reflection/C27A6270_1.webp",
+  "thumb": "assets/thumbs/384/reflection/C27A6270_1.webp",
   "place_en": "Garyeokdo Port, Saemangeum",
   "year": "2020",
   "t": {
@@ -101,11 +91,11 @@
    ],
    "ja": [
     "青い水の白い幹",
-    "Garyeokdo Port, Saemangeum"
+    "セマングム 可力島港"
    ],
    "de": [
     "Weißer Stamm auf blauem Wasser",
-    "Garyeokdo Port, Saemangeum"
+    "Hafen Garyeokdo, Saemangeum"
    ],
    "zh": [
     "蓝水上的白茎",
@@ -159,14 +149,9 @@
  },
  {
   "id": "abstract/C27A2303_1",
-  "file": "assets/abstract/C27A2303_1.jpg",
-  "title": {
-   "ko": "물빛향연",
-   "en": "Water-Light Feast",
-   "ja": "水光の饗宴",
-   "de": "Wasserlicht-Festmahl"
-  },
-  "place": "김제 심포항",
+  "n": 11,
+  "file": "assets/view/abstract/C27A2303_1.webp",
+  "thumb": "assets/thumbs/384/abstract/C27A2303_1.webp",
   "place_en": "Simpo Port, Gimje",
   "year": "2019",
   "t": {
@@ -180,11 +165,11 @@
    ],
    "ja": [
     "水光の饗宴",
-    "Simpo Port, Gimje"
+    "金堤 深浦港"
    ],
    "de": [
     "Wasserlicht-Festmahl",
-    "Simpo Port, Gimje"
+    "Hafen Simpo, Gimje"
    ],
    "zh": [
     "水光盛宴",
@@ -238,14 +223,9 @@
  },
  {
   "id": "abstract/279A3038_1",
-  "file": "assets/abstract/279A3038_1.jpg",
-  "title": {
-   "ko": "물 위의 묵서",
-   "en": "Calligraphy on Water",
-   "ja": "水面の墨書",
-   "de": "Tuschschrift auf dem Wasser"
-  },
-  "place": "군산 은파호수",
+  "n": 1,
+  "file": "assets/view/abstract/279A3038_1.webp",
+  "thumb": "assets/thumbs/384/abstract/279A3038_1.webp",
   "place_en": "Eunpa Lake, Gunsan",
   "year": "2020",
   "t": {
@@ -259,11 +239,11 @@
    ],
    "ja": [
     "水面の墨書",
-    "Eunpa Lake, Gunsan"
+    "群山 銀波湖"
    ],
    "de": [
     "Tuschschrift auf dem Wasser",
-    "Eunpa Lake, Gunsan"
+    "Eunpa-See, Gunsan"
    ],
    "zh": [
     "水上墨书",
@@ -317,14 +297,9 @@
  },
  {
   "id": "abstract/C27A2304_1",
-  "file": "assets/abstract/C27A2304_1.jpg",
-  "title": {
-   "ko": "물빛축제",
-   "en": "Water-Light Festival",
-   "ja": "水光の祝祭",
-   "de": "Wasserlicht-Fest"
-  },
-  "place": "김제 심포항",
+  "n": 12,
+  "file": "assets/view/abstract/C27A2304_1.webp",
+  "thumb": "assets/thumbs/384/abstract/C27A2304_1.webp",
   "place_en": "Simpo Port, Gimje",
   "year": "2019",
   "t": {
@@ -338,11 +313,11 @@
    ],
    "ja": [
     "水光の祝祭",
-    "Simpo Port, Gimje"
+    "金堤 深浦港"
    ],
    "de": [
     "Wasserlicht-Fest",
-    "Simpo Port, Gimje"
+    "Hafen Simpo, Gimje"
    ],
    "zh": [
     "水光庆典",
@@ -396,14 +371,9 @@
  },
  {
   "id": "abstract/_DJ_9320",
-  "file": "assets/abstract/_DJ_9320.jpg",
-  "title": {
-   "ko": "물의 마블링",
-   "en": "Marbling of Water",
-   "ja": "水のマーブリング",
-   "de": "Marmorierung des Wassers"
-  },
-  "place": "서천 장항항",
+  "n": 143,
+  "file": "assets/view/abstract/_DJ_9320.webp",
+  "thumb": "assets/thumbs/384/abstract/_DJ_9320.webp",
   "place_en": "Janghang Port, Seocheon",
   "year": "2021",
   "t": {
@@ -417,11 +387,11 @@
    ],
    "ja": [
     "水のマーブリング",
-    "Janghang Port, Seocheon"
+    "舒川 長項港"
    ],
    "de": [
     "Marmorierung des Wassers",
-    "Janghang Port, Seocheon"
+    "Hafen Janghang, Seocheon"
    ],
    "zh": [
     "水的大理石纹",

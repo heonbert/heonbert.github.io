@@ -3,155 +3,136 @@
   exhibition/i18n/<code>.json   words, titles and places for the 3D exhibition
   exhibition/i18n/langs.json    the list of languages
   data/i18n.json                the few strings the 2D motion layer needs, per language, plus the language list
-  <code>/*.html                 the 2D pages of every language that has no hand-written pages (built from en/)
+  data/hero.json                captions of the front-page pictures in every language
+  <code>/*.html                 the 2D pages of every language except Korean and English (built from en/)
 
-Hand-written languages (ko at the root, en, ja, de) are left as they are.
+Korean (at the root) and English (en/) are written by hand and left as they are.
 Usage: python tools/build_i18n.py
 """
-import io, json, os, re, sys
+import json, os, re, sys
 from bs4 import BeautifulSoup
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from i18n_extract import walk, norm, PAGES
+from common import ROOT, SITE, HAND, OG_LOCALE, rd, wr, load, have_langs, html_lang, page_url, hreflang, lang_nav, labels_script
+from i18n_extract import walk, walk_ld, unit_key, fill_unit, norm, PAGES
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = 'https://seungheon.com'
-LANGS = [
-    dict(code='ko', name='한국어'), dict(code='en', name='English'), dict(code='ja', name='日本語'), dict(code='de', name='Deutsch'),
-    dict(code='zh', name='简体中文', html='zh-Hans'), dict(code='zh-tw', name='繁體中文', html='zh-Hant'),
-    dict(code='es', name='Español'), dict(code='fr', name='Français'), dict(code='pt', name='Português'), dict(code='it', name='Italiano'),
-    dict(code='ru', name='Русский'), dict(code='ar', name='العربية', dir='rtl'), dict(code='hi', name='हिन्दी'),
-    dict(code='id', name='Bahasa Indonesia'), dict(code='vi', name='Tiếng Việt'), dict(code='tr', name='Türkçe'),
-]
-HAND = {'ko', 'en', 'ja', 'de'}
-OG_LOCALE = {'zh': 'zh_CN', 'zh-tw': 'zh_TW', 'es': 'es_ES', 'fr': 'fr_FR', 'pt': 'pt_BR', 'it': 'it_IT', 'ru': 'ru_RU',
-             'ar': 'ar_AR', 'hi': 'hi_IN', 'id': 'id_ID', 'vi': 'vi_VN', 'tr': 'tr_TR'}
+dump = lambda obj: json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
 
 
-def rd(p): return io.open(os.path.join(ROOT, p), encoding='utf-8').read()
-def wr(p, s):
-    full = os.path.join(ROOT, p)
-    os.makedirs(os.path.dirname(full), exist_ok=True)
-    with io.open(full, 'w', encoding='utf-8', newline='\n') as f: f.write(s)
-def dump(obj): return json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
-def page_url(code, page): return '%s/%s%s' % (SITE, '' if code == 'ko' else code + '/', '' if page == 'index.html' else page)
-
-
-have = [l for l in LANGS if os.path.exists(os.path.join(ROOT, 'i18n', l['code'] + '.json'))]
-docs = {l['code']: json.loads(rd('i18n/%s.json' % l['code'])) for l in have}
-print('languages:', ' '.join(l['code'] for l in have))
-
-# ---- exhibition
-for code, d in docs.items():
-    wr('exhibition/i18n/%s.json' % code, dump(dict(ui=d['ui'], titles=d['titles'], places=d['places'])))
-wr('exhibition/i18n/langs.json', dump(have))
-wr('data/i18n.json', dump(dict(langs=have, motion={c: d['motion'] for c, d in docs.items()})))
-
-# ---- captions of the front-page hero, in every language
-hero = json.loads(rd('data/hero.json'))
-by_id = {p['id']: p for p in json.loads(rd('data/photos.json'))['photos']}
-for item in hero:
-    p = by_id[item['id']]
-    item['t'] = {c: [d['titles'][p['n'] - 1], d['places'].get(p['place_en']) if p['place_en'] else None] for c, d in docs.items()}
-wr('data/hero.json', json.dumps(hero, ensure_ascii=False, indent=1) + '\n')
-
-# ---- 2D pages for the generated languages
-en_site = docs['en']['site']
-cat = json.loads(rd('data/photos.json'))['photos']
-title_by_file = {os.path.basename(p['file']): p['n'] - 1 for p in cat}
-
-
-def links(soup, code, page):
-    """hreflang alternates for every language, canonical, and the plain language links."""
-    for l in soup.find_all('link', rel='alternate'):
-        l.decompose()
-    canon = soup.find('link', rel='canonical')
-    canon['href'] = page_url(code, page)
-    last = canon
-    for l in have + [dict(code='x-default')]:
-        tag = soup.new_tag('link', rel='alternate', hreflang=l.get('html', l['code']), href=page_url('ko' if l['code'] == 'x-default' else l['code'], page))
-        last.insert_after('\n    ', tag)
-        last = tag
-    og = soup.find('meta', property='og:url')
-    if og: og['content'] = page_url(code, page)
-    loc = soup.find('meta', property='og:locale')
-    if loc and code in OG_LOCALE: loc['content'] = OG_LOCALE[code]
-
-
-def build_page(code, page, tr):
+def build_page(code, page, doc, en_site, cat):
+    tr = doc.get('site', {})
+    info = next(l for l in have_langs() if l['code'] == code)
     soup = BeautifulSoup(rd('en/' + page), 'html.parser')
-    info = next(l for l in have if l['code'] == code)
-    soup.html['lang'] = info.get('html', code)
+    soup.html['lang'] = html_lang(code)
     if info.get('dir'): soup.html['dir'] = info['dir']
     missing = []
 
+    def text(key):
+        if key in tr: return tr[key]
+        if key in en_site: missing.append(key)
+        return None
+
     def unit(el):
-        key = norm(el.decode_contents())
-        if key in tr:
-            el.clear()
-            el.append(BeautifulSoup(tr[key], 'html.parser'))
-        elif key in en_site:
-            missing.append(key)
+        t = text(unit_key(el))
+        if t is not None: fill_unit(el, t)
 
     def attr(el, a):
-        key = norm(el[a])
-        if key in tr: el[a] = BeautifulSoup(tr[key], 'html.parser').get_text()
-        elif key in en_site: missing.append(key)
+        t = text(norm(el[a]))
+        if t is not None: el[a] = BeautifulSoup(t, 'html.parser').get_text()
     walk(soup, unit, attr)
 
-    # photograph titles in the albums
-    titles = docs[code]['titles']
+    # structured data
+    def ld(o, k):
+        t = text(norm(o[k]))
+        if t is not None: o[k] = BeautifulSoup(t, 'html.parser').get_text()
+    for script, data in walk_ld(soup, ld):
+        def fix(o):
+            if isinstance(o, dict):
+                for k, v in o.items():
+                    if k in ('url', 'item') and isinstance(v, str) and v.startswith(SITE + '/en/'): o[k] = v.replace(SITE + '/en/', SITE + '/' + code + '/')
+                    elif k == 'inLanguage' and isinstance(v, str): o[k] = html_lang(code)
+                    else: fix(v)
+            elif isinstance(o, list):
+                for v in o: fix(v)
+        fix(data)
+        script.string = '\n    ' + json.dumps(data, ensure_ascii=False, indent=4).replace('\n', '\n    ') + '\n    '
+
+    # photograph titles and notes in the albums
+    ui = doc['ui']
     for img in soup.select('img.gallery-image'):
-        i = title_by_file.get(os.path.basename(img['src']))
-        if i is not None: img['alt'] = titles[i]
+        n = int(img['data-n']); p = cat[n - 1]
+        img['alt'] = doc['titles'][n - 1]
+        note = ui['prize'].get(str(n)) or (ui['self'] if p['self_portrait'] else None)
+        if note: img['data-note'] = note
+        elif img.has_attr('data-note'): del img['data-note']
     # the gate
-    g = docs[code]['gate']
+    g = doc['gate']
     nav = soup.select_one('nav.gate')
     if nav:
         nav['aria-label'] = g['label']
         for door, key in ((nav.select_one('.door-3d'), 'd3'), (nav.select_one('.door-2d'), 'd2')):
-            for el, text in zip(door.find_all(['span', 'strong'], recursive=False), g[key]):
-                el.string = text
+            for el, t in zip(door.find_all(['span', 'strong'], recursive=False), g[key]):
+                el.string = t
             if key == 'd3': door['href'] = '../exhibition/?lang=' + code
-    # language links (motion.js turns these into one menu)
-    sw = soup.select_one('.lang-switcher')
+    # the language menu
+    sw = soup.select_one('nav.lang-switcher')
     if sw:
-        sw.clear()
-        name = 'index.html' if page == 'index.html' else page
-        for l in have:
-            a = soup.new_tag('a', href=('../' * (page.count('/') + 1)) + ('' if l['code'] == 'ko' else l['code'] + '/') + name)
-            a.string = l['code'].upper()
-            if l['code'] == code:
-                a['class'] = 'active'; a['aria-current'] = 'page'
-            sw.append(a); sw.append(' ')
-    links(soup, code, page)
-    out = str(soup)
-    out = out.replace("lang === 'ko'", "lang === 'ko'")
+        sw.replace_with(BeautifulSoup(lang_nav(code, page, doc['labels']['langLabel']), 'html.parser'))
+    # labels for the page scripts
+    tag = soup.find('script', id='yumok-labels')
+    if tag: tag.replace_with(BeautifulSoup(labels_script(code, doc), 'html.parser'))
+    # canonical, hreflang, Open Graph
+    for l in soup.find_all('link', rel='alternate'):
+        if l.get('hreflang'): l.decompose()
+    canon = soup.find('link', rel='canonical')
+    canon['href'] = page_url(code, page)
+    canon.insert_after(BeautifulSoup('\n' + hreflang(page), 'html.parser'))
+    og = soup.find('meta', property='og:url')
+    if og: og['content'] = page_url(code, page)
+    loc = soup.find('meta', property='og:locale')
+    if loc: loc['content'] = OG_LOCALE[code]
+    out = re.sub(r'\n[ \t]*\n[ \t]*\n+', '\n\n', str(soup))
     wr('%s/%s' % (code, page), out)
     return missing
 
 
-total_missing = {}
-for l in have:
-    code = l['code']
-    if code in HAND:
-        continue
-    tr = docs[code].get('site', {})
-    for page in PAGES:
-        miss = build_page(code, page, tr)
-        if miss: total_missing.setdefault(code, set()).update(miss)
-    print('built', code, len(PAGES), 'pages', 'missing %d' % len(total_missing.get(code, ())))
-for code, miss in total_missing.items():
-    for m in sorted(miss)[:5]: print('  missing in', code, ':', m[:80])
+def main():
+    have = have_langs()
+    docs = {l['code']: load(l['code']) for l in have}
+    cat = json.loads(rd('data/photos.json'))['photos']
+    en = docs['en']
+    full = lambda d, sec: {**en[sec], **d.get(sec, {})}                 # a language still being translated falls back to English
+    print('languages:', ' '.join(docs))
 
-# ---- sitemap: one entry per page and language, with alternates
-rows = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"', '        xmlns:xhtml="http://www.w3.org/1999/xhtml">']
-for page in PAGES:
+    # ---- exhibition
+    for code, d in docs.items():
+        ui = {**en['ui'], **d['ui']}
+        for k in ('halls', 'hallText', 'hallNote', 'prize'): ui[k] = {**en['ui'][k], **d['ui'].get(k, {})}
+        titles = d['titles'] + en['titles'][len(d['titles']):]
+        wr('exhibition/i18n/%s.json' % code, dump(dict(ui=ui, titles=titles, places=d['places'], labels={k: full(d, 'labels')[k] for k in ('page', 'download', 'siteName')})))
+        d['ui'], d['titles'], d['labels'] = ui, titles, full(d, 'labels')
+    wr('exhibition/i18n/langs.json', dump(have))
+    wr('data/i18n.json', dump(dict(langs=have, motion={c: d['motion'] for c, d in docs.items()},
+                                   suggest={c: [d['labels']['suggest'], d['labels']['close']] for c, d in docs.items()})))
+
+    # ---- captions of the front-page hero, in every language
+    hero = json.loads(rd('data/hero.json'))
+    for item in hero:
+        p = cat[item['n'] - 1]
+        item['t'] = {c: [d['titles'][p['n'] - 1], d['places'].get(p['place_en']) if p['place_en'] else None] for c, d in docs.items()}
+    wr('data/hero.json', json.dumps(hero, ensure_ascii=False, indent=1) + '\n')
+
+    # ---- 2D pages for every language built from English
+    total = {}
     for l in have:
-        rows.append('  <url>\n    <loc>%s</loc>' % page_url(l['code'], page))
-        for a in have:
-            rows.append('    <xhtml:link rel="alternate" hreflang="%s" href="%s"/>' % (a.get('html', a['code']), page_url(a['code'], page)))
-        rows.append('    <xhtml:link rel="alternate" hreflang="x-default" href="%s"/>\n  </url>' % page_url('ko', page))
-rows.append('  <url>\n    <loc>%s/exhibition/</loc>\n  </url>\n</urlset>' % SITE)
-wr('sitemap.xml', '\n'.join(rows) + '\n')
-print('sitemap urls', len(PAGES) * len(have) + 1)
+        code = l['code']
+        if code in HAND: continue
+        for page in PAGES:
+            miss = build_page(code, page, docs[code], en['site'], cat)
+            if miss: total.setdefault(code, set()).update(miss)
+        print('built %-6s %d pages%s' % (code, len(PAGES), ', %d strings still in English' % len(total[code]) if code in total else ''))
+    return total
+
+
+if __name__ == '__main__':
+    main()

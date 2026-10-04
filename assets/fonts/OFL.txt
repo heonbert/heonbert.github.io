@@ -1,0 +1,14 @@
+Yumok Batang is a subset of Iropke Batang Medium (이롭게 바탕체), version 1.001, made for seungheon.com.
+It was renamed because the licence reserves the original names for the unmodified font.
+The complete, original font: https://github.com/iropke/font-iropke-batang
+
+Copyright (c) 2016, 이롭게(iropke) 
+with Reserved Font Name '이롭게 바탕체', 'iropke batang'.
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copyed below, and is also available with a FAQ at: 
+http://scripts.sil.org/OFL
+
+----------------------------------------------------------- 
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------

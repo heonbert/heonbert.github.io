@@ -1,57 +1,59 @@
-// Service Worker - 유목의 물빛사진 PWA
-var CACHE_NAME = 'yumok-v6';
+// Service worker for 유목의 물빛사진.
+// Pages, scripts and data: the network first, the cache only when offline.
+// Pictures, fonts and 3D models, which do not change under the same name within one version:
+// the cache first, with a limit on how many are kept. Film and sound are never cached.
+// VERSION is stamped by tools/build_misc.py; a new version discards everything kept by the old one.
+const VERSION = 'yumok-6dff5e7cb5';
+const PAGES = VERSION + '-pages', FILES = VERSION + '-files';
+const KEEP = 420;                                  // how many pictures, fonts and models to keep
+const LASTING = /\.(?:webp|jpe?g|png|ico|svg|woff2?|glb)$/i;
+const NEVER = /\.(?:mp4|mp3|webm|pdf)$/i;
 
-// 설치 시 기본 셸 캐싱
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(function(cache) {
-            return cache.addAll([
-                '/',
-                '/style.css',
-                '/bookmark.js',
-                '/popup_gallery.js',
-                '/assets/photographer/leedongjoo.jpg'
-            ]);
-        })
-    );
+self.addEventListener('install', event => {
+    event.waitUntil(caches.open(PAGES).then(cache => cache.addAll(['/', '/style.css', '/motion.css', '/motion.js'])).catch(() => {}));
     self.skipWaiting();
 });
 
-// 활성화 시 이전 캐시 정리
-self.addEventListener('activate', function(event) {
-    event.waitUntil(
-        caches.keys().then(function(cacheNames) {
-            return Promise.all(
-                cacheNames.filter(function(name) {
-                    return name !== CACHE_NAME;
-                }).map(function(name) {
-                    return caches.delete(name);
-                })
-            );
-        })
-    );
+self.addEventListener('activate', event => {
+    event.waitUntil(caches.keys().then(names => Promise.all(names.filter(n => !n.startsWith(VERSION)).map(n => caches.delete(n)))));
     self.clients.claim();
 });
 
-// 네트워크 우선, 실패 시 캐시 (사진 갤러리이므로 항상 최신 우선)
-self.addEventListener('fetch', function(event) {
-    // GET 요청만, http(s)만 캐시 (chrome-extension 등 제외)
-    if (event.request.method !== 'GET') return;
-    if (!event.request.url.startsWith('http')) return;
+async function trim(cache) {
+    const keys = await cache.keys();
+    for (let i = 0; i < keys.length - KEEP; i++) await cache.delete(keys[i]);     // the oldest first
+}
 
-    event.respondWith(
-        fetch(event.request).then(function(response) {
-            // 성공하면 캐시에도 저장 (same-origin만)
-            if (response.status === 200 && response.type === 'basic') {
-                var responseClone = response.clone();
-                caches.open(CACHE_NAME).then(function(cache) {
-                    cache.put(event.request, responseClone);
-                }).catch(function() {});
-            }
-            return response;
-        }).catch(function() {
-            // 오프라인이면 캐시에서 반환
-            return caches.match(event.request);
-        })
-    );
+async function lasting(request) {
+    const cache = await caches.open(FILES);
+    const hit = await cache.match(request);
+    if (hit) return hit;
+    const response = await fetch(request);
+    if (response.status === 200 && response.type === 'basic') {
+        cache.put(request, response.clone()).then(() => trim(cache)).catch(() => {});
+    }
+    return response;
+}
+
+async function fresh(request) {
+    try {
+        const response = await fetch(request);
+        if (response.status === 200 && response.type === 'basic') {
+            const copy = response.clone();
+            caches.open(PAGES).then(cache => cache.put(request, copy)).catch(() => {});
+        }
+        return response;
+    } catch (err) {
+        const hit = await caches.match(request);
+        if (hit) return hit;
+        throw err;
+    }
+}
+
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    if (request.method !== 'GET' || request.headers.has('range')) return;
+    const url = new URL(request.url);
+    if (url.origin !== self.location.origin || NEVER.test(url.pathname)) return;
+    event.respondWith(LASTING.test(url.pathname) ? lasting(request) : fresh(request));
 });

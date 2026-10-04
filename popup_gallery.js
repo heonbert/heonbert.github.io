@@ -1,37 +1,38 @@
-// 갤러리 이미지 배열
+// 앨범 페이지의 사진 보기.
+// 격자에는 작은 사본이 걸려 있고, 눌렀을 때에만 감상용 사본(data-full)을 가져온다.
+// 내려받기 버튼은 작가의 원본 파일(data-file)을, 작품 페이지 버튼은 그 사진의 고유 주소(data-page)를 연다.
 const galleryImages = Array.from(document.querySelectorAll('.gallery img'));
 let currentIndex = 0;
 
 // 모바일 감지
 const isMobile = () => window.innerWidth <= 580;
 
-// 다국어 ARIA 레이블
-const ariaLabels = {
-    ko: { prev: '이전 사진', next: '다음 사진', close: '닫기', download: '다운로드', share: '공유' },
-    en: { prev: 'Previous photo', next: 'Next photo', close: 'Close', download: 'Download', share: 'Share' },
-    ja: { prev: '前の写真', next: '次の写真', close: '閉じる', download: 'ダウンロード', share: '共有' },
-    de: { prev: 'Vorheriges Foto', next: 'Nächstes Foto', close: 'Schließen', download: 'Herunterladen', share: 'Teilen' }
-};
-const lang = document.documentElement.lang || 'ko';
-const labels = ariaLabels[lang] || ariaLabels.ko;
+// 버튼 이름은 각 언어의 페이지가 넘겨준다(window.YUMOK_LABELS). 없으면 영어.
+const labels = Object.assign({
+    viewer: 'Photo viewer', prev: 'Previous photo', next: 'Next photo', close: 'Close',
+    download: 'Download the original file', share: 'Share', page: 'Work page', copied: 'Link copied'
+}, window.YUMOK_LABELS || {});
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // 팝업 요소 생성 (dialog 시맨틱)
 const popup = document.createElement('div');
 popup.classList.add('popup');
 popup.setAttribute('role', 'dialog');
 popup.setAttribute('aria-modal', 'true');
-popup.setAttribute('aria-label', lang === 'ko' ? '사진 보기' : lang === 'ja' ? '写真ビューアー' : lang === 'de' ? 'Foto-Viewer' : 'Photo viewer');
+popup.setAttribute('aria-label', labels.viewer);
 popup.innerHTML = `
     <div class="popup-content">
-        <button class="popup-nav popup-prev" aria-label="${labels.prev}">&#10094;</button>
+        <button class="popup-nav popup-prev" aria-label="${esc(labels.prev)}">&#10094;</button>
         <span class="popup-title"></span>
-        <img src="" alt="Popup Image">
-        <button class="popup-nav popup-next" aria-label="${labels.next}">&#10095;</button>
-        <button class="close-btn" aria-label="${labels.close}">&times;</button>
+        <span class="popup-note"></span>
+        <img src="" alt="">
+        <button class="popup-nav popup-next" aria-label="${esc(labels.next)}">&#10095;</button>
+        <button class="close-btn" aria-label="${esc(labels.close)}">&times;</button>
         <div class="popup-bottom">
             <span class="popup-counter" aria-live="polite"></span>
-            <a class="download-btn" href="" download aria-label="${labels.download}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
-            <button class="share-btn" aria-label="${labels.share}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+            <a class="page-btn" href="" aria-label="${esc(labels.page)}" title="${esc(labels.page)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><line x1="12" y1="7.6" x2="12" y2="7.7"/></svg></a>
+            <a class="download-btn" href="" download aria-label="${esc(labels.download)}" title="${esc(labels.download)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+            <button class="share-btn" aria-label="${esc(labels.share)}" title="${esc(labels.share)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         </div>
     </div>
 `;
@@ -40,28 +41,43 @@ document.body.appendChild(popup);
 // 팝업 내부 요소 참조
 const popupImage = popup.querySelector('img');
 const popupTitle = popup.querySelector('.popup-title');
+const popupNote = popup.querySelector('.popup-note');
 const closeBtn = popup.querySelector('.close-btn');
 const downloadBtn = popup.querySelector('.download-btn');
+const pageBtn = popup.querySelector('.page-btn');
 const prevBtn = popup.querySelector('.popup-prev');
 const nextBtn = popup.querySelector('.popup-next');
 const counter = popup.querySelector('.popup-counter');
 const shareBtn = popup.querySelector('.share-btn');
 
-// Web Share API 미지원 시 공유 버튼 숨김
-if (!navigator.share) {
-    shareBtn.style.display = 'none';
-}
+const fullOf = image => image.dataset.full || image.currentSrc || image.src;
+const pageOf = image => image.dataset.page ? new URL(image.dataset.page, window.location.href).href : null;
 
 // 포커스 트랩을 위한 요소 목록
 function getFocusableElements() {
-    return popup.querySelectorAll('button:not([style*="display: none"]):not([style*="display:none"]), a[href]');
+    return popup.querySelectorAll('button:not([style*="display: none"]):not([style*="display:none"]), a[href]:not([hidden])');
 }
 
 // 포커스 복원을 위한 변수
 let lastFocusedElement = null;
 
-// 이미지 전환 애니메이션 방향
-let slideDirection = 'none'; // 'up', 'down', 'none'
+function fill(image) {
+    const full = fullOf(image);
+    popupImage.src = full;
+    popupImage.alt = image.alt;
+    popupTitle.textContent = image.alt;
+    popupNote.textContent = image.dataset.note || '';
+    const file = image.dataset.file || full;
+    downloadBtn.href = file;
+    downloadBtn.download = decodeURIComponent(file.split('/').pop());
+    const page = pageOf(image);
+    pageBtn.hidden = !page;
+    if (page) pageBtn.href = page;
+    counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+    // 다음 사진을 미리 받아 둔다
+    const ahead = galleryImages[(currentIndex + 1) % galleryImages.length];
+    if (ahead && ahead !== image) { const pre = new Image(); pre.src = fullOf(ahead); }
+}
 
 // 이미지 표시
 function showImage(index, direction) {
@@ -81,21 +97,11 @@ function showImage(index, direction) {
 
         popupImage.style.animation = `${slideOut} 0.25s ease-in forwards`;
         setTimeout(() => {
-            popupImage.src = image.src;
-            popupImage.alt = image.alt;
-            popupTitle.textContent = image.alt;
-            downloadBtn.href = image.src;
-            downloadBtn.download = image.src.split('/').pop();
-            counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+            fill(image);
             popupImage.style.animation = `${slideIn} 0.25s ease-out forwards`;
         }, 200);
     } else {
-        popupImage.src = image.src;
-        popupImage.alt = image.alt;
-        popupTitle.textContent = image.alt;
-        downloadBtn.href = image.src;
-        downloadBtn.download = image.src.split('/').pop();
-        counter.textContent = `${currentIndex + 1} / ${galleryImages.length}`;
+        fill(image);
         if (!isMobile()) {
             popupImage.style.animation = 'imageReveal 0.3s ease-out';
         }
@@ -160,17 +166,24 @@ nextBtn.addEventListener('click', (e) => {
     showImage(currentIndex + 1, 'up');
 });
 
-// 공유 버튼 — 현재 보고 있는 사진의 직접 링크를 공유
+// 공유 버튼: 그 사진의 작품 페이지 주소를 공유한다. 공유 기능이 없는 브라우저에서는 주소를 복사한다.
+function toast(text) {
+    const el = document.getElementById('bookmark-toast');
+    if (!el) return;
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => el.classList.remove('show'), 2600);
+}
 shareBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
-    const shareUrl = window.location.origin + window.location.pathname + '#img=' + (currentIndex + 1);
+    const image = galleryImages[currentIndex];
+    const shareUrl = pageOf(image) || (window.location.origin + window.location.pathname + '#img=' + (currentIndex + 1));
     try {
-        await navigator.share({
-            title: document.title,
-            url: shareUrl
-        });
+        if (navigator.share) await navigator.share({ title: image.alt + ' - ' + document.title, url: shareUrl });
+        else { await navigator.clipboard.writeText(shareUrl); toast(labels.copied); }
     } catch (err) {
-        // 사용자가 공유 취소한 경우 무시
+        // 사용자가 공유를 취소했거나 복사할 수 없는 경우
     }
 });
 

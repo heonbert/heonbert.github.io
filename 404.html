@@ -8,61 +8,70 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .error-page {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .error-code {
-            font-size: 6em;
-            font-weight: 300;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 10px;
-        }
-        .error-message {
-            font-size: 1.2em;
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-        .error-links {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .error-links a {
-            color: var(--accent);
-            text-decoration: none;
-            padding: 8px 20px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            transition: all 0.3s ease;
-        }
-        .error-links a:hover {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-        }
+        .error-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 72vh; text-align: center; padding: 40px 20px; }
+        .error-code { font-size: 6em; font-weight: 300; color: var(--accent); line-height: 1; margin-bottom: 10px; }
+        .error-page h1 { margin: 0; font-size: 1.3em; font-weight: 400; letter-spacing: 0.08em; }
+        .error-page p { margin: 12px 0 0; color: var(--text-secondary); }
+        .error-page .home-link { margin-top: 26px; }
+        .error-links { display: flex; gap: 8px 6px; flex-wrap: wrap; justify-content: center; max-width: 640px; margin-top: 44px; }
+        .error-links a { color: var(--text-secondary); text-decoration: none; padding: 6px 14px; font-family: var(--sans); font-size: 0.86em; border: 1px solid var(--border); border-radius: 30px; transition: all 0.3s ease; }
+        .error-links a:hover { color: var(--accent); background: var(--accent-soft); border-color: var(--accent); }
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">본문으로 건너뛰기</a>
     <main id="main-content" class="error-page">
         <div class="error-code">404</div>
-        <p class="error-message">페이지를 찾을 수 없습니다<br>Page not found</p>
-        <div class="error-links">
-            <a href="/">한국어</a>
-            <a href="/en/">English</a>
-            <a href="/ja/">日本語</a>
-            <a href="/de/">Deutsch</a>
-        </div>
+        <h1 id="nf-title">페이지를 찾을 수 없습니다 · Page not found</h1>
+        <p id="nf-text">주소가 바뀌었거나 없는 페이지입니다.</p>
+        <a id="nf-home" class="home-link" href="/">처음으로</a>
+        <nav class="error-links" aria-label="Languages">
+            <a href="/" lang="ko">한국어</a>
+            <a href="/en/" lang="en">English</a>
+            <a href="/ja/" lang="ja">日本語</a>
+            <a href="/de/" lang="de">Deutsch</a>
+            <a href="/zh/" lang="zh-Hans">简体中文</a>
+            <a href="/zh-tw/" lang="zh-Hant">繁體中文</a>
+            <a href="/es/" lang="es">Español</a>
+            <a href="/fr/" lang="fr">Français</a>
+            <a href="/pt/" lang="pt">Português</a>
+            <a href="/it/" lang="it">Italiano</a>
+            <a href="/ru/" lang="ru">Русский</a>
+            <a href="/ar/" lang="ar">العربية</a>
+            <a href="/hi/" lang="hi">हिन्दी</a>
+            <a href="/id/" lang="id">Bahasa Indonesia</a>
+            <a href="/vi/" lang="vi">Tiếng Việt</a>
+            <a href="/tr/" lang="tr">Türkçe</a>
+        </nav>
     </main>
     <footer>
-        <p>&copy; 유목의 물빛사진</p>
+        <p>&copy; <span id="nf-site">유목의 물빛사진</span></p>
     </footer>
+    <script>
+        // say it in the language of the address that was asked for, or else in the reader's own
+        (function() {
+            var T = {"ko":["페이지를 찾을 수 없습니다","주소가 바뀌었거나 없는 페이지입니다.","처음으로","유목의 물빛사진","ko",0],"en":["Page not found","The address may have changed, or the page may not exist.","Go to the front page","Yumok's Water Light Photography","en",0],"ja":["ページが見つかりません","アドレスが変わったか、存在しないページです。","最初のページへ","流木の水光写真","ja",0],"de":["Seite nicht gefunden","Die Adresse hat sich möglicherweise geändert, oder die Seite existiert nicht.","Zur Startseite","Yumoks Wasserlicht-Fotografie","de",0],"zh":["找不到页面","地址可能已更改，或者该页面并不存在。","返回首页","流木的水光摄影","zh-Hans",0],"zh-tw":["找不到頁面","網址可能已經變更，或是這個頁面並不存在。","回到首頁","流木的水光攝影","zh-Hant",0],"es":["Página no encontrada","Es posible que la dirección haya cambiado o que la página no exista.","Ir al inicio","Fotografías de la luz del agua de Yumok","es",0],"fr":["Page introuvable","L'adresse a peut-être changé, ou cette page n'existe pas.","Retour à l'accueil","Photographies de lumière d'eau de Yumok","fr",0],"pt":["Página não encontrada","O endereço pode ter mudado, ou a página pode não existir.","Ir para a página inicial","Fotografias da Luz da Água de Yumok","pt",0],"it":["Pagina non trovata","L'indirizzo potrebbe essere cambiato, oppure la pagina non esiste.","Vai alla pagina iniziale","Fotografie di luce d'acqua di Yumok","it",0],"ru":["Страница не найдена","Возможно, адрес изменился или такой страницы не существует.","На главную страницу","Юмок: фотографии света воды","ru",0],"ar":["Page not found","The address may have changed, or the page may not exist.","Go to the front page","Yumok's Water Light Photography","ar",1],"hi":["पृष्ठ नहीं मिला","हो सकता है कि पता बदल गया हो, या यह पृष्ठ मौजूद ही न हो।","मुखपृष्ठ पर जाएँ","यूमोक के जल-प्रकाश चित्र","hi",0],"id":["Halaman tidak ditemukan","Alamatnya mungkin telah berubah, atau halaman ini memang tidak ada.","Ke halaman depan","Foto Cahaya Air Yumok","id",0],"vi":["Không tìm thấy trang","Địa chỉ có thể đã thay đổi, hoặc trang này không tồn tại.","Về trang đầu","Ảnh ánh nước của Yumok","vi",0],"tr":["Page not found","The address may have changed, or the page may not exist.","Go to the front page","Yumok's Water Light Photography","tr",0]};
+            var first = location.pathname.split('/')[1];
+            var code = T[first] ? first : null;
+            if (!code) {
+                var prefs = navigator.languages || [navigator.language || 'ko'];
+                for (var i = 0; i < prefs.length && !code; i++) {
+                    var tag = prefs[i].toLowerCase();
+                    if (/^zh-(tw|hk|mo|hant)/.test(tag)) code = 'zh-tw';
+                    else if (T[tag]) code = tag;
+                    else if (T[tag.slice(0, 2)]) code = tag.slice(0, 2);
+                }
+            }
+            var t = T[code || 'ko'];
+            document.documentElement.lang = t[4];
+            if (t[5]) document.documentElement.dir = 'rtl';
+            document.title = t[0] + ' - ' + t[3];
+            document.getElementById('nf-title').textContent = t[0];
+            document.getElementById('nf-text').textContent = t[1];
+            document.getElementById('nf-site').textContent = t[3];
+            var home = document.getElementById('nf-home');
+            home.textContent = t[2];
+            home.href = code && code !== 'ko' ? '/' + code + '/' : '/';
+        })();
+    </script>
 </body>
 </html>
