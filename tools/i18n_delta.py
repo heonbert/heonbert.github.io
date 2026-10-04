@@ -18,6 +18,8 @@ ORDER = ['ui', 'labels', 'motion', 'gate', 'titles', 'places', 'site', 'same']
 tags = lambda s: sorted(re.findall(r'</?[a-z][a-z0-9]*[^>]*>', s))
 holes = lambda s: sorted(re.findall(r'\{[a-z]+\}', s))
 latin = lambda s: len(re.findall(r'[A-Za-z]', re.sub(r'<[^>]+>', '', s)))
+# In page sentences links and icons must survive; other markup (<cite>, <strong>) may follow the language's own conventions.
+anchors = lambda s: (sorted(re.findall(r'<x[0-9]+/>', s)), sorted(re.findall(r'<a [^>]*>', s)))
 
 
 def flat(d, pre=''):
@@ -86,7 +88,9 @@ def problems(items_by_section, got):
         for key, ref in items.items():
             v = got.get(sec, {}).get(key)
             if not isinstance(v, str) or not v.strip(): errors.append('%s: missing %r' % (sec, key[:70])); continue
-            if tags(v) != tags(ref['en']): errors.append('%s: HTML tags differ in %r' % (sec, key[:70]))
+            if sec == 'site':
+                if anchors(v) != anchors(ref['en']): errors.append('%s: links or icons differ in %r' % (sec, key[:70]))
+            elif tags(v) != tags(ref['en']): errors.append('%s: HTML tags differ in %r' % (sec, key[:70]))
             if holes(v) != holes(ref['en']): errors.append('%s: placeholders differ in %r' % (sec, key[:70]))
             if ref['en'].count(chr(10)) != v.count(chr(10)): errors.append('%s: line breaks differ in %r' % (sec, key[:70]))
         for key in got.get(sec, {}):

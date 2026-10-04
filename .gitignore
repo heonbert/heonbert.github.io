@@ -6,3 +6,4 @@ realtime/.wrangler/
 realtime/node_modules/
 __pycache__/
 *.pyc
+i18n/delta/

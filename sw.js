@@ -3,7 +3,7 @@
 // Pictures, fonts and 3D models, which do not change under the same name within one version:
 // the cache first, with a limit on how many are kept. Film and sound are never cached.
 // VERSION is stamped by tools/build_misc.py; a new version discards everything kept by the old one.
-const VERSION = 'yumok-6dff5e7cb5';
+const VERSION = 'yumok-554139b55c';
 const PAGES = VERSION + '-pages', FILES = VERSION + '-files';
 const KEEP = 420;                                  // how many pictures, fonts and models to keep
 const LASTING = /\.(?:webp|jpe?g|png|ico|svg|woff2?|glb)$/i;

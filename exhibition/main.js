@@ -534,7 +534,7 @@ function buildTexts() {
         const i = seen[r.album] = (seen[r.album] || 0) + 1;
         const lines = [{ text: TX.ui.halls[r.album] + (r.album === 'abstract' ? roman[i - 1] : ''), size: 0.36, color: INK }];
         if (i === 1) lines.push({ text: TX.ui.hallText[r.album], size: 0.092, color: INK2, gap: 0.1 });
-        if (i === 1 && TX.ui.hallNote && TX.ui.hallNote[r.album]) lines.push({ text: TX.ui.hallNote[r.album], size: 0.068, color: INK2, sans: true, gap: 0.1 });
+        if (i === 1 && TX.ui.hallNote && TX.ui.hallNote[r.album]) lines.push({ text: TX.ui.hallNote[r.album], size: 0.074, color: '#48494c', sans: true, gap: 0.1 });
         const m = makeText(lines, { width: 3.4, lineH: 1.5 });
         const y = 2.55 - m.userData.h / 2;
         if (d.x0 < 0) put(m, -5.99, y, d.c - d.w / 2 - 2.4, Math.PI / 2);
@@ -972,6 +972,7 @@ function applyLang() {
         el.textContent = el.textContent.replace(/\s*[(（][^)）]*[)）]\s*[.。]?\s*$/, '');
     }
     $('welcome-lang').lastElementChild.textContent = info.name || lang;
+    document.documentElement.dataset.words = '1';
     if (state.ready) $('enter').textContent = t('enter');
     for (const b of document.querySelectorAll('#langs button')) b.setAttribute('aria-pressed', b.dataset.lang === lang);
     $('home').href = lang === 'ko' ? '../index.html' : `../${lang}/index.html`;

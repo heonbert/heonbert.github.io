@@ -3,7 +3,7 @@
 Source: his own folder "2019년 전국사진촬영대회 & 공모입상작" on the family's copy of his external drive.
 The file names there carry, in his own words, the contest and the title:  이동주<번호>_<대회>_<제목>_<상>.jpg
 Three of the 25 files are water-light works already in the Abstract album and are not imported again.
-One (C27A0709, "휴식") is a nude study and is held back until the family decides.
+One (C27A0709, "휴식") is a nude study; the family decided not to publish it.
 
 Writes assets/awards/<name>.jpg (long edge 1200 px) and tools/awards.json.
 Usage: python tools/import_awards.py "<path to the source folder>"

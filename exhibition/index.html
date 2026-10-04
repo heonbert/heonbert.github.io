@@ -37,8 +37,10 @@
         (function () {
             var root = document.documentElement;
             window.addEventListener('error', function (ev) {
-                if (!root.dataset.hall && ev.target && ev.target.tagName === 'SCRIPT') root.dataset.hall = 'failed';
+                if (!root.dataset.hall && ev.target && ev.target.tagName === 'SCRIPT') { root.dataset.hall = 'failed'; root.dataset.words = '1'; }
             }, true);
+            // the words wait a moment for the visitor's language; if it does not come, they are shown as they are
+            setTimeout(function () { root.dataset.words = '1'; }, 2500);
             setTimeout(function () { if (!root.dataset.hall) root.dataset.hall = 'slow'; }, 20000);
         })();
     </script>
@@ -126,6 +128,6 @@
 
     <div id="fade"></div>
     <script type="module" src="main.js"></script>
-    <noscript><p style="position:fixed;left:0;right:0;bottom:0;z-index:50;margin:0;padding:1rem 1.5rem;text-align:center;color:#e4e8f0;background:#0a0e14">이 전시관은 JavaScript가 필요합니다. <a href="../index.html" style="color:#7db6e3">일반 갤러리 보기</a> · This exhibition needs JavaScript. <a href="../en/index.html" style="color:#7db6e3">View the flat gallery</a></p></noscript>
+    <noscript><style>#welcome .card { opacity: 1 !important; }</style><p style="position:fixed;left:0;right:0;bottom:0;z-index:50;margin:0;padding:1rem 1.5rem;text-align:center;color:#e4e8f0;background:#0a0e14">이 전시관은 JavaScript가 필요합니다. <a href="../index.html" style="color:#7db6e3">일반 갤러리 보기</a> · This exhibition needs JavaScript. <a href="../en/index.html" style="color:#7db6e3">View the flat gallery</a></p></noscript>
 </body>
 </html>
