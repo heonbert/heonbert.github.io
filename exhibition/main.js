@@ -1076,6 +1076,7 @@ function frame() {
         $('t-bar').firstElementChild.style.transform = `scaleX(${Math.min(1, state.tourClock / dwell)})`;
         if (state.tourClock > dwell) tourStep(1);
     }
+    camera.position.copy(state.pos);             // the eye is where the visitor stands
     let dip = 0;                                 // your own bow: the view lowers and returns
     if (state.bowT > 0) { state.bowT -= real; dip = -0.36 * Math.sin(Math.PI * Math.max(0, 1 - state.bowT / 1.6)); }
     camera.rotation.set(state.pitch + dip, state.yaw, 0);
